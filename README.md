@@ -15,11 +15,11 @@ popular](https://apreshill.github.io/palmerpenguins-useR-2022/) in the R
 community, especially in educational contexts, and as an [alternative to
 the `iris`
 dataset](https://journal.r-project.org/articles/RJ-2022-020/). Including
-the data in R makes it more widely available, and easier to get started
-with, especially for new R users, and for use in teaching.
+the datasets in R makes them more widely available, and easier to get
+started with, especially for new R users, and for use in teaching.
 
-The versions of these data frames in R’s datasets package use some
-shorter column names than the palmerpenguins equivalent. The differences
+The version of `penguins` in R’s **datasets** package use some shorter
+column names than the **palmerpenguins** equivalent. The differences
 are:
 
 - `bill_dep` instead of `bill_depth_mm`
@@ -34,9 +34,9 @@ It does mean, however, that for those wanting to use R’s version of the
 datasets, it isn’t simply a case of removing the call to
 `library(palmerpenguins)` and the script still running.
 
-This package will remove any calls to `library(palmerpenguins)` and
-replace long palmerpenguins variable names with the shorter R
-equivalents.
+This package will provide a function that will take a file or directory,
+remove any calls to `library(palmerpenguins)` and replace long
+palmerpenguins variable names with the shorter R equivalents.
 
 Note that the **palmerpenguins** package provides features that are not
 in R, such as vignettes and articles on the [package

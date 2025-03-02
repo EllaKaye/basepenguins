@@ -1,5 +1,11 @@
 library(palmerpenguins)
 library(ggplot2)
+library(dplyr)
+
+# exploring scatterplots
+penguins |>
+  select(body_mass_g, ends_with("_mm")) |>
+  glimpse()
 
 # Scatterplot example 1: penguin flipper length versus body mass
 ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +

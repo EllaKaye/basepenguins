@@ -22,6 +22,16 @@ base_penguins <- function(input, output = NULL) {
     gsub("flipper_length_mm", "flipper_len", x = _) |>
     gsub("body_mass_g", "body_mass", x = _)
 
+  # deal with ends_with(),
+  # as in https://allisonhorst.github.io/palmerpenguins/articles/intro.html
+  # use starts_with for flipper so that code doesn't error if col not present
+  file <- file |>
+    gsub(
+      'ends_with\\("_mm"\\)',
+      'starts_with("flipper_"), starts_with("bill_")',
+      x = _
+    )
+
   # write output
   writeLines(file, output)
 }

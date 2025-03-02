@@ -1,3 +1,5 @@
+# TODO: document
+# TODO: test
 base_penguins <- function(input, output = NULL) {
   # check input is a file that exists
   if (!file.exists(input)) {
@@ -15,9 +17,10 @@ base_penguins <- function(input, output = NULL) {
 
   # shorter variable names
   file <- file |>
-    gsub("gth_mm", "", x = _) |>
-    gsub("th_mm", "", x = _) |>
-    gsub("_g", "", x = _)
+    gsub("bill_length_mm", "bill_len", x = _) |>
+    gsub("bill_depth_mm", "bill_dep", x = _) |>
+    gsub("flipper_length_mm", "flipper_len", x = _) |>
+    gsub("body_mass_g", "body_mass", x = _)
 
   # write output
   writeLines(file, output)

@@ -11,8 +11,14 @@ base_penguins <- function(input, output = NULL) {
   file <- readLines(input)
 
   # remove call to palmerpenguins
-  # shorter variable names
-  # write output
+  file <- sub("library\\(palmerpenguins\\)", "", file)
 
-  file
+  # shorter variable names
+  file <- file |>
+    gsub("gth_mm", "", x = _) |>
+    gsub("th_mm", "", x = _) |>
+    gsub("_g", "", x = _)
+
+  # write output
+  writeLines(file, output)
 }

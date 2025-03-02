@@ -12,8 +12,8 @@ base_penguins <- function(input, output = NULL) {
   # read in the file
   file <- readLines(input)
 
-  # remove call to palmerpenguins
-  file <- sub("library\\(palmerpenguins\\)", "", file)
+  # remove call(s) to palmerpenguins
+  file <- gsub("library\\(palmerpenguins\\)", "", file)
 
   # shorter variable names
   file <- file |>

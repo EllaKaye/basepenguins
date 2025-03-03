@@ -1,10 +1,15 @@
 # TODO: document
 # TODO: test
+# TODO: check file tye
 base_penguins <- function(input, output = NULL) {
   # check input is a file that exists
   if (!file.exists(input)) {
     stop(paste0("The path '", input, "' does not exist."))
   }
+
+  # check file type (.R, .qmd, .rmd, .Rmd)
+  ## Other? What happens if I try readLines on, say, a csv?
+  ## Actually, csv is OK, e.g. readLines(palmerpenguins::path_to_file("penguins.csv"))readLines(palmerpenguins::path_to_file("penguins.csv"))
 
   # set output - if NULL, overwrite input
   output <- output %||% input
@@ -34,4 +39,17 @@ base_penguins <- function(input, output = NULL) {
 
   # write output
   writeLines(file, output)
+}
+
+penguins_examples <- function(path = NULL) {
+  if (is.null(path)) {
+    system.file("extdata", package = "basepenguins")
+  } else {
+    system.file("extdata", path, package = "basepenguins", mustWork = TRUE)
+  }
+}
+
+files_to_convert <- function(dir) {
+  paths <- list.files(dir, recursive = TRUE)
+  paths[tools::file_ext(paths) %in% c("R", "Rmd", "rmd", "qmd")]
 }

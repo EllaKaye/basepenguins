@@ -1,7 +1,7 @@
 # TODO: document
 # TODO: test
 # TODO: check file type
-base_penguins <- function(input, output = NULL) {
+convert_file <- function(input, output = NULL) {
   input <- normalizePath(input, mustWork = TRUE) # this will check that path exists
 
   # check input is a file that exists
@@ -15,7 +15,8 @@ base_penguins <- function(input, output = NULL) {
 
   # set output - if NULL, overwrite input
   output <- output %||% input
-  output <- normalizePath(output)
+  # Need to create the output file first before normalizing the path?
+  #output <- normalizePath(output)
 
   # read in the file
   file <- readLines(input)
@@ -77,22 +78,33 @@ penguins_examples <- function(path = NULL) {
 }
 
 files_to_convert <- function(dir) {
-  paths <- list.files(dir, recursive = TRUE)
-  # can use pattern arg in list.files rather than the line below
-  paths[tools::file_ext(paths) %in% c("R", "Rmd", "rmd", "qmd")]
+  # limit to .R, .Rmd, .rmd, .qmd files
+  list.files(dir, recursive = TRUE, pattern = "\\.(R|[Rrq]md)$")
 }
 
-# TODO: could make this extend_name and have a prefix argument,
-# but would need to make sure that we split each path properly,
-# and only add prefix to file name, not entire path.
-# e.g. penguins_examples()  |> files_to_convert() |> add_suffix()
-add_suffix <- function(paths, suffix = "_new") {
-  paste0(
-    tools::file_path_sans_ext(paths),
-    suffix,
-    ".",
-    tools::file_ext(paths)
-  )
+extend_name <- function(path, prefix = "", suffix = "_new") {
+  dir_part <- dirname(path) # directory part
+  file_part <- basename(path) # filename without path
+  ext <- tools::file_ext(file_part)
+  filename <- tools::file_path_sans_ext(file_part)
+
+  # Create new filename with prefix and suffix
+  if (ext == "") {
+    new_file <- paste0(prefix, filename, suffix)
+  } else {
+    new_file <- paste0(prefix, filename, suffix, ".", ext)
+  }
+
+  # Combine directory and new filename
+  if (dir_part == ".") {
+    return(new_file)
+  } else {
+    return(file.path(dir_part, new_file))
+  }
+}
+
+extend_names <- function(paths, prefix = "", suffix = "_new") {
+  sapply(paths, extend_name, prefix = prefix, suffix = suffix)
 }
 
 # if passed a directory:

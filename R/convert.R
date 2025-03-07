@@ -82,9 +82,18 @@ files_to_convert <- function(dir) {
   paths[tools::file_ext(paths) %in% c("R", "Rmd", "rmd", "qmd")]
 }
 
-# paths <- penguins_examples()  |> files_to_convert()
-# make this a function (add suffix to paths)
-# output <- paste0(tools::file_path_sans_ext(paths), "_new.", tools::file_ext(paths))
+# TODO: could make this extend_name and have a prefix argument,
+# but would need to make sure that we split each path properly,
+# and only add prefix to file name, not entire path.
+# e.g. penguins_examples()  |> files_to_convert() |> add_suffix()
+add_suffix <- function(paths, suffix = "_new") {
+  paste0(
+    tools::file_path_sans_ext(paths),
+    suffix,
+    ".",
+    tools::file_ext(paths)
+  )
+}
 
 # if passed a directory:
 #   output = NULL: overwrite

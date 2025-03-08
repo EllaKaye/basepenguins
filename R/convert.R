@@ -1,6 +1,26 @@
+# TODO: write this function
+# TODO: document
+# TODO: test
+# output = NULL: overwrite
+# output = "something": check length(output) == length(input)
+# then loop over both lists with convert_file()
+convert_files <- function(input, output = NULL) {
+  NULL
+}
+
+# TODO: write this function
+# TODO: document
+# TODO: test
+# output = NULL: overwrite
+# output = "something": create new dir "something" and leave all filenames the same
+convert_dir <- function(input, output = NULL) {
+  NULL
+}
+
 # TODO: document
 # TODO: test
 # TODO: check file type
+# TODO: non-exported function for ONE file
 convert_file <- function(input, output = NULL) {
   input <- normalizePath(input, mustWork = TRUE) # this will check that path exists
 
@@ -67,51 +87,3 @@ convert_file <- function(input, output = NULL) {
   # so this should return an indicator of whether file changed or not
   invisible(output)
 }
-
-
-penguins_examples <- function(path = NULL) {
-  if (is.null(path)) {
-    system.file("extdata", package = "basepenguins")
-  } else {
-    system.file("extdata", path, package = "basepenguins", mustWork = TRUE)
-  }
-}
-
-files_to_convert <- function(dir) {
-  # limit to .R, .Rmd, .rmd, .qmd files
-  list.files(dir, recursive = TRUE, pattern = "\\.(R|[Rrq]md)$")
-}
-
-extend_name <- function(path, prefix = "", suffix = "_new") {
-  dir_part <- dirname(path) # directory part
-  file_part <- basename(path) # filename without path
-  ext <- tools::file_ext(file_part)
-  filename <- tools::file_path_sans_ext(file_part)
-
-  # Create new filename with prefix and suffix
-  if (ext == "") {
-    new_file <- paste0(prefix, filename, suffix)
-  } else {
-    new_file <- paste0(prefix, filename, suffix, ".", ext)
-  }
-
-  # Combine directory and new filename
-  if (dir_part == ".") {
-    return(new_file)
-  } else {
-    return(file.path(dir_part, new_file))
-  }
-}
-
-extend_names <- function(paths, prefix = "", suffix = "_new") {
-  sapply(paths, extend_name, prefix = prefix, suffix = suffix)
-}
-
-# if passed a directory:
-#   output = NULL: overwrite
-#   output = "something": create new dir "something" and leave all filenames the same
-
-# will need to check if input is
-# file or dir
-# different functions for files and directories?
-# convert_file, convert_dir (better than base_penguins)

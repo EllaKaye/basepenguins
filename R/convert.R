@@ -7,6 +7,11 @@ convert_files <- function(input, output = NULL) {
     stop("`output` must be the same length as `input` (or NULL)")
   }
 
+  # limit input and output to R/qmd/rmd/Rmd
+  convertible <- tools::file_ext(input) %in% c("R", "qmd", "rmd", "Rmd")
+  input <- input[convertible]
+  output <- output[convertible]
+
   converted <- mapply(penguins_gsub, input, output)
   changed <- output[converted]
   not_changed <- output[!converted]

@@ -1,22 +1,36 @@
-# TODO: write this function
 # TODO: document
 # TODO: test
-# output = NULL: overwrite
-# output = "something": check length(output) == length(input)
-# then loop over both lists with convert_file()
-# if qmd or r/Rmd, message reminding to re-render or re-knit
 convert_files <- function(input, output = NULL) {
-  NULL
+  output <- output %||% input
+
+  if (length(output) != length(input)) {
+    stop("`output` must be the same length as `input` (or NULL)")
+  }
+
+  converted <- mapply(penguins_gsub, input, output)
+  changed <- output[converted]
+  not_changed <- output[!converted]
+
+  if (length(changed) > 0) {
+    message(
+      "- Please check the changed output files and remember to re-knit or re-render any Rmarkdown or quarto documents."
+    )
+  }
+
+  invisible(list(changed = changed, not_changed = not_changed))
 }
 
 # TODO: write this function
 # TODO: document
 # TODO: test
-# output = NULL: overwrite
-# output = "something": create new dir "something" and leave all filenames the same
-# if qmd or r/Rmd, message reminding to re-render or re-knit
 convert_dir <- function(input, output = NULL) {
-  NULL
+  if (!dir.exists(input)) {
+    stop("`input` must be a directory that exists")
+  }
+
+  # copy the directory, then the copy is the input, overwriting the files in it
+  if (!is.null(input)) {
+  }
 }
 
 # TODO: document
@@ -60,62 +74,62 @@ penguins_gsub <- function(input, output = NULL) {
   patterns <- c(pp, bl, bd, fl, bm, ew)
   pattern <- paste0(patterns, collapse = "|")
 
-  # Do any of the patterns appear in the file?
-  # If not, return
-  if (!any(grepl(pattern, file))) {
-    writeLines(file, output)
-    invisible(FALSE)
-  }
+  matches <- any(grepl(pattern, file))
 
-  # remove call(s) to palmerpenguins
-  # palmerpenguins
-  file <- gsub(pp, "", file)
+  # If any of the patterns appear in the file, make substitutions
+  if (matches) {
+    #writeLines(file, output)
+    #invisible(FALSE)
+    # remove call(s) to palmerpenguins
+    # palmerpenguins
+    file <- gsub(pp, "", file)
 
-  # shorter variable names
-  file <- file |>
-    gsub(bl, "bill_len", x = _, fixed = TRUE) |>
-    gsub(bd, "bill_dep", x = _, fixed = TRUE) |>
-    gsub(fl, "flipper_len", x = _, fixed = TRUE) |>
-    gsub(bm, "body_mass", x = _, fixed = TRUE)
+    # shorter variable names
+    file <- file |>
+      gsub(bl, "bill_len", x = _, fixed = TRUE) |>
+      gsub(bd, "bill_dep", x = _, fixed = TRUE) |>
+      gsub(fl, "flipper_len", x = _, fixed = TRUE) |>
+      gsub(bm, "body_mass", x = _, fixed = TRUE)
 
-  # does `ends_with("_mm")` exist in script?
-  # if so, message about the substitution with line numbers
-  ew_matches <- grep(ew, file)
-  ew_matches_str <- paste0(ew_matches, collapse = ", ")
-  cond <- length(ew_matches) == 1
-  lns <- ifelse(cond, "line", "lines")
-  subs <- ifelse(cond, "subsitution is", "substitutions are")
+    # does `ends_with("_mm")` exist in script?
+    # if so, message about the substitution with line numbers
+    ew_matches <- grep(ew, file)
+    ew_matches_str <- paste0(ew_matches, collapse = ", ")
+    cond <- length(ew_matches) == 1
+    lns <- ifelse(cond, "line", "lines")
+    subs <- ifelse(cond, "subsitution is", "substitutions are")
 
-  if (length(ew_matches) > 0) {
-    message(
-      paste0(
-        'In ',
-        output_short,
-        ', ends_with("_mm") replaced on ',
-        lns,
-        " ",
-        ew_matches_str,
-        " - ",
-        "please check that the ",
-        subs,
-        " appropriate."
+    if (length(ew_matches) > 0) {
+      message(
+        paste0(
+          '- In ',
+          output_short,
+          ', ends_with("_mm") replaced on ',
+          lns,
+          " ",
+          ew_matches_str,
+          " - ",
+          "please check that the ",
+          subs,
+          " appropriate."
+        )
       )
-    )
-  }
+    }
 
-  # deal with ends_with(),
-  # as in https://allisonhorst.github.io/palmerpenguins/articles/intro.html
-  # use starts_with for flipper so that code doesn't error if col not present
-  file <- file |>
-    gsub(
-      ew,
-      'starts_with("flipper_"), starts_with("bill_")',
-      x = _
-    )
+    # deal with ends_with(),
+    # as in https://allisonhorst.github.io/palmerpenguins/articles/intro.html
+    # use starts_with for flipper so that code doesn't error if col not present
+    file <- file |>
+      gsub(
+        ew,
+        'starts_with("flipper_"), starts_with("bill_")',
+        x = _
+      )
+  }
 
   # write output
   writeLines(file, output)
 
-  # indicate that file has changed
-  invisible(TRUE)
+  # return logical of whether file has changed
+  matches
 }

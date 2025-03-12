@@ -28,14 +28,48 @@ convert_files <- function(input, output = NULL) {
 # TODO: write this function
 # TODO: document
 # TODO: test
+# Converts all R/qmd/rmd/Rmd files in a directory
+#
+# @param input Path to the input directory containing files to convert
+# @param output Optional path to output directory. If NULL, files are modified in place
+# @return Invisible list with changed and unchanged files
 convert_dir <- function(input, output = NULL) {
   if (!dir.exists(input)) {
     stop("`input` must be a directory that exists")
   }
 
-  # copy the directory, then the copy is the input, overwriting the files in it
-  if (!is.null(input)) {
+  # Find all convertible files in the input directory
+  relative_files <- files_to_convert(input)
+  if (length(relative_files) == 0) {
+    stop("There are no .R, .qmd, .rmd or .Rmd files in `input` to convert")
   }
+  input_files <- file.path(input, relative_files)
+
+  if (is.null(output)) {
+    # If no output directory specified, convert files in place
+    result <- convert_files(input_files)
+  } else {
+    # Create output directory if it doesn't exist
+    if (!dir.exists(output)) {
+      dir.create(output, recursive = TRUE)
+    }
+
+    # Create output paths maintaining the same relative structure
+    output_files <- file.path(output, relative_files)
+
+    # Create necessary subdirectories in output
+    output_dirs <- unique(dirname(output_files))
+    for (dir in output_dirs) {
+      if (!dir.exists(dir)) {
+        dir.create(dir, recursive = TRUE)
+      }
+    }
+
+    # Convert files from input to output paths
+    result <- convert_files(input_files, output_files)
+  }
+
+  return(result)
 }
 
 # TODO: document

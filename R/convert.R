@@ -47,6 +47,7 @@ convert_dir <- function(input, output = NULL) {
   if (length(relative_files) == 0) {
     stop("There are no .R, .qmd, .rmd or .Rmd files in `input` to convert")
   }
+  # TODO: check that we're not appending input if we don't need to
   input_files <- file.path(input, relative_files)
 
   if (is.null(output)) {

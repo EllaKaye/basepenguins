@@ -1,5 +1,6 @@
 # TODO: document
 # TODO: test
+# TODO: remove default for output, add extra checks
 convert_files <- function(input, output = NULL) {
   output <- output %||% input
 
@@ -33,13 +34,16 @@ convert_files <- function(input, output = NULL) {
 # @param input Path to the input directory containing files to convert
 # @param output Optional path to output directory. If NULL, files are modified in place
 # @return Invisible list with changed and unchanged files
+# TODO: remove default for output, add extra checks
 convert_dir <- function(input, output = NULL) {
   if (!dir.exists(input)) {
     stop("`input` must be a directory that exists")
   }
 
   # Find all convertible files in the input directory
-  relative_files <- files_to_convert(input)
+  # don't use full.names = TRUE here
+  # want relative_files later to create a path with `output`
+  relative_files <- files_to_convert(input, full.names = FALSE)
   if (length(relative_files) == 0) {
     stop("There are no .R, .qmd, .rmd or .Rmd files in `input` to convert")
   }
@@ -74,6 +78,8 @@ convert_dir <- function(input, output = NULL) {
 
 # TODO: document
 # TODO: test
+# TODO: remove default for output, add extra checks
+# TODO: put input validation in a separate fuction
 penguins_gsub <- function(input, output = NULL) {
   if (length(input) != 1) {
     stop("`input` must be a single character string (a path)")

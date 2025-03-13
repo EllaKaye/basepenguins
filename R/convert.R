@@ -1,21 +1,25 @@
 # TODO: document
 # TODO: test
-# TODO: remove default for output, add extra checks
-convert_files <- function(input, output = NULL) {
+convert_files <- function(input, output) {
   output <- output %||% input
 
   if (length(output) != length(input)) {
     stop("`output` must be the same length as `input` (or NULL)")
   }
 
-  # limit input and output to R/qmd/rmd/Rmd
+  # NO: limit input and output to R/qmd/rmd/Rmd
+  # TODO: only run `penguins_sub` on convertible files
+  # TODO: non-convertible files in not_changed and still copy them if output != input
   convertible <- tools::file_ext(input) %in% c("R", "qmd", "rmd", "Rmd")
-  input <- input[convertible]
-  output <- output[convertible]
+  not_convertible <- output[!convertible]
+  names(not_convertible) <- input[!convertible]
 
-  converted <- mapply(penguins_gsub, input, output)
-  changed <- output[converted]
-  not_changed <- output[!converted]
+  convertible_input <- input[convertible]
+  convertible_output <- output[convertible]
+
+  converted <- mapply(penguins_gsub, convertible_input, convertible_output)
+  changed <- convertible_output[converted]
+  not_changed <- c(convertible_output[!converted], not_convertible)
 
   if (length(changed) > 0) {
     message(
@@ -35,7 +39,9 @@ convert_files <- function(input, output = NULL) {
 # @param output Optional path to output directory. If NULL, files are modified in place
 # @return Invisible list with changed and unchanged files
 # TODO: remove default for output, add extra checks
-convert_dir <- function(input, output = NULL) {
+# TODO: return named vectors (names are input)
+# TODO: copy everything (even non R/Rmd/rmd/qmd) - maybe make this an option (e.g. keep_unchanged = TRUE)
+convert_dir <- function(input, output) {
   if (!dir.exists(input)) {
     stop("`input` must be a directory that exists")
   }
@@ -74,14 +80,14 @@ convert_dir <- function(input, output = NULL) {
     result <- convert_files(input_files, output_files)
   }
 
-  return(result)
+  invisible(result)
 }
 
 # TODO: document
 # TODO: test
 # TODO: remove default for output, add extra checks
 # TODO: put input validation in a separate fuction
-penguins_gsub <- function(input, output = NULL) {
+penguins_gsub <- function(input, output) {
   if (length(input) != 1) {
     stop("`input` must be a single character string (a path)")
   }
@@ -123,9 +129,13 @@ penguins_gsub <- function(input, output = NULL) {
   matches <- any(grepl(pattern, file))
 
   # If any of the patterns appear in the file, make substitutions
+  # if (!matches) {
+  #writeLines(file, output)
+  #invisible(FALSE)
+  # } feels like this would be better for shorter `if` section
+  # TODO: try return(invisible(matches))
+  # but check because I tried this before and it didn't seem to work properly
   if (matches) {
-    #writeLines(file, output)
-    #invisible(FALSE)
     # remove call(s) to palmerpenguins
     # palmerpenguins
     file <- gsub(pp, "", file)

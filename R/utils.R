@@ -7,7 +7,8 @@ penguins_examples <- function(path = NULL) {
 }
 
 filter_by_extensions <- function(extensions) {
-  if (is.null(extensions) || extensions == "") {
+  # handles NULL and, e.g. character(0)
+  if (length(extensions) == 0 || identical(extensions, "")) {
     return("*")
   }
   extensions_pattern <- paste0(extensions, collapse = "|")

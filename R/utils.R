@@ -1,6 +1,7 @@
+# MAYBE: list files (recursively) if path = NULL
 penguins_examples <- function(path = NULL) {
   if (is.null(path)) {
-    system.file("extdata", package = "basepenguins")
+    dir(system.file("extdata", package = "basepenguins"), recursive = TRUE)
   } else {
     system.file("extdata", path, package = "basepenguins", mustWork = TRUE)
   }

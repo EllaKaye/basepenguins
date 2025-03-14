@@ -19,12 +19,12 @@ convert_files <- function(
   names(not_convertible) <- input[!convertible]
 
   # need a file for each output, so still copy not_convertible files,
-  # if not overwriting
+  # but don't need to overwrite with something identical
   if (!overwrite) {
     file.copy(input[!convertible], not_convertible)
   }
 
-  # substitutions on scripts
+  # substitutions on convertible files
   convertible_input <- input[convertible]
   convertible_output <- output[convertible]
   converted <- mapply(penguins_gsub, convertible_input, convertible_output)

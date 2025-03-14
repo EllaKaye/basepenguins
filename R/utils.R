@@ -1,4 +1,3 @@
-# MAYBE: list files (recursively) if path = NULL
 penguins_examples <- function(path = NULL) {
   if (is.null(path)) {
     dir(system.file("extdata", package = "basepenguins"), recursive = TRUE)
@@ -7,19 +6,23 @@ penguins_examples <- function(path = NULL) {
   }
 }
 
-# TODO: add full.names to give longer paths
-# e.g. prepend `dir` to the files with file.path
-# is this what full.names does in base R functions? - CHECK
-# yes - this is what full.names does in list.files, so can pass that
-# think about how this function gets used in other functions, and in examples
-files_to_convert <- function(dir, full.names = FALSE) {
-  # limit to .R, .Rmd, .rmd, .qmd files
-  list.files(
-    dir,
-    full.names = full.names,
-    recursive = TRUE,
-    pattern = "\\.(R|[Rrq]md)$"
-  )
+filter_by_extensions <- function(extensions) {
+  extensions_pattern <- paste0(extensions, collapse = "|")
+  return(paste0("\\.(", extensions_pattern, ")$"))
+}
+
+files_to_convert <- function(
+  dir,
+  full.names = FALSE,
+  extensions = c("R", "qmd", "rmd", "Rmd")
+) {
+  if (is.null(extensions)) {
+    pattern <- "*"
+  } else {
+    pattern <- filter_by_extensions(extensions)
+  }
+
+  list.files(dir, full.names = full.names, recursive = TRUE, pattern = pattern)
 }
 
 extend_name <- function(path, prefix = "", suffix = "_new") {

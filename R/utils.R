@@ -20,6 +20,10 @@ files_to_convert <- function(
   full.names = FALSE,
   extensions = c("R", "qmd", "rmd", "Rmd")
 ) {
+  if (!dir.exists(dir)) {
+    stop("`dir` directory does not exist")
+  }
+
   pattern <- filter_by_extensions(extensions)
 
   list.files(dir, full.names = full.names, recursive = TRUE, pattern = pattern)

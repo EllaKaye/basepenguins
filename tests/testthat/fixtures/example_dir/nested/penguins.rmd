@@ -1,0 +1,16 @@
+---
+title: "Penguins!"
+---
+
+```{r}
+library("palmerpenguins")
+```
+
+
+```{r}
+penguins$bill_length_mm
+penguins$bill_depth_mm
+penguins$flippler_length_mm
+penguins$body_mass_g
+penguins$bill_length_mm
+```

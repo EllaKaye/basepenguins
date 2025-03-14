@@ -1,0 +1,14 @@
+---
+title: "Penguins!"
+---
+
+```{r}
+library('palmerpenguins')
+library(dplyr)
+```
+
+
+```{r}
+penguins |> 
+    select(body_mass_g, ends_with("_mm"))
+```

@@ -7,6 +7,9 @@ penguins_examples <- function(path = NULL) {
 }
 
 filter_by_extensions <- function(extensions) {
+  if (is.null(extensions) || extensions == "") {
+    return("*")
+  }
   extensions_pattern <- paste0(extensions, collapse = "|")
   return(paste0("\\.(", extensions_pattern, ")$"))
 }
@@ -16,11 +19,7 @@ files_to_convert <- function(
   full.names = FALSE,
   extensions = c("R", "qmd", "rmd", "Rmd")
 ) {
-  if (is.null(extensions)) {
-    pattern <- "*"
-  } else {
-    pattern <- filter_by_extensions(extensions)
-  }
+  pattern <- filter_by_extensions(extensions)
 
   list.files(dir, full.names = full.names, recursive = TRUE, pattern = pattern)
 }

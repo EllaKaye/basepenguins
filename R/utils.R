@@ -30,12 +30,19 @@ files_to_convert <- function(
 }
 
 extend_name <- function(path, prefix = "", suffix = "_new") {
+  if (!is.character(path)) {
+    stop("`path` must be a string")
+  }
+
+  if (path == "") {
+    stop("`path` must not be an empty string")
+  }
+
   dir_part <- dirname(path) # directory part
   file_part <- basename(path) # filename without path
   ext <- tools::file_ext(file_part)
   filename <- tools::file_path_sans_ext(file_part)
 
-  # MAYBE: can I use file.path here instead of paste0?
   # Create new filename with prefix and suffix
   if (ext == "") {
     new_file <- paste0(prefix, filename, suffix)
@@ -52,5 +59,9 @@ extend_name <- function(path, prefix = "", suffix = "_new") {
 }
 
 extend_names <- function(paths, prefix = "", suffix = "_new") {
+  if (length(paths) == 0) {
+    stop("`paths` must have length at least 1 (not 0)")
+  }
+
   sapply(paths, extend_name, prefix = prefix, suffix = suffix)
 }

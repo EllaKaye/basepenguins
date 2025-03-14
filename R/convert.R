@@ -1,22 +1,28 @@
 # TODO: document
 # TODO: test
 convert_files <- function(input, output) {
+  overwrite <- (is.null(output) || identical(input, output))
+
   output <- output %||% input
 
   if (length(output) != length(input)) {
     stop("`output` must be the same length as `input` (or NULL)")
   }
 
-  # NO: limit input and output to R/qmd/rmd/Rmd
-  # TODO: only run `penguins_sub` on convertible files
-  # TODO: non-convertible files in not_changed and still copy them if output != input
+  # only want to touch scripts, but still need to keep track of other files
   convertible <- tools::file_ext(input) %in% c("R", "qmd", "rmd", "Rmd")
   not_convertible <- output[!convertible]
   names(not_convertible) <- input[!convertible]
 
+  # need a file for each output, so still copy not_convertible files,
+  # if not overwriting
+  if (!overwrite) {
+    file.copy(input[!convertible], not_convertible)
+  }
+
+  # substitutions on scripts
   convertible_input <- input[convertible]
   convertible_output <- output[convertible]
-
   converted <- mapply(penguins_gsub, convertible_input, convertible_output)
   changed <- convertible_output[converted]
   not_changed <- c(convertible_output[!converted], not_convertible)
@@ -30,7 +36,6 @@ convert_files <- function(input, output) {
   invisible(list(changed = changed, not_changed = not_changed))
 }
 
-# TODO: write this function
 # TODO: document
 # TODO: test
 # Converts all R/qmd/rmd/Rmd files in a directory
@@ -38,27 +43,24 @@ convert_files <- function(input, output) {
 # @param input Path to the input directory containing files to convert
 # @param output Optional path to output directory. If NULL, files are modified in place
 # @return Invisible list with changed and unchanged files
-# TODO: remove default for output, add extra checks
 # TODO: return named vectors (names are input)
-# TODO: copy everything (even non R/Rmd/rmd/qmd) - maybe make this an option (e.g. keep_unchanged = TRUE)
 convert_dir <- function(input, output) {
   if (!dir.exists(input)) {
     stop("`input` must be a directory that exists")
   }
 
-  # Find all convertible files in the input directory
-  # don't use full.names = TRUE here
-  # want relative_files later to create a path with `output`
-  relative_files <- files_to_convert(input, full.names = FALSE)
-  if (length(relative_files) == 0) {
-    stop("There are no .R, .qmd, .rmd or .Rmd files in `input` to convert")
+  # Get all files from input directory then determine which are convertible
+  file_names <- list.files(input, recursive = TRUE)
+
+  if (length(file_names) == 0) {
+    stop("There are no files in `input` to convert")
   }
-  # TODO: check that we're not appending input if we don't need to
-  input_files <- file.path(input, relative_files)
+
+  input_files <- file.path(input, file_names)
 
   if (is.null(output)) {
     # If no output directory specified, convert files in place
-    result <- convert_files(input_files)
+    result <- convert_files(input_files, NULL)
   } else {
     # Create output directory if it doesn't exist
     if (!dir.exists(output)) {
@@ -66,7 +68,7 @@ convert_dir <- function(input, output) {
     }
 
     # Create output paths maintaining the same relative structure
-    output_files <- file.path(output, relative_files)
+    output_files <- file.path(output, file_names)
 
     # Create necessary subdirectories in output
     output_dirs <- unique(dirname(output_files))
@@ -85,7 +87,6 @@ convert_dir <- function(input, output) {
 
 # TODO: document
 # TODO: test
-# TODO: remove default for output, add extra checks
 # TODO: put input validation in a separate fuction
 penguins_gsub <- function(input, output) {
   if (length(input) != 1) {
@@ -104,7 +105,7 @@ penguins_gsub <- function(input, output) {
     stop("`input` must be a .R, .qmd, .rmd or .Rmd file")
   }
 
-  # set output - if NULL, overwrite input
+  # set output, full paths - if NULL, overwrite input
   output <- output %||% input
   # Need to create the output file first before normalizing the path
   if (!file.exists(output)) {

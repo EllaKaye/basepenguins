@@ -1,6 +1,10 @@
 # TODO: document
 # TODO: test
-convert_files <- function(input, output) {
+convert_files <- function(
+  input,
+  output,
+  extensions = c("R", "qmd", "rmd", "Rmd")
+) {
   overwrite <- (is.null(output) || identical(input, output))
 
   output <- output %||% input
@@ -10,7 +14,7 @@ convert_files <- function(input, output) {
   }
 
   # only want to touch scripts, but still need to keep track of other files
-  convertible <- tools::file_ext(input) %in% c("R", "qmd", "rmd", "Rmd")
+  convertible <- tools::file_ext(input) %in% extensions
   not_convertible <- output[!convertible]
   names(not_convertible) <- input[!convertible]
 
@@ -38,13 +42,17 @@ convert_files <- function(input, output) {
 
 # TODO: document
 # TODO: test
-# Converts all R/qmd/rmd/Rmd files in a directory
 #
 # @param input Path to the input directory containing files to convert
 # @param output Optional path to output directory. If NULL, files are modified in place
 # @return Invisible list with changed and unchanged files
 # TODO: return named vectors (names are input)
-convert_dir <- function(input, output) {
+# TODO: argument to control which extensions are considered?
+convert_dir <- function(
+  input,
+  output,
+  extensions = c("R", "qmd", "rmd", "Rmd")
+) {
   if (!dir.exists(input)) {
     stop("`input` must be a directory that exists")
   }
@@ -60,7 +68,7 @@ convert_dir <- function(input, output) {
 
   if (is.null(output)) {
     # If no output directory specified, convert files in place
-    result <- convert_files(input_files, NULL)
+    result <- convert_files(input_files, NULL, extensions)
   } else {
     # Create output directory if it doesn't exist
     if (!dir.exists(output)) {
@@ -79,7 +87,7 @@ convert_dir <- function(input, output) {
     }
 
     # Convert files from input to output paths
-    result <- convert_files(input_files, output_files)
+    result <- convert_files(input_files, output_files, extensions)
   }
 
   invisible(result)

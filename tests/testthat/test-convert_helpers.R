@@ -323,6 +323,1651 @@ test_that("penguins_convert handles edge cases correctly", {
 })
 
 # # testing validate_penguins_input() --------------------------------------
+# test_that("validate_penguins_input validates existing files from fixtures directory", {
+#   # Test various file types from the fixtures directory using direct test_path references
+#   test_files <- c(
+#     test_path("fixtures", "example_dir", "penguins.R"),
+#     test_path("fixtures", "example_dir", "penguins.qmd"),
+#     test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#     test_path("fixtures", "example_dir", "no_penguins.R"),
+#     test_path("fixtures", "example_dir", "empty.R")
+#   )
+
+#   for (file_path in test_files) {
+#     # Test with existing file and NULL output (same as input)
+#     result <- validate_penguins_input(file_path, NULL)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(basename(result$output), basename(file_path))
+#     expect_true(file.exists(result$input))
+#     expect_true(file.exists(result$output))
+
+#     # Test with output to a temporary file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+#     result <- validate_penguins_input(file_path, temp_output)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(result$output, normalizePath(temp_output))
+#     expect_true(file.exists(result$output))
+#   }
+# })
+
+# test_that("validate_penguins_input creates output directory if needed", {
+#   # Use an existing fixture file for input
+#   input_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Create temporary directory with nested output path
+#   temp_dir <- withr::local_tempdir()
+#   nested_output <- file.path(temp_dir, "nested", "output.R")
+
+#   # Directory should not exist yet
+#   expect_false(dir.exists(file.path(temp_dir, "nested")))
+
+#   # Function should create the directory
+#   result <- validate_penguins_input(input_file, nested_output)
+
+#   # Check that directory was created
+#   expect_true(dir.exists(file.path(temp_dir, "nested")))
+#   expect_true(file.exists(nested_output))
+# })
+
+# test_that("validate_penguins_input handles invalid inputs correctly", {
+#   # Use an existing fixture file for valid input reference
+#   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Test with invalid file extension
+#   invalid_ext_file <- test_path("fixtures", "example_dir", "not_a_script.md")
+#   expect_error(
+#     validate_penguins_input(invalid_ext_file, NULL),
+#     "`input` does not have a valid file extension"
+#   )
+
+#   # Test with non-existent file
+#   non_existent_file <- tempfile(fileext = ".R")
+#   # Make sure the file doesn't exist
+#   if (file.exists(non_existent_file)) {
+#     file.remove(non_existent_file)
+#   }
+#   expect_error(validate_penguins_input(non_existent_file, NULL))
+
+#   # Test with multiple inputs
+#   expect_error(
+#     validate_penguins_input(c(valid_file, valid_file), NULL),
+#     "`input` must be a single character string"
+#   )
+
+#   # Test with multiple outputs
+#   output1 <- withr::local_tempfile(fileext = ".R")
+#   output2 <- withr::local_tempfile(fileext = ".R")
+#   expect_error(
+#     validate_penguins_input(valid_file, c(output1, output2)),
+#     "`output` must be a single character string"
+#   )
+
+#   # Test with custom extensions allowed
+#   expect_no_error(
+#     validate_penguins_input(invalid_ext_file, NULL, extensions = c("R", "md"))
+#   )
+# })
+
+# # testing penguins_substitute() ------------------------------------------
+# test_that("penguins_substitute correctly identifies and substitutes all patterns", {
+#   # Use the updated penguins.R file which contains all pattern variations
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   file_content <- readLines(penguins_file)
+
+#   # Process the file
+#   result <- penguins_substitute(file_content, "penguins.R")
+
+#   # Check that matches were found
+#   expect_true(result$matches)
+
+#   # Check that library calls were removed
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     result$content
+#   )))
+#   # But other library calls (like dplyr) should be preserved
+#   expect_true(any(grepl("library\\(dplyr\\)", result$content)))
+
+#   # Check that all variable name patterns were replaced
+#   expect_false(any(grepl("bill_length_mm", result$content)))
+#   expect_false(any(grepl("bill_depth_mm", result$content)))
+#   expect_false(any(grepl("flipper_length_mm", result$content)))
+#   expect_false(any(grepl("body_mass_g", result$content)))
+
+#   # Check that renamed variables are present
+#   expect_true(any(grepl("bill_len", result$content)))
+#   expect_true(any(grepl("bill_dep", result$content)))
+#   expect_true(any(grepl("flipper_len", result$content)))
+#   expect_true(any(grepl("body_mass", result$content)))
+
+#   # Check that all ends_with patterns were replaced
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+#   expect_true(any(grepl(
+#     'starts_with\\("flipper_"\\), starts_with\\("bill_"\\)',
+#     result$content
+#   )))
+
+#   # Check for the message about multiple ends_with replacements
+#   expect_message(
+#     penguins_substitute(file_content, "penguins.R"),
+#     "ends_with.+replaced on lines"
+#   )
+# })
+
+# test_that("penguins_substitute handles individual patterns correctly", {
+#   # Test each pattern individually to ensure full coverage
+
+#   # 1. palmerpenguins library call - different quote styles
+#   library_content <- c(
+#     "library(palmerpenguins)",
+#     "library('palmerpenguins')",
+#     'library("palmerpenguins")'
+#   )
+#   library_result <- penguins_substitute(library_content, "test.R")
+#   expect_true(library_result$matches)
+#   expect_equal(library_result$content, c("", "", ""))
+
+#   # 2. bill_length_mm
+#   bill_length_content <- "penguins$bill_length_mm"
+#   bill_length_result <- penguins_substitute(bill_length_content, "test.R")
+#   expect_true(bill_length_result$matches)
+#   expect_equal(bill_length_result$content, "penguins$bill_len")
+
+#   # 3. bill_depth_mm
+#   bill_depth_content <- "penguins$bill_depth_mm"
+#   bill_depth_result <- penguins_substitute(bill_depth_content, "test.R")
+#   expect_true(bill_depth_result$matches)
+#   expect_equal(bill_depth_result$content, "penguins$bill_dep")
+
+#   # 4. flipper_length_mm
+#   flipper_content <- "penguins$flipper_length_mm"
+#   flipper_result <- penguins_substitute(flipper_content, "test.R")
+#   expect_true(flipper_result$matches)
+#   expect_equal(flipper_result$content, "penguins$flipper_len")
+
+#   # 5. body_mass_g
+#   body_mass_content <- "penguins$body_mass_g"
+#   body_mass_result <- penguins_substitute(body_mass_content, "test.R")
+#   expect_true(body_mass_result$matches)
+#   expect_equal(body_mass_result$content, "penguins$body_mass")
+
+#   # 6. ends_with("_mm")
+#   ends_with_content <- 'select(ends_with("_mm"))'
+#   ends_with_result <- penguins_substitute(ends_with_content, "test.R")
+#   expect_true(ends_with_result$matches)
+#   expect_equal(
+#     ends_with_result$content,
+#     'select(starts_with("flipper_"), starts_with("bill_"))'
+#   )
+# })
+
+# test_that("penguins_substitute returns no matches when no patterns are found", {
+#   # No penguins reference in this file
+#   no_penguins_file <- test_path("fixtures", "example_dir", "no_penguins.R")
+#   no_penguins_content <- readLines(no_penguins_file)
+
+#   result <- penguins_substitute(no_penguins_content, basename(no_penguins_file))
+
+#   # Check that no matches were found
+#   expect_false(result$matches)
+#   # Check that content is unchanged
+#   expect_equal(result$content, no_penguins_content)
+# })
+
+# test_that("penguins_substitute handles empty content", {
+#   # Empty file
+#   empty_file <- test_path("fixtures", "example_dir", "empty.R")
+#   empty_content <- readLines(empty_file, warn = FALSE)
+
+#   result <- penguins_substitute(empty_content, basename(empty_file))
+
+#   # Check that no matches were found
+#   expect_false(result$matches)
+#   # Check that content is unchanged (still empty)
+#   expect_equal(result$content, empty_content)
+
+#   # Also test with character(0)
+#   char0_result <- penguins_substitute(character(0), "test.R")
+#   expect_false(char0_result$matches)
+#   expect_equal(char0_result$content, character(0))
+# })
+
+# test_that("penguins_substitute handles multiple ends_with patterns correctly", {
+#   # Create content with multiple ends_with patterns
+#   multiple_ends_with <- c(
+#     'select(ends_with("_mm"))',
+#     'filter(col1, col2) |> select(ends_with("_mm"))',
+#     'group_by(species) |> summarize(across(ends_with("_mm"), mean))'
+#   )
+
+#   # Should produce a message about replacements on multiple lines
+#   expect_message(
+#     result <- penguins_substitute(multiple_ends_with, "test.R"),
+#     "lines 1, 2, 3"
+#   )
+
+#   # Check that all patterns were replaced
+#   expect_true(result$matches)
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+#   expect_equal(
+#     sum(grepl(
+#       'starts_with\\("flipper_"\\), starts_with\\("bill_"\\)',
+#       result$content
+#     )),
+#     3
+#   )
+# })
+
+# test_that("penguins_substitute handles complex mixed content", {
+#   # Create complex mixed content to ensure all patterns work together
+#   mixed_content <- c(
+#     "# Loading libraries",
+#     "library(dplyr)",
+#     "library(palmerpenguins)",
+#     "",
+#     "# Analysis",
+#     "result <- penguins |>",
+#     "  filter(!is.na(bill_length_mm)) |>",
+#     "  group_by(species) |>",
+#     "  summarize(",
+#     "    mean_bill_length = mean(bill_length_mm),",
+#     "    mean_bill_depth = mean(bill_depth_mm),",
+#     "    mean_flipper_length = mean(flipper_length_mm),",
+#     "    mean_body_mass = mean(body_mass_g)",
+#     "  )",
+#     "",
+#     "# Visualization",
+#     "plot_data <- penguins |>",
+#     '  select(species, ends_with("_mm"), body_mass_g)'
+#   )
+
+#   result <- penguins_substitute(mixed_content, "test.R")
+
+#   # Check that all patterns were substituted
+#   expect_true(result$matches)
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     result$content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", result$content)))
+#   expect_false(any(grepl("bill_depth_mm", result$content)))
+#   expect_false(any(grepl("flipper_length_mm", result$content)))
+#   expect_false(any(grepl("body_mass_g", result$content)))
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+
+#   # Check that other content is preserved
+#   expect_true(any(grepl("library\\(dplyr\\)", result$content)))
+#   expect_true(any(grepl("# Loading libraries", result$content)))
+#   expect_true(any(grepl("# Analysis", result$content)))
+# })
+
+# # testing penguins_convert() ---------------------------------------------
+# test_that("penguins_convert correctly converts file with penguins references", {
+#   # Use the updated penguins.R file
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion
+#   result <- penguins_convert(penguins_file, temp_output)
+
+#   # Check that the function reported changes
+#   expect_true(result)
+
+#   # Read output file content
+#   output_content <- readLines(temp_output)
+
+#   # Check that library calls were removed
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     output_content
+#   )))
+
+#   # Check variable names were replaced
+#   expect_false(any(grepl("bill_length_mm", output_content)))
+#   expect_false(any(grepl("bill_depth_mm", output_content)))
+#   expect_false(any(grepl("flipper_length_mm", output_content)))
+#   expect_false(any(grepl("body_mass_g", output_content)))
+
+#   expect_true(any(grepl("bill_len", output_content)))
+#   expect_true(any(grepl("bill_dep", output_content)))
+#   expect_true(any(grepl("flipper_len", output_content)))
+#   expect_true(any(grepl("body_mass", output_content)))
+# })
+
+# test_that("penguins_convert returns FALSE for file without penguins references", {
+#   # Use a file without penguins references
+#   no_penguins_file <- test_path("fixtures", "example_dir", "no_penguins.R")
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion
+#   result <- penguins_convert(no_penguins_file, temp_output)
+
+#   # Check that the function reported no changes
+#   expect_false(result)
+
+#   # Check that output content matches input content
+#   input_content <- readLines(no_penguins_file)
+#   output_content <- readLines(temp_output)
+#   expect_equal(output_content, input_content)
+# })
+
+# test_that("penguins_convert works with in-place modification", {
+#   # Get a fixture file with penguins references
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Make a temporary copy for in-place testing
+#   temp_copy <- withr::local_tempfile(fileext = ".R")
+#   file.copy(penguins_file, temp_copy)
+
+#   # Run conversion in-place (output = NULL)
+#   result <- penguins_convert(temp_copy, NULL)
+
+#   # Check that the function reported changes
+#   expect_true(result)
+
+#   # Read modified file content
+#   modified_content <- readLines(temp_copy)
+
+#   # Check that modifications were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     modified_content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", modified_content)))
+#   expect_true(any(grepl("bill_len", modified_content)))
+
+#   # Test with identical input/output path
+#   temp_copy2 <- withr::local_tempfile(fileext = ".R")
+#   file.copy(penguins_file, temp_copy2)
+
+#   # Run conversion with identical path
+#   result2 <- penguins_convert(temp_copy2, temp_copy2)
+
+#   # Check that the function reported changes
+#   expect_true(result2)
+
+#   # Read modified file content
+#   modified_content2 <- readLines(temp_copy2)
+
+#   # Check that modifications were made
+#   expect_false(any(grepl("bill_length_mm", modified_content2)))
+# })
+
+# test_that("penguins_convert handles Quarto and RMarkdown documents correctly", {
+#   # Test with Quarto document
+#   qmd_file <- test_path("fixtures", "example_dir", "penguins.qmd")
+#   temp_qmd_output <- withr::local_tempfile(fileext = ".qmd")
+
+#   # Run conversion
+#   qmd_result <- penguins_convert(qmd_file, temp_qmd_output)
+
+#   # Check that the function reported changes
+#   expect_true(qmd_result)
+
+#   # Read output content
+#   qmd_output_content <- readLines(temp_qmd_output)
+
+#   # Check that substitutions were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     qmd_output_content
+#   )))
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', qmd_output_content)))
+
+#   # Test with RMarkdown document
+#   rmd_file <- test_path("fixtures", "example_dir", "nested", "penguins.rmd")
+#   temp_rmd_output <- withr::local_tempfile(fileext = ".rmd")
+
+#   # Run conversion
+#   rmd_result <- penguins_convert(rmd_file, temp_rmd_output)
+
+#   # Check that the function reported changes
+#   expect_true(rmd_result)
+
+#   # Read output content
+#   rmd_output_content <- readLines(temp_rmd_output)
+
+#   # Check that substitutions were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     rmd_output_content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", rmd_output_content)))
+# })
+
+# test_that("penguins_convert handles empty files correctly", {
+#   # Get the empty file
+#   empty_file <- test_path("fixtures", "example_dir", "empty.R")
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion on empty file
+#   result <- penguins_convert(empty_file, temp_output)
+
+#   # Check that the function reported no changes
+#   expect_false(result)
+
+#   # Check that output file exists but is empty
+#   expect_true(file.exists(temp_output))
+#   expect_equal(readLines(temp_output, warn = FALSE), character(0))
+# })
+
+# # testing validate_penguins_input() --------------------------------------
+# test_that("validate_penguins_input validates existing files correctly", {
+#   # Test with a representative fixture file
+#   file_path <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Test with NULL output (same as input)
+#   result <- validate_penguins_input(file_path, NULL)
+#   expect_equal(basename(result$input), basename(file_path))
+#   expect_equal(basename(result$output), basename(file_path))
+
+#   # Test with output to a temporary file
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+#   result <- validate_penguins_input(file_path, temp_output)
+#   expect_equal(basename(result$input), basename(file_path))
+#   expect_equal(result$output, normalizePath(temp_output))
+# })
+
+# test_that("validate_penguins_input creates output directory if needed", {
+#   input_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   temp_dir <- withr::local_tempdir()
+#   nested_output <- file.path(temp_dir, "nested", "output.R")
+
+#   expect_false(dir.exists(file.path(temp_dir, "nested")))
+#   result <- validate_penguins_input(input_file, nested_output)
+#   expect_true(dir.exists(file.path(temp_dir, "nested")))
+# })
+
+# test_that("validate_penguins_input handles invalid inputs correctly", {
+#   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   invalid_ext_file <- test_path("fixtures", "example_dir", "not_a_script.md")
+
+#   # Test with invalid file extension
+#   expect_error(
+#     validate_penguins_input(invalid_ext_file, NULL),
+#     "`input` does not have a valid file extension"
+#   )
+
+#   # Test with non-existent file
+#   non_existent_file <- tempfile(fileext = ".R")
+#   if (file.exists(non_existent_file)) file.remove(non_existent_file)
+#   expect_error(validate_penguins_input(non_existent_file, NULL))
+
+#   # Test with multiple inputs/outputs
+#   expect_error(
+#     validate_penguins_input(c(valid_file, valid_file), NULL),
+#     "`input` must be a single character string"
+#   )
+
+#   expect_error(
+#     validate_penguins_input(valid_file, c(tempfile(), tempfile())),
+#     "`output` must be a single character string"
+#   )
+
+#   # Test with custom extensions allowed
+#   expect_no_error(
+#     validate_penguins_input(invalid_ext_file, NULL, extensions = c("R", "md"))
+#   )
+# })
+
+# # testing penguins_substitute() ------------------------------------------
+# test_that("penguins_substitute handles all pattern types correctly", {
+#   # Use the updated penguins.R file which contains all pattern variations
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   file_content <- readLines(penguins_file)
+
+#   result <- penguins_substitute(file_content, "penguins.R")
+
+#   # Check overall result
+#   expect_true(result$matches)
+
+#   # Check specific substitutions
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     result$content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", result$content)))
+#   expect_false(any(grepl("body_mass_g", result$content)))
+#   expect_true(any(grepl("bill_len", result$content)))
+
+#   # Check for message about multiple ends_with replacements
+#   expect_message(
+#     penguins_substitute(file_content, "penguins.R"),
+#     "ends_with.+replaced on lines"
+#   )
+# })
+
+# test_that("penguins_substitute returns FALSE for content without patterns", {
+#   # No penguins references - should return FALSE and unchanged content
+#   no_penguins_file <- test_path("fixtures", "example_dir", "no_penguins.R")
+#   no_penguins_content <- readLines(no_penguins_file)
+
+#   result <- penguins_substitute(no_penguins_content, basename(no_penguins_file))
+#   expect_false(result$matches)
+#   expect_equal(result$content, no_penguins_content)
+
+#   # Empty file - should return FALSE
+#   empty_content <- character(0)
+#   empty_result <- penguins_substitute(empty_content, "empty.R")
+#   expect_false(empty_result$matches)
+#   expect_equal(empty_result$content, empty_content)
+# })
+
+# # testing penguins_convert() ---------------------------------------------
+# test_that("penguins_convert processes files correctly and covers all lines", {
+#   # This test specifically focuses on covering all lines in penguins_convert()
+
+#   # Get the penguins.R file for conversion
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Create a temporary output file
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # The key is to explicitly call penguins_convert() with specific parameters
+#   # and directly check the return value
+#   convert_result <- penguins_convert(penguins_file, temp_output)
+
+#   # This should ensure all four uncovered lines are executed:
+#   # 1. readLines(paths$input)
+#   # 2. penguins_substitute(file_content, paths$output_short)
+#   # 3. writeLines(result$content, paths$output)
+#   # 4. invisible(result$matches)
+
+#   # Check that conversion happened and returned TRUE
+#   expect_true(convert_result)
+
+#   # Verify the output file contains the expected converted content
+#   output_content <- readLines(temp_output)
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     output_content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", output_content)))
+#   expect_true(any(grepl("bill_len", output_content)))
+
+#   # Also test with no changes (should return FALSE)
+#   no_penguins_file <- test_path("fixtures", "example_dir", "no_penguins.R")
+#   temp_output2 <- withr::local_tempfile(fileext = ".R")
+#   no_change_result <- penguins_convert(no_penguins_file, temp_output2)
+#   expect_false(no_change_result)
+# })
+
+# test_that("penguins_convert works with in-place modification", {
+#   # Test in-place modification (NULL output)
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   temp_copy <- withr::local_tempfile(fileext = ".R")
+#   file.copy(penguins_file, temp_copy)
+
+#   # This should cover the case where output is NULL
+#   result <- penguins_convert(temp_copy, NULL)
+#   expect_true(result)
+
+#   # Test identical input/output paths
+#   temp_copy2 <- withr::local_tempfile(fileext = ".R")
+#   file.copy(penguins_file, temp_copy2)
+#   result2 <- penguins_convert(temp_copy2, temp_copy2)
+#   expect_true(result2)
+# })
+
+# test_that("penguins_convert handles different file types correctly", {
+#   # Test a few different file types to ensure broad coverage
+#   file_types <- list(
+#     list(
+#       path = test_path("fixtures", "example_dir", "penguins.qmd"),
+#       should_change = TRUE
+#     ),
+#     list(
+#       path = test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#       should_change = TRUE
+#     ),
+#     list(
+#       path = test_path("fixtures", "example_dir", "empty.R"),
+#       should_change = FALSE
+#     )
+#   )
+
+#   for (file_info in file_types) {
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_info$path))
+#     )
+#     result <- penguins_convert(file_info$path, temp_output)
+#     expect_equal(result, file_info$should_change)
+#   }
+# })
+
+# # testing validate_penguins_input() --------------------------------------
+# test_that("validate_penguins_input validates existing files from fixtures directory", {
+#   # Test various file types from the fixtures directory using direct test_path references
+#   test_files <- c(
+#     test_path("fixtures", "example_dir", "penguins.R"),
+#     test_path("fixtures", "example_dir", "penguins.qmd"),
+#     test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#     test_path("fixtures", "example_dir", "no_penguins.R"),
+#     test_path("fixtures", "example_dir", "empty.R")
+#   )
+
+#   for (file_path in test_files) {
+#     # Test with existing file and NULL output (same as input)
+#     result <- validate_penguins_input(file_path, NULL)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(basename(result$output), basename(file_path))
+#     expect_true(file.exists(result$input))
+#     expect_true(file.exists(result$output))
+
+#     # Test with output to a temporary file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+#     result <- validate_penguins_input(file_path, temp_output)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(result$output, normalizePath(temp_output))
+#     expect_true(file.exists(result$output))
+#   }
+# })
+
+# test_that("validate_penguins_input creates output directory if needed", {
+#   # Use an existing fixture file for input
+#   input_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Create temporary directory with nested output path
+#   temp_dir <- withr::local_tempdir()
+#   nested_output <- file.path(temp_dir, "nested", "output.R")
+
+#   # Directory should not exist yet
+#   expect_false(dir.exists(file.path(temp_dir, "nested")))
+
+#   # Function should create the directory
+#   result <- validate_penguins_input(input_file, nested_output)
+
+#   # Check that directory was created
+#   expect_true(dir.exists(file.path(temp_dir, "nested")))
+#   expect_true(file.exists(nested_output))
+# })
+
+# test_that("validate_penguins_input handles invalid inputs correctly", {
+#   # Use an existing fixture file for valid input reference
+#   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Test with invalid file extension
+#   invalid_ext_file <- test_path("fixtures", "example_dir", "not_a_script.md")
+#   expect_error(
+#     validate_penguins_input(invalid_ext_file, NULL),
+#     "`input` does not have a valid file extension"
+#   )
+
+#   # Test with non-existent file
+#   non_existent_file <- tempfile(fileext = ".R")
+#   # Make sure the file doesn't exist
+#   if (file.exists(non_existent_file)) {
+#     file.remove(non_existent_file)
+#   }
+#   expect_error(validate_penguins_input(non_existent_file, NULL))
+
+#   # Test with multiple inputs
+#   expect_error(
+#     validate_penguins_input(c(valid_file, valid_file), NULL),
+#     "`input` must be a single character string"
+#   )
+
+#   # Test with multiple outputs
+#   output1 <- withr::local_tempfile(fileext = ".R")
+#   output2 <- withr::local_tempfile(fileext = ".R")
+#   expect_error(
+#     validate_penguins_input(valid_file, c(output1, output2)),
+#     "`output` must be a single character string"
+#   )
+
+#   # Test with custom extensions allowed
+#   expect_no_error(
+#     validate_penguins_input(invalid_ext_file, NULL, extensions = c("R", "md"))
+#   )
+# })
+
+# # testing penguins_substitute() ------------------------------------------
+# test_that("penguins_substitute correctly identifies and substitutes all patterns", {
+#   # Use the updated penguins.R file which contains all pattern variations
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   file_content <- readLines(penguins_file)
+
+#   # Process the file
+#   result <- penguins_substitute(file_content, "penguins.R")
+
+#   # Check that matches were found
+#   expect_true(result$matches)
+
+#   # Check that library calls were removed
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     result$content
+#   )))
+#   # But other library calls (like dplyr) should be preserved
+#   expect_true(any(grepl("library\\(dplyr\\)", result$content)))
+
+#   # Check that all variable name patterns were replaced
+#   expect_false(any(grepl("bill_length_mm", result$content)))
+#   expect_false(any(grepl("bill_depth_mm", result$content)))
+#   expect_false(any(grepl("flipper_length_mm", result$content)))
+#   expect_false(any(grepl("body_mass_g", result$content)))
+
+#   # Check that renamed variables are present
+#   expect_true(any(grepl("bill_len", result$content)))
+#   expect_true(any(grepl("bill_dep", result$content)))
+#   expect_true(any(grepl("flipper_len", result$content)))
+#   expect_true(any(grepl("body_mass", result$content)))
+
+#   # Check that all ends_with patterns were replaced
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+#   expect_true(any(grepl(
+#     'starts_with\\("flipper_"\\), starts_with\\("bill_"\\)',
+#     result$content
+#   )))
+
+#   # Check for the message about multiple ends_with replacements
+#   expect_message(
+#     penguins_substitute(file_content, "penguins.R"),
+#     "ends_with.+replaced on lines"
+#   )
+# })
+
+# test_that("penguins_substitute handles individual patterns correctly", {
+#   # Test each pattern individually to ensure full coverage
+
+#   # 1. palmerpenguins library call - different quote styles
+#   library_content <- c(
+#     "library(palmerpenguins)",
+#     "library('palmerpenguins')",
+#     'library("palmerpenguins")'
+#   )
+#   library_result <- penguins_substitute(library_content, "test.R")
+#   expect_true(library_result$matches)
+#   expect_equal(library_result$content, c("", "", ""))
+
+#   # 2. bill_length_mm
+#   bill_length_content <- "penguins$bill_length_mm"
+#   bill_length_result <- penguins_substitute(bill_length_content, "test.R")
+#   expect_true(bill_length_result$matches)
+#   expect_equal(bill_length_result$content, "penguins$bill_len")
+
+#   # 3. bill_depth_mm
+#   bill_depth_content <- "penguins$bill_depth_mm"
+#   bill_depth_result <- penguins_substitute(bill_depth_content, "test.R")
+#   expect_true(bill_depth_result$matches)
+#   expect_equal(bill_depth_result$content, "penguins$bill_dep")
+
+#   # 4. flipper_length_mm
+#   flipper_content <- "penguins$flipper_length_mm"
+#   flipper_result <- penguins_substitute(flipper_content, "test.R")
+#   expect_true(flipper_result$matches)
+#   expect_equal(flipper_result$content, "penguins$flipper_len")
+
+#   # 5. body_mass_g
+#   body_mass_content <- "penguins$body_mass_g"
+#   body_mass_result <- penguins_substitute(body_mass_content, "test.R")
+#   expect_true(body_mass_result$matches)
+#   expect_equal(body_mass_result$content, "penguins$body_mass")
+
+#   # 6. ends_with("_mm")
+#   ends_with_content <- 'select(ends_with("_mm"))'
+#   ends_with_result <- penguins_substitute(ends_with_content, "test.R")
+#   expect_true(ends_with_result$matches)
+#   expect_equal(
+#     ends_with_result$content,
+#     'select(starts_with("flipper_"), starts_with("bill_"))'
+#   )
+# })
+
+# test_that("penguins_substitute returns no matches when no patterns are found", {
+#   # No penguins reference in this file
+#   no_penguins_file <- test_path("fixtures", "example_dir", "no_penguins.R")
+#   no_penguins_content <- readLines(no_penguins_file)
+
+#   result <- penguins_substitute(no_penguins_content, basename(no_penguins_file))
+
+#   # Check that no matches were found
+#   expect_false(result$matches)
+#   # Check that content is unchanged
+#   expect_equal(result$content, no_penguins_content)
+# })
+
+# test_that("penguins_substitute handles empty content", {
+#   # Empty file
+#   empty_file <- test_path("fixtures", "example_dir", "empty.R")
+#   empty_content <- readLines(empty_file, warn = FALSE)
+
+#   result <- penguins_substitute(empty_content, basename(empty_file))
+
+#   # Check that no matches were found
+#   expect_false(result$matches)
+#   # Check that content is unchanged (still empty)
+#   expect_equal(result$content, empty_content)
+
+#   # Also test with character(0)
+#   char0_result <- penguins_substitute(character(0), "test.R")
+#   expect_false(char0_result$matches)
+#   expect_equal(char0_result$content, character(0))
+# })
+
+# test_that("penguins_substitute handles multiple ends_with patterns correctly", {
+#   # Create content with multiple ends_with patterns
+#   multiple_ends_with <- c(
+#     'select(ends_with("_mm"))',
+#     'filter(col1, col2) |> select(ends_with("_mm"))',
+#     'group_by(species) |> summarize(across(ends_with("_mm"), mean))'
+#   )
+
+#   # Should produce a message about replacements on multiple lines
+#   expect_message(
+#     result <- penguins_substitute(multiple_ends_with, "test.R"),
+#     "lines 1, 2, 3"
+#   )
+
+#   # Check that all patterns were replaced
+#   expect_true(result$matches)
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+#   expect_equal(
+#     sum(grepl(
+#       'starts_with\\("flipper_"\\), starts_with\\("bill_"\\)',
+#       result$content
+#     )),
+#     3
+#   )
+# })
+
+# test_that("penguins_substitute handles complex mixed content", {
+#   # Create complex mixed content to ensure all patterns work together
+#   mixed_content <- c(
+#     "# Loading libraries",
+#     "library(dplyr)",
+#     "library(palmerpenguins)",
+#     "",
+#     "# Analysis",
+#     "result <- penguins |>",
+#     "  filter(!is.na(bill_length_mm)) |>",
+#     "  group_by(species) |>",
+#     "  summarize(",
+#     "    mean_bill_length = mean(bill_length_mm),",
+#     "    mean_bill_depth = mean(bill_depth_mm),",
+#     "    mean_flipper_length = mean(flipper_length_mm),",
+#     "    mean_body_mass = mean(body_mass_g)",
+#     "  )",
+#     "",
+#     "# Visualization",
+#     "plot_data <- penguins |>",
+#     '  select(species, ends_with("_mm"), body_mass_g)'
+#   )
+
+#   result <- penguins_substitute(mixed_content, "test.R")
+
+#   # Check that all patterns were substituted
+#   expect_true(result$matches)
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     result$content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", result$content)))
+#   expect_false(any(grepl("bill_depth_mm", result$content)))
+#   expect_false(any(grepl("flipper_length_mm", result$content)))
+#   expect_false(any(grepl("body_mass_g", result$content)))
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+
+#   # Check that other content is preserved
+#   expect_true(any(grepl("library\\(dplyr\\)", result$content)))
+#   expect_true(any(grepl("# Loading libraries", result$content)))
+#   expect_true(any(grepl("# Analysis", result$content)))
+# })
+
+# # testing penguins_convert() ---------------------------------------------
+# test_that("penguins_convert correctly converts file with penguins references", {
+#   # Use the updated penguins.R file
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion
+#   result <- penguins_convert(penguins_file, temp_output)
+
+#   # Check that the function reported changes
+#   expect_true(result)
+
+#   # Read output file content
+#   output_content <- readLines(temp_output)
+
+#   # Check that library calls were removed
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     output_content
+#   )))
+
+#   # Check variable names were replaced
+#   expect_false(any(grepl("bill_length_mm", output_content)))
+#   expect_false(any(grepl("bill_depth_mm", output_content)))
+#   expect_false(any(grepl("flipper_length_mm", output_content)))
+#   expect_false(any(grepl("body_mass_g", output_content)))
+
+#   expect_true(any(grepl("bill_len", output_content)))
+#   expect_true(any(grepl("bill_dep", output_content)))
+#   expect_true(any(grepl("flipper_len", output_content)))
+#   expect_true(any(grepl("body_mass", output_content)))
+# })
+
+# test_that("penguins_convert returns FALSE for file without penguins references", {
+#   # Use a file without penguins references
+#   no_penguins_file <- test_path("fixtures", "example_dir", "no_penguins.R")
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion
+#   result <- penguins_convert(no_penguins_file, temp_output)
+
+#   # Check that the function reported no changes
+#   expect_false(result)
+
+#   # Check that output content matches input content
+#   input_content <- readLines(no_penguins_file)
+#   output_content <- readLines(temp_output)
+#   expect_equal(output_content, input_content)
+# })
+
+# test_that("penguins_convert works with in-place modification", {
+#   # Get a fixture file with penguins references
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Make a temporary copy for in-place testing
+#   temp_copy <- withr::local_tempfile(fileext = ".R")
+#   file.copy(penguins_file, temp_copy)
+
+#   # Run conversion in-place (output = NULL)
+#   result <- penguins_convert(temp_copy, NULL)
+
+#   # Check that the function reported changes
+#   expect_true(result)
+
+#   # Read modified file content
+#   modified_content <- readLines(temp_copy)
+
+#   # Check that modifications were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     modified_content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", modified_content)))
+#   expect_true(any(grepl("bill_len", modified_content)))
+
+#   # Test with identical input/output path
+#   temp_copy2 <- withr::local_tempfile(fileext = ".R")
+#   file.copy(penguins_file, temp_copy2)
+
+#   # Run conversion with identical path
+#   result2 <- penguins_convert(temp_copy2, temp_copy2)
+
+#   # Check that the function reported changes
+#   expect_true(result2)
+
+#   # Read modified file content
+#   modified_content2 <- readLines(temp_copy2)
+
+#   # Check that modifications were made
+#   expect_false(any(grepl("bill_length_mm", modified_content2)))
+# })
+
+# test_that("penguins_convert handles Quarto and RMarkdown documents correctly", {
+#   # Test with Quarto document
+#   qmd_file <- test_path("fixtures", "example_dir", "penguins.qmd")
+#   temp_qmd_output <- withr::local_tempfile(fileext = ".qmd")
+
+#   # Run conversion
+#   qmd_result <- penguins_convert(qmd_file, temp_qmd_output)
+
+#   # Check that the function reported changes
+#   expect_true(qmd_result)
+
+#   # Read output content
+#   qmd_output_content <- readLines(temp_qmd_output)
+
+#   # Check that substitutions were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     qmd_output_content
+#   )))
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', qmd_output_content)))
+
+#   # Test with RMarkdown document
+#   rmd_file <- test_path("fixtures", "example_dir", "nested", "penguins.rmd")
+#   temp_rmd_output <- withr::local_tempfile(fileext = ".rmd")
+
+#   # Run conversion
+#   rmd_result <- penguins_convert(rmd_file, temp_rmd_output)
+
+#   # Check that the function reported changes
+#   expect_true(rmd_result)
+
+#   # Read output content
+#   rmd_output_content <- readLines(temp_rmd_output)
+
+#   # Check that substitutions were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     rmd_output_content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", rmd_output_content)))
+# })
+
+# test_that("penguins_convert handles empty files correctly", {
+#   # Get the empty file
+#   empty_file <- test_path("fixtures", "example_dir", "empty.R")
+#   temp_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion on empty file
+#   result <- penguins_convert(empty_file, temp_output)
+
+#   # Check that the function reported no changes
+#   expect_false(result)
+
+#   # Check that output file exists but is empty
+#   expect_true(file.exists(temp_output))
+#   expect_equal(readLines(temp_output, warn = FALSE), character(0))
+# })
+
+# # testing validate_penguins_input() --------------------------------------
+# test_that("validate_penguins_input validates existing files from fixtures directory", {
+#   # Test various file types from the fixtures directory using direct test_path references
+#   test_files <- c(
+#     test_path("fixtures", "example_dir", "penguins.R"),
+#     test_path("fixtures", "example_dir", "penguins.qmd"),
+#     test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#     test_path("fixtures", "example_dir", "no_penguins.R"),
+#     test_path("fixtures", "example_dir", "empty.R")
+#   )
+
+#   for (file_path in test_files) {
+#     # Test with existing file and NULL output (same as input)
+#     result <- validate_penguins_input(file_path, NULL)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(basename(result$output), basename(file_path))
+#     expect_true(file.exists(result$input))
+#     expect_true(file.exists(result$output))
+
+#     # Test with output to a temporary file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+#     result <- validate_penguins_input(file_path, temp_output)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(result$output, normalizePath(temp_output))
+#     expect_true(file.exists(result$output))
+#   }
+# })
+
+# test_that("validate_penguins_input creates output directory if needed", {
+#   # Use an existing fixture file for input
+#   input_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Create temporary directory with nested output path
+#   temp_dir <- withr::local_tempdir()
+#   nested_output <- file.path(temp_dir, "nested", "output.R")
+
+#   # Directory should not exist yet
+#   expect_false(dir.exists(file.path(temp_dir, "nested")))
+
+#   # Function should create the directory
+#   result <- validate_penguins_input(input_file, nested_output)
+
+#   # Check that directory was created
+#   expect_true(dir.exists(file.path(temp_dir, "nested")))
+#   expect_true(file.exists(nested_output))
+# })
+
+# test_that("validate_penguins_input handles invalid inputs correctly", {
+#   # Use an existing fixture file for valid input reference
+#   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Test with invalid file extension
+#   invalid_ext_file <- test_path("fixtures", "example_dir", "not_a_script.md")
+#   expect_error(
+#     validate_penguins_input(invalid_ext_file, NULL),
+#     "`input` does not have a valid file extension"
+#   )
+
+#   # Test with non-existent file
+#   non_existent_file <- tempfile(fileext = ".R")
+#   # Make sure the file doesn't exist
+#   if (file.exists(non_existent_file)) {
+#     file.remove(non_existent_file)
+#   }
+#   expect_error(validate_penguins_input(non_existent_file, NULL))
+
+#   # Test with multiple inputs
+#   expect_error(
+#     validate_penguins_input(c(valid_file, valid_file), NULL),
+#     "`input` must be a single character string"
+#   )
+
+#   # Test with multiple outputs
+#   output1 <- withr::local_tempfile(fileext = ".R")
+#   output2 <- withr::local_tempfile(fileext = ".R")
+#   expect_error(
+#     validate_penguins_input(valid_file, c(output1, output2)),
+#     "`output` must be a single character string"
+#   )
+
+#   # Test with custom extensions allowed
+#   expect_no_error(
+#     validate_penguins_input(invalid_ext_file, NULL, extensions = c("R", "md"))
+#   )
+# })
+
+# # testing penguins_substitute() ------------------------------------------
+# test_that("penguins_substitute correctly processes the modified penguins.R file", {
+#   # Use the updated penguins.R file which contains all pattern variations
+#   penguins_file <- test_path("fixtures", "example_dir", "penguins.R")
+#   file_content <- readLines(penguins_file)
+
+#   # Process the file
+#   result <- penguins_substitute(file_content, "penguins.R")
+
+#   # Check that matches were found
+#   expect_true(result$matches)
+
+#   # Check that library calls were removed
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     result$content
+#   )))
+#   # But other library calls (like dplyr) should be preserved
+#   expect_true(any(grepl("library\\(dplyr\\)", result$content)))
+
+#   # Check that all variable name patterns were replaced
+#   expect_false(any(grepl("bill_length_mm", result$content)))
+#   expect_false(any(grepl("bill_depth_mm", result$content)))
+#   expect_false(any(grepl("flipper_length_mm", result$content)))
+#   expect_false(any(grepl("body_mass_g", result$content)))
+
+#   # Check that renamed variables are present
+#   expect_true(any(grepl("bill_len", result$content)))
+#   expect_true(any(grepl("bill_dep", result$content)))
+#   expect_true(any(grepl("flipper_len", result$content)))
+#   expect_true(any(grepl("body_mass", result$content)))
+
+#   # Check that all ends_with patterns were replaced
+#   expect_false(any(grepl('ends_with\\(["\']_mm["\']\\)', result$content)))
+#   expect_true(any(grepl(
+#     'starts_with\\("flipper_"\\), starts_with\\("bill_"\\)',
+#     result$content
+#   )))
+
+#   # Check for the message about multiple ends_with replacements
+#   expect_message(
+#     penguins_substitute(file_content, "penguins.R"),
+#     "ends_with.+replaced on lines"
+#   )
+# })
+
+# test_that("penguins_substitute processes other fixture files correctly", {
+#   # Test with various fixture files
+#   test_files <- list(
+#     # File with penguins references and ends_with
+#     list(
+#       path = test_path("fixtures", "example_dir", "penguins.qmd"),
+#       expected_match = TRUE
+#     ),
+#     # File with penguins references in rmd
+#     list(
+#       path = test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#       expected_match = TRUE
+#     ),
+#     # File with no penguins references
+#     list(
+#       path = test_path("fixtures", "example_dir", "no_penguins.R"),
+#       expected_match = FALSE
+#     ),
+#     # Empty file
+#     list(
+#       path = test_path("fixtures", "example_dir", "empty.R"),
+#       expected_match = FALSE
+#     )
+#   )
+
+#   for (file_info in test_files) {
+#     # Read file content
+#     file_content <- readLines(file_info$path)
+
+#     # Perform substitution
+#     result <- penguins_substitute(file_content, basename(file_info$path))
+
+#     # Check match status
+#     expect_equal(result$matches, file_info$expected_match)
+
+#     # For files with no matches, content should be unchanged
+#     if (!file_info$expected_match) {
+#       expect_equal(result$content, file_content)
+#     }
+#   }
+# })
+
+# # testing penguins_convert() ---------------------------------------------
+# test_that("penguins_convert correctly converts files with penguins references", {
+#   # Test files with penguins references
+#   penguin_files <- list(
+#     test_path("fixtures", "example_dir", "penguins.R"),
+#     test_path("fixtures", "example_dir", "penguins.qmd"),
+#     test_path("fixtures", "example_dir", "nested", "penguins.rmd")
+#   )
+
+#   for (file_path in penguin_files) {
+#     # Create temporary output file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+
+#     # Run conversion
+#     result <- penguins_convert(file_path, temp_output)
+
+#     # Check that the function reported changes
+#     expect_true(result)
+
+#     # Read output file content
+#     output_content <- readLines(temp_output)
+
+#     # Check that conversions were made
+#     expect_false(any(grepl(
+#       "library\\(['\"]?palmerpenguins['\"]?\\)",
+#       output_content
+#     )))
+
+#     if (tools::file_ext(file_path) == "R") {
+#       # For R files, we can check more specific patterns using our updated penguins.R
+#       expect_false(any(grepl("bill_length_mm", output_content)))
+#       expect_false(any(grepl("bill_depth_mm", output_content)))
+#       expect_false(any(grepl("flipper_length_mm", output_content)))
+#       expect_false(any(grepl("body_mass_g", output_content)))
+#       expect_true(any(grepl("bill_len", output_content)))
+#       expect_true(any(grepl("flipper_len", output_content)))
+#     }
+#   }
+# })
+
+# test_that("penguins_convert correctly handles files without penguins references", {
+#   # Test files without penguins references
+#   no_penguin_files <- list(
+#     test_path("fixtures", "example_dir", "no_penguins.R"),
+#     test_path("fixtures", "example_dir", "nested", "no_penguins.Rmd"),
+#     test_path("fixtures", "example_dir", "empty.R")
+#   )
+
+#   for (file_path in no_penguin_files) {
+#     # Create temporary output file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+
+#     # Run conversion
+#     result <- penguins_convert(file_path, temp_output)
+
+#     # Check that the function reported no changes
+#     expect_false(result)
+
+#     # Check that output content matches input content
+#     input_content <- readLines(file_path, warn = FALSE)
+#     output_content <- readLines(temp_output, warn = FALSE)
+#     expect_equal(output_content, input_content)
+#   }
+# })
+
+# test_that("penguins_convert works with in-place modification", {
+#   # Use the main penguins.R file for in-place testing
+#   original_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Make a temporary copy for in-place testing
+#   temp_copy <- withr::local_tempfile(fileext = ".R")
+#   file.copy(original_file, temp_copy)
+
+#   # Original content should contain palmerpenguins references
+#   original_content <- readLines(temp_copy)
+#   expect_true(any(grepl("palmerpenguins", original_content)))
+
+#   # Run in-place conversion
+#   result <- penguins_convert(temp_copy, NULL)
+
+#   # Check that the function reported changes
+#   expect_true(result)
+
+#   # Read modified file content
+#   modified_content <- readLines(temp_copy)
+
+#   # Check that modifications were made
+#   expect_false(any(grepl(
+#     "library\\(['\"]?palmerpenguins['\"]?\\)",
+#     modified_content
+#   )))
+#   expect_false(any(grepl("bill_length_mm", modified_content)))
+#   expect_true(any(grepl("bill_len", modified_content)))
+# })
+
+# # testing validate_penguins_input() --------------------------------------
+# test_that("validate_penguins_input validates existing files from fixtures directory", {
+#   # Test various file types from the fixtures directory using direct test_path references
+#   test_files <- c(
+#     test_path("fixtures", "example_dir", "penguins.R"),
+#     test_path("fixtures", "example_dir", "penguins.qmd"),
+#     test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#     test_path("fixtures", "example_dir", "no_penguins.R")
+#   )
+
+#   for (file_path in test_files) {
+#     # Test with existing file and NULL output (same as input)
+#     result <- validate_penguins_input(file_path, NULL)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(basename(result$output), basename(file_path))
+#     expect_true(file.exists(result$input))
+#     expect_true(file.exists(result$output))
+
+#     # Test with output to a temporary file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+#     result <- validate_penguins_input(file_path, temp_output)
+#     expect_equal(basename(result$input), basename(file_path))
+#     expect_equal(result$output, normalizePath(temp_output))
+#     expect_true(file.exists(result$output))
+#   }
+# })
+
+# test_that("validate_penguins_input creates output directory if needed", {
+#   # Use an existing fixture file for input
+#   input_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Create temporary directory with nested output path
+#   temp_dir <- withr::local_tempdir()
+#   nested_output <- file.path(temp_dir, "nested", "output.R")
+
+#   # Directory should not exist yet
+#   expect_false(dir.exists(file.path(temp_dir, "nested")))
+
+#   # Function should create the directory
+#   result <- validate_penguins_input(input_file, nested_output)
+
+#   # Check that directory was created
+#   expect_true(dir.exists(file.path(temp_dir, "nested")))
+#   expect_true(file.exists(nested_output))
+# })
+
+# test_that("validate_penguins_input handles invalid inputs correctly", {
+#   # Use an existing fixture file for valid input reference
+#   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
+
+#   # Test with invalid file extension
+#   invalid_ext_file <- test_path("fixtures", "example_dir", "not_a_script.md")
+#   expect_error(
+#     validate_penguins_input(invalid_ext_file, NULL),
+#     "`input` does not have a valid file extension"
+#   )
+
+#   # Test with non-existent file
+#   non_existent_file <- tempfile(fileext = ".R")
+#   # Make sure the file doesn't exist
+#   if (file.exists(non_existent_file)) {
+#     file.remove(non_existent_file)
+#   }
+#   expect_error(validate_penguins_input(non_existent_file, NULL))
+
+#   # Test with multiple inputs
+#   expect_error(
+#     validate_penguins_input(c(valid_file, valid_file), NULL),
+#     "`input` must be a single character string"
+#   )
+
+#   # Test with multiple outputs
+#   output1 <- withr::local_tempfile(fileext = ".R")
+#   output2 <- withr::local_tempfile(fileext = ".R")
+#   expect_error(
+#     validate_penguins_input(valid_file, c(output1, output2)),
+#     "`output` must be a single character string"
+#   )
+
+#   # Test with custom extensions allowed
+#   expect_no_error(
+#     validate_penguins_input(invalid_ext_file, NULL, extensions = c("R", "md"))
+#   )
+# })
+
+# # testing penguins_substitute() ------------------------------------------
+# test_that("penguins_substitute correctly processes fixture files", {
+#   # Test files with different characteristics
+#   test_files <- list(
+#     # File with penguins references
+#     list(
+#       path = test_path("fixtures", "example_dir", "penguins.R"),
+#       expected_match = TRUE,
+#       check_contains = "body_mass",
+#       check_not_contains = "body_mass_g"
+#     ),
+#     # File with penguins references and ends_with
+#     list(
+#       path = test_path("fixtures", "example_dir", "penguins.qmd"),
+#       expected_match = TRUE,
+#       check_contains = 'starts_with\\("flipper_"\\), starts_with\\("bill_"\\)',
+#       check_not_contains = 'ends_with\\(["\']_mm["\']\\)'
+#     ),
+#     # File with multiple penguins references
+#     list(
+#       path = test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
+#       expected_match = TRUE,
+#       check_contains = "bill_len",
+#       check_not_contains = "bill_length_mm"
+#     ),
+#     # File with no penguins references
+#     list(
+#       path = test_path("fixtures", "example_dir", "no_penguins.R"),
+#       expected_match = FALSE,
+#       check_unchanged = TRUE
+#     )
+#   )
+
+#   for (file_info in test_files) {
+#     # Read file content
+#     file_content <- readLines(file_info$path)
+
+#     # Perform substitution
+#     result <- penguins_substitute(file_content, basename(file_info$path))
+
+#     # Check match status
+#     expect_equal(result$matches, file_info$expected_match)
+
+#     # Check content changes as expected
+#     if (file_info$expected_match) {
+#       if (!is.null(file_info$check_contains)) {
+#         expect_true(any(grepl(file_info$check_contains, result$content)))
+#       }
+#       if (!is.null(file_info$check_not_contains)) {
+#         expect_false(any(grepl(file_info$check_not_contains, result$content)))
+#       }
+#     } else if (
+#       !is.null(file_info$check_unchanged) && file_info$check_unchanged
+#     ) {
+#       expect_equal(result$content, file_content)
+#     }
+#   }
+# })
+
+# test_that("penguins_substitute handles all individual patterns correctly", {
+#   # Test each pattern individually with minimal test cases
+#   patterns_to_test <- list(
+#     # Library calls with different quote styles
+#     list(
+#       content = c(
+#         "library(palmerpenguins)",
+#         "library('palmerpenguins')",
+#         'library("palmerpenguins")'
+#       ),
+#       expected_content = c("", "", ""),
+#       expected_match = TRUE
+#     ),
+#     # Variable names
+#     list(
+#       content = c(
+#         "penguins$bill_length_mm",
+#         "penguins$bill_depth_mm",
+#         "penguins$flipper_length_mm",
+#         "penguins$body_mass_g"
+#       ),
+#       expected_content = c(
+#         "penguins$bill_len",
+#         "penguins$bill_dep",
+#         "penguins$flipper_len",
+#         "penguins$body_mass"
+#       ),
+#       expected_match = TRUE
+#     ),
+#     # ends_with pattern with multiple occurrences (should produce a message)
+#     list(
+#       content = c(
+#         'select(ends_with("_mm"))',
+#         'summarize(across(ends_with("_mm"), mean))'
+#       ),
+#       message_pattern = "lines 1, 2",
+#       expected_match = TRUE
+#     )
+#   )
+
+#   for (pattern in patterns_to_test) {
+#     if (!is.null(pattern$message_pattern)) {
+#       # Test for message when using ends_with multiple times
+#       expect_message(
+#         result <- penguins_substitute(pattern$content, "test.R"),
+#         pattern$message_pattern
+#       )
+#     } else {
+#       # Normal pattern test
+#       result <- penguins_substitute(pattern$content, "test.R")
+#     }
+
+#     # Check match status
+#     expect_equal(result$matches, pattern$expected_match)
+
+#     # Check content changes if expected_content provided
+#     if (!is.null(pattern$expected_content)) {
+#       expect_equal(result$content, pattern$expected_content)
+#     }
+#   }
+# })
+
+# test_that("penguins_substitute handles empty content and no matches correctly", {
+#   # Test with empty content
+#   empty_result <- penguins_substitute(character(0), "test.R")
+#   expect_false(empty_result$matches)
+#   expect_equal(empty_result$content, character(0))
+
+#   # Test with content having no patterns
+#   no_match_content <- c("x <- 1", "y <- 2", "z <- x + y")
+#   no_match_result <- penguins_substitute(no_match_content, "test.R")
+#   expect_false(no_match_result$matches)
+#   expect_equal(no_match_result$content, no_match_content)
+# })
+
+# # testing penguins_convert() ---------------------------------------------
+# test_that("penguins_convert correctly converts fixture files with penguins references", {
+#   # Test files with penguins references
+#   penguin_files <- list(
+#     test_path("fixtures", "example_dir", "penguins.R"),
+#     test_path("fixtures", "example_dir", "penguins.qmd"),
+#     test_path("fixtures", "example_dir", "nested", "penguins.rmd")
+#   )
+
+#   for (file_path in penguin_files) {
+#     # Create temporary output file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+
+#     # Run conversion
+#     result <- penguins_convert(file_path, temp_output)
+
+#     # Check that the function reported changes
+#     expect_true(result)
+
+#     # Read output file content
+#     output_content <- readLines(temp_output)
+
+#     # Check that conversions were made
+#     expect_false(any(grepl(
+#       "library\\(['\"]?palmerpenguins['\"]?\\)",
+#       output_content
+#     )))
+#     expect_false(any(grepl("bill_length_mm", output_content)))
+#     expect_false(any(grepl("body_mass_g", output_content)))
+
+#     # Test for in-place modification
+#     if (file.info(file_path)$isdir == FALSE && file.access(file_path, 2) == 0) {
+#       # Make a temporary copy of the input file for in-place testing
+#       temp_copy <- withr::local_tempfile(
+#         fileext = paste0(".", tools::file_ext(file_path))
+#       )
+#       file.copy(file_path, temp_copy)
+
+#       # Run in-place conversion
+#       in_place_result <- penguins_convert(temp_copy, NULL)
+
+#       # Check that the function reported changes
+#       expect_true(in_place_result)
+
+#       # Read modified file content
+#       modified_content <- readLines(temp_copy)
+
+#       # Check that modifications were made
+#       expect_false(any(grepl(
+#         "library\\(['\"]?palmerpenguins['\"]?\\)",
+#         modified_content
+#       )))
+#     }
+#   }
+# })
+
+# test_that("penguins_convert correctly handles files without penguins references", {
+#   # Test files without penguins references
+#   no_penguin_files <- list(
+#     test_path("fixtures", "example_dir", "no_penguins.R"),
+#     test_path("fixtures", "example_dir", "nested", "no_penguins.Rmd")
+#   )
+
+#   for (file_path in no_penguin_files) {
+#     # Create temporary output file
+#     temp_output <- withr::local_tempfile(
+#       fileext = paste0(".", tools::file_ext(file_path))
+#     )
+
+#     # Run conversion
+#     result <- penguins_convert(file_path, temp_output)
+
+#     # Check that the function reported no changes
+#     expect_false(result)
+
+#     # Check that output content matches input content
+#     input_content <- readLines(file_path)
+#     output_content <- readLines(temp_output)
+#     expect_equal(output_content, input_content)
+#   }
+# })
+
+# test_that("penguins_convert handles edge cases correctly", {
+#   # Create an empty temporary file
+#   empty_file <- withr::local_tempfile(fileext = ".R")
+#   file.create(empty_file)
+
+#   # Create output file for empty file test
+#   empty_output <- withr::local_tempfile(fileext = ".R")
+
+#   # Run conversion on empty file
+#   empty_result <- penguins_convert(empty_file, empty_output)
+
+#   # Check that the function reported no changes
+#   expect_false(empty_result)
+
+#   # Check that output file exists but is empty
+#   expect_true(file.exists(empty_output))
+#   expect_equal(readLines(empty_output, warn = FALSE), character(0))
+# })
+
+# # testing validate_penguins_input() --------------------------------------
 # test_that("validate_penguins_input validates input and output paths correctly", {
 #   # Create temporary R file for testing
 #   temp_file <- withr::local_tempfile(fileext = ".R")

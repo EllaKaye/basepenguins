@@ -38,8 +38,15 @@ convert_files <- function(
   convertible_input <- input[convertible]
   convertible_output <- output[convertible]
   converted <- mapply(penguins_convert, convertible_input, convertible_output)
+
+  # Create named vectors for changed and not_changed files
   changed <- convertible_output[converted]
-  not_changed <- c(convertible_output[!converted], not_convertible)
+  names(changed) <- convertible_input[converted]
+
+  not_changed_convertible <- convertible_output[!converted]
+  names(not_changed_convertible) <- convertible_input[!converted]
+
+  not_changed <- c(not_changed_convertible, not_convertible)
 
   if (length(changed) > 0) {
     message(

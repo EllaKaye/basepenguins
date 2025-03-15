@@ -9,6 +9,6 @@ library(dplyr)
 
 
 ```{r}
-penguins |> 
+penguins |>
     select(body_mass_g, ends_with("_mm"))
 ```

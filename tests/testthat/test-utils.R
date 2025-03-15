@@ -129,7 +129,7 @@ test_that("files_to_convert works with case sensitivity in extensions", {
 
   # On case-insensitive filesystems, the actual result might differ,
   # so we need to check what's expected for the current OS
-  # For simplicity in this test, we're just checking that we get files with matching extensions
+  # For simplicity, just check that we get files with matching extensions
   result_ext <- tools::file_ext(result)
   expected_ext <- c("qmd", "rmd")
 

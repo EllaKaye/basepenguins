@@ -52,12 +52,7 @@ convert_files <- function(
 
 # TODO: document
 # TODO: test
-#
-# @param input Path to the input directory containing files to convert
-# @param output Optional path to output directory. If NULL, files are modified in place
-# @return Invisible list with changed and unchanged files
 # TODO: return named vectors (names are input)
-# TODO: argument to control which extensions are considered?
 convert_dir <- function(
   input,
   output,
@@ -122,7 +117,7 @@ validate_penguins_input <- function(
 
   # Check file type (.R, .qmd, .rmd, .Rmd)
   if (!(tools::file_ext(input) %in% extensions)) {
-    #     stop("`input` does not have a valid file extension")
+    stop("`input` does not have a valid file extension")
   }
 
   # Set output path - if NULL, use input path

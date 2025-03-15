@@ -12,7 +12,8 @@ filter_by_extensions <- function(extensions) {
     return("*")
   }
   extensions_pattern <- paste0(extensions, collapse = "|")
-  return(paste0("\\.(", extensions_pattern, ")$"))
+
+  paste0("\\.(", extensions_pattern, ")$")
 }
 
 files_to_convert <- function(

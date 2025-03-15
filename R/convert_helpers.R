@@ -1,5 +1,5 @@
 # Input validation function
-validate_penguins_input <- function(
+validate_input_output <- function(
   input,
   output,
   extensions = c("R", "qmd", "rmd", "Rmd")
@@ -123,7 +123,7 @@ penguins_substitute <- function(file_content, output_short) {
 # Main function combining validation and substitution
 penguins_convert <- function(input, output) {
   # Validate inputs
-  paths <- validate_penguins_input(input, output)
+  paths <- validate_input_output(input, output)
 
   # Read file content
   file_content <- readLines(paths$input)

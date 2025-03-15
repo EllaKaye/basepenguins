@@ -1,8 +1,8 @@
-# testing validate_penguins_input() --------------------------------------
+# testing validate_input_output() --------------------------------------
 # EK_version
-test_that("validate_penguins_input validates existing files with NULL output", {
+test_that("validate_input_output validates existing files with NULL output", {
   test_file <- test_path("fixtures", "example_dir", "penguins.R")
-  result <- validate_penguins_input(test_file, NULL)
+  result <- validate_input_output(test_file, NULL)
 
   expect_equal(result$input, result$output)
   expect_equal(basename(result$input), basename(test_file))
@@ -12,19 +12,19 @@ test_that("validate_penguins_input validates existing files with NULL output", {
 })
 
 # EK_version
-test_that("validate_penguins_input validates existing files with different output", {
+test_that("validate_input_output validates existing files with different output", {
   test_file <- test_path("fixtures", "example_dir", "penguins.R")
 
   # Test with output to a temporary file
   temp_output <- withr::local_tempfile(fileext = ".R")
 
-  result <- validate_penguins_input(test_file, temp_output)
+  result <- validate_input_output(test_file, temp_output)
   expect_equal(basename(result$input), basename(test_file))
   expect_equal(result$output, normalizePath(temp_output))
   expect_true(file.exists(result$output))
 })
 
-test_that("validate_penguins_input creates output directory if needed", {
+test_that("validate_input_output creates output directory if needed", {
   # Use an existing fixture file for input
   input_file <- test_path("fixtures", "example_dir", "penguins.R")
 
@@ -36,21 +36,21 @@ test_that("validate_penguins_input creates output directory if needed", {
   expect_false(dir.exists(file.path(temp_dir, "nested")))
 
   # Function should create the directory
-  result <- validate_penguins_input(input_file, nested_output)
+  result <- validate_input_output(input_file, nested_output)
 
   # Check that directory was created
   expect_true(dir.exists(file.path(temp_dir, "nested")))
   expect_true(file.exists(nested_output))
 })
 
-test_that("validate_penguins_input handles invalid inputs correctly", {
+test_that("validate_input_output handles invalid inputs correctly", {
   # Use an existing fixture file for valid input reference
   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
 
   # Test with invalid file extension
   invalid_ext_file <- test_path("fixtures", "example_dir", "not_a_script.md")
   expect_error(
-    validate_penguins_input(invalid_ext_file, NULL),
+    validate_input_output(invalid_ext_file, NULL),
     "`input` does not have a valid file extension"
   )
 
@@ -60,11 +60,11 @@ test_that("validate_penguins_input handles invalid inputs correctly", {
   if (file.exists(non_existent_file)) {
     file.remove(non_existent_file)
   }
-  expect_error(validate_penguins_input(non_existent_file, NULL))
+  expect_error(validate_input_output(non_existent_file, NULL))
 
   # Test with multiple inputs
   expect_error(
-    validate_penguins_input(c(valid_file, valid_file), NULL),
+    validate_input_output(c(valid_file, valid_file), NULL),
     "`input` must be a single character string"
   )
 
@@ -72,13 +72,13 @@ test_that("validate_penguins_input handles invalid inputs correctly", {
   output1 <- withr::local_tempfile(fileext = ".R")
   output2 <- withr::local_tempfile(fileext = ".R")
   expect_error(
-    validate_penguins_input(valid_file, c(output1, output2)),
+    validate_input_output(valid_file, c(output1, output2)),
     "`output` must be a single character string"
   )
 
   # Test with custom extensions allowed
   expect_no_error(
-    validate_penguins_input(invalid_ext_file, NULL, extensions = c("R", "md"))
+    validate_input_output(invalid_ext_file, NULL, extensions = c("R", "md"))
   )
 })
 

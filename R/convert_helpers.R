@@ -12,16 +12,19 @@ validate_penguins_input <- function(
     stop("`output` must be a single character string (a path)")
   }
 
+  # Set output_short path - if NULL, use input path
+  # keep non-normalized for display, before normalizing input
+  output_short <- output %||% input
+
   # Normalize input path and check if it exists
   input <- normalizePath(input, mustWork = TRUE)
 
-  # Check file type (.R, .qmd, .rmd, .Rmd)
+  # Check file type
   if (!(tools::file_ext(input) %in% extensions)) {
     stop("`input` does not have a valid file extension")
   }
 
   # Set output path - if NULL, use input path
-  output_short <- output %||% input # keep non-normalized for display
   output <- output %||% input
 
   # Create parent directory if it doesn't exist

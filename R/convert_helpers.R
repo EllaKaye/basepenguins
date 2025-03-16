@@ -122,17 +122,13 @@ penguins_substitute <- function(file_content, output_short) {
 
 # Main function combining validation and substitution
 penguins_convert <- function(input, output) {
-  # Validate input
-  path <- validate_input_output(input, output)
+  paths <- validate_input_output(input, output)
 
-  # Read file content
-  file_content <- readLines(path$input)
+  file_content <- readLines(paths$input)
 
-  # Perform substitutions
-  result <- penguins_substitute(file_content, path$output_short)
+  result <- penguins_substitute(file_content, paths$output_short)
 
-  # Write output
-  writeLines(result$content, path$output)
+  writeLines(result$content, paths$output)
 
   # Return logical indicating whether file was changed
   invisible(result$matches)

@@ -9,7 +9,7 @@ validate_input_output <- function(
   }
 
   if (!is.null(output) && length(output) != 1) {
-    stop("`output` must be a single character string (a path)")
+    stop("`output` must be a single character string (a path) or NULL")
   }
 
   # Set output_short path - if NULL, use input path
@@ -122,17 +122,17 @@ penguins_substitute <- function(file_content, output_short) {
 
 # Main function combining validation and substitution
 penguins_convert <- function(input, output) {
-  # Validate inputs
-  paths <- validate_input_output(input, output)
+  # Validate input
+  path <- validate_input_output(input, output)
 
   # Read file content
-  file_content <- readLines(paths$input)
+  file_content <- readLines(path$input)
 
   # Perform substitutions
-  result <- penguins_substitute(file_content, paths$output_short)
+  result <- penguins_substitute(file_content, path$output_short)
 
   # Write output
-  writeLines(result$content, paths$output)
+  writeLines(result$content, path$output)
 
   # Return logical indicating whether file was changed
   invisible(result$matches)

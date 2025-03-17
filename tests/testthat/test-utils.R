@@ -31,6 +31,7 @@ test_that("files_to_convert finds correct files with default extensions", {
   # Test with default extensions
   result <- files_to_convert(example_dir)
   expected_files <- c(
+    "empty.R",
     "no_penguins.R",
     "penguins.R",
     "penguins.qmd",
@@ -52,6 +53,7 @@ test_that("files_to_convert handles full.names", {
 
   result_full <- files_to_convert(example_dir, full.names = TRUE)
   expected_files <- c(
+    "empty.R",
     "no_penguins.R",
     "penguins.R",
     "penguins.qmd",
@@ -80,12 +82,12 @@ test_that("files_to_convert handles empty extensions list", {
   # Test with NULL extensions (should match all files)
   result_null <- files_to_convert(example_dir, extensions = NULL)
 
-  # All 7 files should be returned
-  expect_equal(length(result_null), 7)
+  # All 8 files should be returned
+  expect_equal(length(result_null), 8)
 
   # Test with empty character vector
   result_empty <- files_to_convert(example_dir, extensions = character(0))
-  expect_equal(length(result_empty), 7)
+  expect_equal(length(result_empty), 8)
 })
 
 test_that("files_to_convert handles empty string", {
@@ -94,11 +96,11 @@ test_that("files_to_convert handles empty string", {
   result_all <- files_to_convert(example_dir, extensions = "")
 
   # All 7 files should be returned
-  expect_equal(length(result_all), 7)
+  expect_equal(length(result_all), 8)
 
   # Test with empty character vector
   result_empty <- files_to_convert(example_dir, extensions = character(0))
-  expect_equal(length(result_all), 7)
+  expect_equal(length(result_all), 8)
 })
 
 test_that("files_to_convert handles non-existent directory", {

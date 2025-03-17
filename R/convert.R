@@ -3,7 +3,7 @@
 convert_files <- function(
   input,
   output,
-  extensions = c("R", "qmd", "rmd", "Rmd")
+  extensions = c("R", "r", "qmd", "rmd", "Rmd")
 ) {
   overwrite <- (is.null(output) || identical(input, output))
 
@@ -63,7 +63,7 @@ convert_files <- function(
 convert_dir <- function(
   input,
   output,
-  extensions = c("R", "qmd", "rmd", "Rmd")
+  extensions = c("R", "r", "qmd", "rmd", "Rmd")
 ) {
   if (!dir.exists(input)) {
     stop("`input` must be a directory that exists")

@@ -2,7 +2,7 @@
 validate_input_output <- function(
   input,
   output,
-  extensions = c("R", "qmd", "rmd", "Rmd")
+  extensions = c("R", "r", "qmd", "rmd", "Rmd")
 ) {
   if (length(input) != 1) {
     stop("`input` must be a single character string (a path)")

@@ -19,7 +19,7 @@ filter_by_extensions <- function(extensions) {
 files_to_convert <- function(
   dir,
   full.names = FALSE,
-  extensions = c("R", "qmd", "rmd", "Rmd")
+  extensions = c("R", "r", "qmd", "rmd", "Rmd")
 ) {
   if (!dir.exists(dir)) {
     stop("`dir` directory does not exist")

@@ -1,4 +1,6 @@
-test_that("convert_files correctly processes files with matching extensions", {
+# testing convert_files() ------------------------------------------------
+
+test_that("convert_files correctly processes files with new output locations", {
   # Input files: one with penguins references, one without
   penguin_file <- test_path("fixtures", "example_dir", "penguins.R")
   no_penguin_file <- test_path("fixtures", "example_dir", "no_penguins.R")
@@ -26,12 +28,22 @@ test_that("convert_files correctly processes files with matching extensions", {
     "library\\(['\"]?palmerpenguins['\"]?\\)",
     penguin_out_content
   )))
+
+  # These two lines need testing as a pair
   expect_false(any(grepl("bill_length_mm", penguin_out_content)))
   expect_true(any(grepl("bill_len", penguin_out_content)))
 
   # Verify content of no_penguin output file (should be unchanged)
   no_penguin_out_content <- readLines(output_files[2])
   expect_equal(no_penguin_out_content, readLines(no_penguin_file))
+
+  # Check values and names of result
+  expected_changed <- output_files[1]
+  names(expected_changed) <- input_files[1]
+  expected_not_changed <- output_files[2]
+  names(expected_not_changed) <- input_files[2]
+  expect_equal(result$changed, expected_changed)
+  expect_equal(result$not_changed, expected_not_changed)
 })
 
 test_that("convert_files handles overwrite (output = NULL) correctly", {
@@ -59,6 +71,8 @@ test_that("convert_files handles overwrite (output = NULL) correctly", {
     "library\\(['\"]?palmerpenguins['\"]?\\)",
     modified_content
   )))
+
+  # These two lines need testing as a pair
   expect_false(any(grepl("bill_length_mm", modified_content)))
   expect_true(any(grepl("bill_len", modified_content)))
 
@@ -72,6 +86,14 @@ test_that("convert_files handles overwrite (output = NULL) correctly", {
   # Check the structure of the result
   expect_type(result, "list")
   expect_named(result, c("changed", "not_changed"))
+
+  # Check values and names of result
+  expected_changed <- input_files[1]
+  names(expected_changed) <- input_files[1]
+  expected_not_changed <- input_files[2]
+  names(expected_not_changed) <- input_files[2]
+  expect_equal(result$changed, expected_changed)
+  expect_equal(result$not_changed, expected_not_changed)
 })
 
 test_that("convert_files creates output directories when needed", {
@@ -92,7 +114,9 @@ test_that("convert_files creates output directories when needed", {
 
   # Verify the file has the expected content
   output_content <- readLines(output_file)
-  expect_false(any(grepl("palmerpenguins", output_content)))
+
+  # These two lines need testing as a pair
+  expect_false(any(grepl("bill_length_mm", output_content)))
   expect_true(any(grepl("bill_len", output_content)))
 })
 
@@ -133,7 +157,7 @@ test_that("convert_files handles non-convertible files correctly", {
 
   # The R file should have been converted
   r_output_content <- readLines(output_files[1])
-  expect_false(any(grepl("palmerpenguins", r_output_content)))
+  expect_false(any(grepl("bill_length_mm", r_output_content)))
   expect_true(any(grepl("bill_len", r_output_content)))
 })
 
@@ -325,4 +349,97 @@ test_that("convert_files handles NULL output correctly", {
   # Check structure
   expect_type(result, "list")
   expect_named(result, c("changed", "not_changed"))
+})
+
+test_that("convert_files handles case with no changed files correctly", {
+  # This test is specifically for the case where no files are changed
+  # to ensure we cover the conditional message generation
+
+  # Create a file with no penguin references
+  temp_dir <- withr::local_tempdir()
+  no_penguin_file <- file.path(temp_dir, "no_penguins.R")
+  writeLines("x <- 1", no_penguin_file)
+
+  # Create output path
+  output_dir <- withr::local_tempdir()
+  output_file <- file.path(output_dir, "no_penguins.R")
+
+  # Capture messages - there should be none about changed files
+  messages <- capture_messages({
+    result <- convert_files(no_penguin_file, output_file)
+  })
+
+  # Verify no message about checking changed files (since nothing changed)
+  expect_false(any(grepl("Please check the changed output files", messages)))
+
+  # Check result structure
+  expect_type(result, "list")
+  expect_named(result, c("changed", "not_changed"))
+
+  # The changed list should be empty
+  expect_length(result$changed, 0)
+
+  # The not_changed list should have our file
+  expect_length(result$not_changed, 1)
+  expect_true(no_penguin_file %in% names(result$not_changed))
+  expect_equal(result$not_changed[[no_penguin_file]], output_file)
+})
+
+test_that("convert_files returns the correct structure with changed and not_changed files", {
+  # This test specifically targets uncovered lines in the function
+  # We need files that will produce both converted and not converted results
+
+  # Create files for testing
+  temp_dir <- withr::local_tempdir()
+
+  # File with penguin references (will be converted)
+  penguin_file <- file.path(temp_dir, "with_penguins.R")
+  writeLines(
+    c(
+      "library(palmerpenguins)",
+      "data <- penguins$bill_length_mm",
+      "body_mass <- penguins$body_mass_g"
+    ),
+    penguin_file
+  )
+
+  # File without penguin references (won't be converted)
+  no_penguin_file <- file.path(temp_dir, "no_penguins.R")
+  writeLines("x <- 1", no_penguin_file)
+
+  # Non-convertible file (will be copied but not processed)
+  md_file <- file.path(temp_dir, "readme.md")
+  writeLines("# Test file", md_file)
+
+  input_files <- c(penguin_file, no_penguin_file, md_file)
+
+  # Create output paths
+  output_dir <- withr::local_tempdir()
+  output_files <- file.path(output_dir, basename(input_files))
+
+  # Capture messages to verify they're generated
+  messages <- capture_messages({
+    result <- convert_files(input_files, output_files)
+  })
+
+  # Check for expected message when files are changed
+  expect_true(any(grepl("Please check the changed output files", messages)))
+
+  # Check result structure
+  expect_type(result, "list")
+  expect_named(result, c("changed", "not_changed"))
+
+  # Check specific structure of changed and not_changed
+  expect_true(length(result$changed) > 0)
+  expect_true(length(result$not_changed) > 0)
+
+  # Verify the names in the result (these correspond to input paths)
+  expect_true(penguin_file %in% names(result$changed))
+  expect_true(no_penguin_file %in% names(result$not_changed))
+  expect_true(md_file %in% names(result$not_changed))
+
+  # Verify the values in the result (these correspond to output paths)
+  expect_equal(result$changed[[penguin_file]], output_files[1])
+  expect_equal(result$not_changed[[no_penguin_file]], output_files[2])
+  expect_equal(result$not_changed[[md_file]], output_files[3])
 })

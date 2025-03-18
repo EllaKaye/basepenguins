@@ -5,6 +5,12 @@ convert_files <- function(
   output,
   extensions = c("R", "r", "qmd", "rmd", "Rmd")
 ) {
+  if (length(input) == 0) {
+    stop(
+      "`input` must not be emply. Please supply at least one file to convert."
+    )
+  }
+
   overwrite <- (is.null(output) || identical(input, output))
 
   output <- output %||% input

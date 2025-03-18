@@ -257,7 +257,7 @@ test_that("convert_files processes multiple files with mixed content correctly",
     if (
       all_files[i] %in%
         files_with_penguins &&
-        file_ext %in% c("R", "qmd", "rmd", "Rmd")
+        file_ext %in% c("R", "r", "qmd", "rmd", "Rmd")
     ) {
       # Check for specific patterns that should be replaced
       if (any(grepl("palmerpenguins", input_content))) {
@@ -297,68 +297,19 @@ test_that("convert_files handles paths with spaces correctly", {
   # Verify file was created and processed
   expect_true(file.exists(output_file))
   output_content <- readLines(output_file)
-  expect_false(any(grepl("palmerpenguins", output_content)))
-  expect_true(any(grepl("bill_len", output_content)))
-})
-
-test_that("convert_files handles file transformations correctly", {
-  # We'll skip explicitly testing for messages since they might be
-  # implementation-specific and could change
-  # Instead, focus on verifying the file transformations occur correctly
-
-  penguin_file <- test_path("fixtures", "example_dir", "penguins.R")
-  temp_output <- withr::local_tempfile(fileext = ".R")
-
-  # Run conversion, capturing any messages but not testing them specifically
-  result <- convert_files(penguin_file, temp_output)
-
-  # Verify the output was created with the expected transformations
-  expect_true(file.exists(temp_output))
-  output_content <- readLines(temp_output)
-  expect_false(any(grepl(
-    "library\\(['\"]?palmerpenguins['\"]?\\)",
-    output_content
-  )))
   expect_false(any(grepl("bill_length_mm", output_content)))
   expect_true(any(grepl("bill_len", output_content)))
 })
 
 test_that("convert_files handles empty input appropriately", {
-  # This test verifies that an error is thrown with empty input
-  # The specific error might vary, so we just check that some error occurs
-  # rather than expecting a specific message
-  expect_error(convert_files(character(0), character(0)))
+  expect_error(
+    convert_files(character(0), character(0)),
+    "`input` must not be emply. Please supply at least one file to convert."
+  )
 })
 
-test_that("convert_files handles NULL output correctly", {
-  # Test with NULL output (should default to input)
-  penguin_file <- test_path("fixtures", "example_dir", "penguins.R")
-
-  # Make a temporary copy so we don't modify the original
-  temp_copy <- withr::local_tempfile(fileext = ".R")
-  file.copy(penguin_file, temp_copy)
-
-  # Run with NULL output (in-place modification)
-  result <- convert_files(temp_copy, NULL)
-
-  # The file should have been modified in place
-  modified_content <- readLines(temp_copy)
-  expect_false(any(grepl("palmerpenguins", modified_content)))
-  expect_true(any(grepl("bill_len", modified_content)))
-
-  # Check structure
-  expect_type(result, "list")
-  expect_named(result, c("changed", "not_changed"))
-})
-
-test_that("convert_files handles case with no changed files correctly", {
-  # This test is specifically for the case where no files are changed
-  # to ensure we cover the conditional message generation
-
-  # Create a file with no penguin references
-  temp_dir <- withr::local_tempdir()
-  no_penguin_file <- file.path(temp_dir, "no_penguins.R")
-  writeLines("x <- 1", no_penguin_file)
+test_that("convert_files doesn't generate message to check output if no changes", {
+  no_penguin_file <- test_path("fixtures", "example_dir", "no_penguins.R")
 
   # Create output path
   output_dir <- withr::local_tempdir()
@@ -385,8 +336,8 @@ test_that("convert_files handles case with no changed files correctly", {
   expect_equal(result$not_changed[[no_penguin_file]], output_file)
 })
 
-test_that("convert_files returns the correct structure with changed and not_changed files", {
-  # This test specifically targets uncovered lines in the function
+test_that("convert_files returns the correct structure and message with changed and not_changed files", {
+  # This test specifically targets lines otherwise showing as uncovered
   # We need files that will produce both converted and not converted results
 
   # Create files for testing

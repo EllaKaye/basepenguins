@@ -1,5 +1,4 @@
 # TODO: document
-# TODO: test
 convert_files <- function(
   input,
   output,
@@ -63,9 +62,11 @@ convert_files <- function(
   invisible(list(changed = changed, not_changed = not_changed))
 }
 
+convert_files_inplace <- function(input) {
+  convert_files(input, input)
+}
+
 # TODO: document
-# TODO: test
-# TODO: return named vectors (names are input)
 convert_dir <- function(
   input,
   output,
@@ -115,4 +116,8 @@ convert_dir <- function(
   }
 
   invisible(result)
+}
+
+convert_dir_inplace <- function(input) {
+  convert_dir(input, input)
 }

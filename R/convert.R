@@ -78,8 +78,14 @@ convert_dir <- function(
   # Get all files from input directory then determine which are convertible
   file_names <- list.files(input, recursive = TRUE)
 
+  # Check if there are any files
   if (length(file_names) == 0) {
     stop("There are no files in `input` to convert")
+  }
+
+  # Check that there are files with required extensions
+  if (!any(tools::file_ext(file_names) %in% extensions)) {
+    stop("There are no files with specified extensions to convert")
   }
 
   input_files <- file.path(input, file_names)

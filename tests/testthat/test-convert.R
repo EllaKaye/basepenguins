@@ -397,6 +397,7 @@ test_that("convert_files returns the correct structure and message with changed 
 
 # testing convert_dir() --------------------------------------------------
 
+# EK checked
 test_that("convert_dir correctly processes a directory to new directory", {
   # Input and output directories
   temp_dir <- withr::local_tempdir()
@@ -427,13 +428,14 @@ test_that("convert_dir correctly processes a directory to new directory", {
   penguin_file_count <- sum(grepl("^penguins", file_names))
   expect_equal(length(result$changed), penguin_file_count)
   changed_basenames <- basename(result$changed)
-  expect_true(all(grepl("^penguins", changed_basenames)))
+  expected_changed <- paste0("penguins", c(".rmd", ".qmd", ".R"))
+  expect_setequal(changed_basenames, expected_changed)
 
   # Check that non-penguin files were not modified
   not_changed_basenames <- basename(result$not_changed)
-  expect_true(any(grepl("no_penguins\\.R$", not_changed_basenames)))
-  expect_true(any(grepl("no_penguins\\.Rmd$", not_changed_basenames)))
-  expect_true(any(grepl("empty\\.R$", not_changed_basenames)))
+  expect_true("no_penguins.R" %in% not_changed_basenames)
+  expect_true("no_penguins.Rmd" %in% not_changed_basenames)
+  expect_true("empty.R" %in% not_changed_basenames)
 
   # Verify output directory structure
   expect_true(dir.exists(file.path(temp_dir, "nested")))
@@ -451,6 +453,7 @@ test_that("convert_dir correctly processes a directory to new directory", {
   expect_true(any(grepl("bill_len", output_content)))
 })
 
+# EK checked
 test_that("convert_dir correctly processes files in-place when output is NULL", {
   # Create a temporary directory with copies of the files
   temp_dir <- withr::local_tempdir()
@@ -501,17 +504,23 @@ test_that("convert_dir correctly processes files in-place when output is NULL", 
   expect_true(any(grepl("bill_len", penguin_r_content)))
 
   # Instead of directly checking paths, check that we have the expected number
-  # of changed files and that they have penguins in their names
-  penguin_file_count <- sum(grepl(
-    "penguins",
-    list.files(temp_dir, recursive = TRUE, pattern = "\\.(R|qmd|rmd|Rmd)$")
-  ))
-  expect_equal(length(result$changed), penguin_file_count)
+  # of changed files and that their names start with "penguins"
+  file_names <- basename(
+    list.files(
+      temp_dir,
+      recursive = TRUE,
+      pattern = "\\.(R|r|qmd|rmd|Rmd)$"
+    )
+  )
 
-  changed_basenames <- basename(names(result$changed))
-  expect_true(all(grepl("penguins", changed_basenames)))
+  # files with penguins content all have names that start with "penguins"
+  penguin_file_count <- sum(grepl("^penguins", file_names))
+  expect_equal(length(result$changed), penguin_file_count)
+  changed_basenames <- basename(result$changed)
+  expect_true(all(grepl("^penguins", changed_basenames)))
 })
 
+# EK checked
 test_that("convert_dir handles custom extensions", {
   # Create a temporary directory for output
   temp_dir <- withr::local_tempdir()
@@ -521,14 +530,10 @@ test_that("convert_dir handles custom extensions", {
   result <- convert_dir(example_dir, temp_dir, extensions = "R")
 
   # Get the basenames of changed files
-  changed_basenames <- basename(names(result$changed))
+  changed_basenames <- basename(result$changed)
 
   # Check that only .R files were processed
-  r_files_processed <- any(grepl("\\.R$", changed_basenames))
-  qmd_files_processed <- any(grepl("\\.qmd$", changed_basenames))
-
-  expect_true(r_files_processed)
-  expect_false(qmd_files_processed)
+  expect_true(all(tools::file_ext(changed_basenames) == "R"))
 
   # Verify .R file was converted
   penguin_r_output <- file.path(temp_dir, "penguins.R")
@@ -548,14 +553,15 @@ test_that("convert_dir handles custom extensions", {
   )))
 })
 
-test_that("convert_dir handles error conditions correctly", {
-  # Test with non-existent input directory
+# EK checked
+test_that("convert_dir handles non-existent directory", {
   expect_error(
     convert_dir("non_existent_dir", NULL),
     "`input` must be a directory that exists"
   )
+})
 
-  # Test with empty directory
+test_that("convert_dir handles empty directory", {
   empty_dir <- withr::local_tempdir()
   expect_error(
     convert_dir(empty_dir, NULL),
@@ -563,6 +569,24 @@ test_that("convert_dir handles error conditions correctly", {
   )
 })
 
+test_that("convert_dir handles no files with specified extensions)", {
+  source_dir <- withr::local_tempdir()
+  md_file <- file.path(source_dir, "readme.md")
+  md_input_content <- c(
+    "# This is a markdown file",
+    "```",
+    "library(palmerpenguins)",
+    "```"
+  )
+  writeLines(md_input_content, md_file)
+
+  expect_error(
+    convert_dir(source_dir, NULL),
+    "There are no files with specified extensions to convert"
+  )
+})
+
+# EK checked
 test_that("convert_dir creates all required subdirectories in output", {
   # Create a temporary directory with a deeply nested structure
   source_dir <- withr::local_tempdir()
@@ -574,8 +598,8 @@ test_that("convert_dir creates all required subdirectories in output", {
   writeLines(
     c(
       "library(palmerpenguins)",
-      "data <- penguins$bill_length_mm",
-      "x <- penguins$body_mass_g"
+      "bill_len <- penguins$bill_length_mm",
+      "body_mass <- penguins$body_mass_g"
     ),
     penguin_file
   )
@@ -603,9 +627,11 @@ test_that("convert_dir creates all required subdirectories in output", {
 
   output_content <- readLines(output_file_path)
   expect_false(any(grepl("palmerpenguins", output_content)))
+  expect_false(any(grepl("bill_length_mm", output_content)))
   expect_true(any(grepl("bill_len", output_content)))
 })
 
+# EK checked
 test_that("convert_dir handles a mixture of file types correctly", {
   # Create a temporary directory with various file types
   source_dir <- withr::local_tempdir()
@@ -622,11 +648,18 @@ test_that("convert_dir handles a mixture of file types correctly", {
 
   # Create a markdown file
   md_file <- file.path(source_dir, "readme.md")
-  writeLines("# This is a markdown file", md_file)
+  md_input_content <- c(
+    "# This is a markdown file",
+    "```",
+    "library(palmerpenguins)",
+    "```"
+  )
+  writeLines(md_input_content, md_file)
 
   # Create an HTML file
   html_file <- file.path(source_dir, "page.html")
-  writeLines("<html><body>Test</body></html>", html_file)
+  html_input_content <- "<html><body>Test</body></html>"
+  writeLines(html_input_content, html_file)
 
   # Create output directory
   output_dir <- withr::local_tempdir()
@@ -646,16 +679,18 @@ test_that("convert_dir handles a mixture of file types correctly", {
   # Verify only the R file was converted
   r_content <- readLines(file.path(output_dir, "penguins.R"))
   expect_false(any(grepl("library\\(palmerpenguins\\)", r_content)))
+  expect_false(any(grepl("bill_length_mm", r_content)))
   expect_true(any(grepl("bill_len", r_content)))
 
   # Verify non-R files were just copied
-  md_content <- readLines(file.path(output_dir, "readme.md"))
-  expect_equal(md_content, readLines(md_file))
+  md_output_content <- readLines(file.path(output_dir, "readme.md"))
+  expect_equal(md_output_content, md_input_content)
 
-  html_content <- readLines(file.path(output_dir, "page.html"))
-  expect_equal(html_content, readLines(html_file))
+  html_output_content <- readLines(file.path(output_dir, "page.html"))
+  expect_equal(html_output_content, html_input_content)
 })
 
+# EK fixed
 test_that("convert_dir reports correct statistics in result lists", {
   # Setup directories
   example_dir <- test_path("fixtures", "example_dir")
@@ -666,10 +701,20 @@ test_that("convert_dir reports correct statistics in result lists", {
 
   # Count files in example directory
   all_files <- list.files(example_dir, recursive = TRUE)
-  r_files <- grep("\\.(R|rmd|Rmd|qmd)$", all_files, value = TRUE)
-  penguin_files <- grep("penguins", r_files)
-  non_penguin_r_files <- grep("penguins", r_files, invert = TRUE)
-  non_r_files <- grep("\\.(R|rmd|Rmd|qmd)$", all_files, invert = TRUE)
+  convertible_files <- grep("\\.(R|r|rmd|Rmd|qmd)$", all_files, value = TRUE)
+  # files with palmerpenguins all have filesnames beginning "penguins",
+  # maybe in "nested" dir
+  penguins_convertible_files <- grep("^(nested/)?penguins", convertible_files)
+  non_penguins_convertible_files <- grep(
+    "^(nested/)?penguins",
+    convertible_files,
+    invert = TRUE
+  )
+  non_convertible_files <- grep(
+    "\\.(R|r|rmd|Rmd|qmd)$",
+    all_files,
+    invert = TRUE
+  )
 
   # Check that all files are accounted for in the result
   expect_equal(
@@ -678,34 +723,35 @@ test_that("convert_dir reports correct statistics in result lists", {
   )
 
   # Convert the names in the result to basenames for easier comparison
-  changed_basenames <- basename(names(result$changed))
-  not_changed_basenames <- basename(names(result$not_changed))
+  changed_basenames <- basename(result$changed)
+  not_changed_basenames <- basename(result$not_changed)
 
   # Count the number of files that have 'penguins' in their name
-  expect_equal(length(result$changed), length(penguin_files))
+  expect_equal(length(result$changed), length(penguins_convertible_files))
 
-  # Check that all changed files have 'penguins' in their name
-  expect_true(all(grepl("penguins", changed_basenames)))
+  # Check that all changed filenames start with 'penguins'
+  expect_true(all(grepl("^penguins", changed_basenames)))
 
   # Check that no non-penguin files were changed
-  for (idx in non_penguin_r_files) {
-    file_name <- basename(all_files[idx])
+  for (idx in non_penguins_convertible_files) {
+    file_name <- basename(convertible_files[idx])
     expect_false(
       file_name %in% changed_basenames,
       info = paste("Non-penguin file was incorrectly changed:", file_name)
     )
   }
 
-  # Check that non-R files were not changed
-  for (idx in non_r_files) {
+  # Check that non-convertible files were not changed
+  for (idx in non_convertible_files) {
     file_name <- basename(all_files[idx])
     expect_false(
       file_name %in% changed_basenames,
-      info = paste("Non-R file was incorrectly changed:", file_name)
+      info = paste("Non-convertible file was incorrectly changed:", file_name)
     )
   }
 })
 
+# EK checked
 test_that("convert_dir handles paths with spaces", {
   # Create source directory with spaces in the name
   source_dir <- withr::local_tempdir()
@@ -717,7 +763,7 @@ test_that("convert_dir handles paths with spaces", {
   writeLines(
     c(
       "library(palmerpenguins)",
-      "data <- penguins$bill_length_mm"
+      "bill_len <- penguins$bill_length_mm"
     ),
     penguin_file
   )
@@ -755,8 +801,8 @@ test_that("convert_dir with NULL output explicitly exercises that code path", {
   writeLines(
     c(
       "library(palmerpenguins)",
-      "data <- penguins$bill_length_mm",
-      "mass <- penguins$body_mass_g"
+      "bill_len <- penguins$bill_length_mm",
+      "body_mass <- penguins$body_mass_g"
     ),
     penguin_file
   )
@@ -771,240 +817,11 @@ test_that("convert_dir with NULL output explicitly exercises that code path", {
 
   # Verify the file was changed
   expect_equal(length(result$changed), 1)
-  expect_true(penguin_file %in% names(result$changed))
+  expect_true(penguin_file %in% result$changed)
 
   # Verify the content was changed
   converted_content <- readLines(penguin_file)
   expect_false(any(grepl("library\\(palmerpenguins\\)", converted_content)))
+  expect_false(any(grepl("bill_length_mm", converted_content)))
   expect_true(any(grepl("bill_len", converted_content)))
-})
-
-test_that("convert_dir handles custom extensions", {
-  # Create a temporary directory for output
-  temp_dir <- withr::local_tempdir()
-  example_dir <- test_path("fixtures", "example_dir")
-
-  # Run with only .R extension
-  result <- convert_dir(example_dir, temp_dir, extensions = "R")
-
-  # Check that only .R files were processed
-  r_files_processed <- any(grepl("\\.R$", names(result$changed)))
-  qmd_files_processed <- any(grepl("\\.qmd$", names(result$changed)))
-
-  expect_true(r_files_processed)
-  expect_false(qmd_files_processed)
-
-  # Verify .R file was converted
-  penguin_r_output <- file.path(temp_dir, "penguins.R")
-  expect_true(file.exists(penguin_r_output))
-
-  r_content <- readLines(penguin_r_output)
-  expect_false(any(grepl("library\\(['\"]?palmerpenguins['\"]?\\)", r_content)))
-
-  # Verify .qmd file was copied but not converted
-  penguin_qmd_output <- file.path(temp_dir, "penguins.qmd")
-  expect_true(file.exists(penguin_qmd_output))
-
-  qmd_content <- readLines(penguin_qmd_output)
-  expect_true(any(grepl(
-    "library\\(['\"]?palmerpenguins['\"]?\\)",
-    qmd_content
-  )))
-})
-
-test_that("convert_dir handles error conditions correctly", {
-  # Test with non-existent input directory
-  expect_error(
-    convert_dir("non_existent_dir", NULL),
-    "`input` must be a directory that exists"
-  )
-
-  # Test with empty directory
-  empty_dir <- withr::local_tempdir()
-  expect_error(
-    convert_dir(empty_dir, NULL),
-    "There are no files in `input` to convert"
-  )
-})
-
-test_that("convert_dir creates all required subdirectories in output", {
-  # Create a temporary directory with a deeply nested structure
-  source_dir <- withr::local_tempdir()
-  nested_dir <- file.path(source_dir, "level1", "level2", "level3")
-  dir.create(nested_dir, recursive = TRUE)
-
-  # Create a file with penguin references in the nested directory
-  penguin_file <- file.path(nested_dir, "penguins.R")
-  writeLines(
-    c(
-      "library(palmerpenguins)",
-      "data <- penguins$bill_length_mm",
-      "x <- penguins$body_mass_g"
-    ),
-    penguin_file
-  )
-
-  # Create output directory
-  output_dir <- withr::local_tempdir()
-
-  # Run conversion
-  result <- convert_dir(source_dir, output_dir)
-
-  # Check that nested directories were created
-  expect_true(dir.exists(file.path(output_dir, "level1")))
-  expect_true(dir.exists(file.path(output_dir, "level1", "level2")))
-  expect_true(dir.exists(file.path(output_dir, "level1", "level2", "level3")))
-
-  # Check that the file was converted
-  output_file_path <- file.path(
-    output_dir,
-    "level1",
-    "level2",
-    "level3",
-    "penguins.R"
-  )
-  expect_true(file.exists(output_file_path))
-
-  output_content <- readLines(output_file_path)
-  expect_false(any(grepl("palmerpenguins", output_content)))
-  expect_true(any(grepl("bill_len", output_content)))
-})
-
-test_that("convert_dir handles a mixture of file types correctly", {
-  # Create a temporary directory with various file types
-  source_dir <- withr::local_tempdir()
-
-  # Create an R file with penguin references
-  penguin_r_file <- file.path(source_dir, "penguins.R")
-  writeLines(
-    c(
-      "library(palmerpenguins)",
-      "data <- penguins$bill_length_mm"
-    ),
-    penguin_r_file
-  )
-
-  # Create a markdown file
-  md_file <- file.path(source_dir, "readme.md")
-  writeLines("# This is a markdown file", md_file)
-
-  # Create an HTML file
-  html_file <- file.path(source_dir, "page.html")
-  writeLines("<html><body>Test</body></html>", html_file)
-
-  # Create output directory
-  output_dir <- withr::local_tempdir()
-
-  # Run conversion
-  result <- convert_dir(source_dir, output_dir)
-
-  # Check result structure
-  expect_type(result, "list")
-  expect_named(result, c("changed", "not_changed"))
-
-  # Verify all files were copied to output directory
-  expect_true(file.exists(file.path(output_dir, "penguins.R")))
-  expect_true(file.exists(file.path(output_dir, "readme.md")))
-  expect_true(file.exists(file.path(output_dir, "page.html")))
-
-  # Verify only the R file was converted
-  r_content <- readLines(file.path(output_dir, "penguins.R"))
-  expect_false(any(grepl("library\\(palmerpenguins\\)", r_content)))
-  expect_true(any(grepl("bill_len", r_content)))
-
-  # Verify non-R files were just copied
-  md_content <- readLines(file.path(output_dir, "readme.md"))
-  expect_equal(md_content, readLines(md_file))
-
-  html_content <- readLines(file.path(output_dir, "page.html"))
-  expect_equal(html_content, readLines(html_file))
-})
-
-test_that("convert_dir reports correct statistics in result lists", {
-  # Setup directories
-  example_dir <- test_path("fixtures", "example_dir")
-  output_dir <- withr::local_tempdir()
-
-  # Run conversion
-  result <- convert_dir(example_dir, output_dir)
-
-  # Count files in example directory
-  all_files <- list.files(example_dir, recursive = TRUE)
-  r_files <- grep("\\.(R|rmd|Rmd|qmd)$", all_files, value = TRUE)
-  penguin_files <- grep("penguins", r_files)
-  non_penguin_r_files <- grep("penguins", r_files, invert = TRUE)
-  non_r_files <- grep("\\.(R|rmd|Rmd|qmd)$", all_files, invert = TRUE)
-
-  # Check that all files are accounted for in the result
-  expect_equal(
-    length(result$changed) + length(result$not_changed),
-    length(all_files)
-  )
-
-  # Convert the names in the result to basenames for easier comparison
-  changed_basenames <- basename(names(result$changed))
-  not_changed_basenames <- basename(names(result$not_changed))
-
-  # Count the number of files that have 'penguins' in their name
-  expect_equal(length(result$changed), length(penguin_files))
-
-  # Check that all changed files have 'penguins' in their name
-  expect_true(all(grepl("penguins", changed_basenames)))
-
-  # Check that no non-penguin files were changed
-  for (idx in non_penguin_r_files) {
-    file_name <- basename(all_files[idx])
-    expect_false(
-      file_name %in% changed_basenames,
-      info = paste("Non-penguin file was incorrectly changed:", file_name)
-    )
-  }
-
-  # Check that non-R files were not changed
-  for (idx in non_r_files) {
-    file_name <- basename(all_files[idx])
-    expect_false(
-      file_name %in% changed_basenames,
-      info = paste("Non-R file was incorrectly changed:", file_name)
-    )
-  }
-})
-
-test_that("convert_dir handles paths with spaces", {
-  # Create source directory with spaces in the name
-  source_dir <- withr::local_tempdir()
-  space_dir <- file.path(source_dir, "dir with spaces")
-  dir.create(space_dir)
-
-  # Create file with penguin references
-  penguin_file <- file.path(space_dir, "file with spaces.R")
-  writeLines(
-    c(
-      "library(palmerpenguins)",
-      "data <- penguins$bill_length_mm"
-    ),
-    penguin_file
-  )
-
-  # Create output directory with spaces
-  output_dir <- withr::local_tempdir()
-  output_space_dir <- file.path(output_dir, "output with spaces")
-
-  # Run conversion
-  result <- convert_dir(source_dir, output_space_dir)
-
-  # Check that directories and files with spaces were processed correctly
-  expect_true(dir.exists(file.path(output_space_dir, "dir with spaces")))
-
-  output_file <- file.path(
-    output_space_dir,
-    "dir with spaces",
-    "file with spaces.R"
-  )
-  expect_true(file.exists(output_file))
-
-  # Verify content was converted
-  output_content <- readLines(output_file)
-  expect_false(any(grepl("palmerpenguins", output_content)))
-  expect_true(any(grepl("bill_len", output_content)))
 })

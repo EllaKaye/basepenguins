@@ -396,13 +396,10 @@ test_that("convert_files returns the correct structure and message with changed 
 })
 
 # testing convert_dir() --------------------------------------------------
-# Tests for convert_dir()
 
-test_that("convert_dir correctly processes a directory with default parameters", {
-  # Create a temporary directory to use as output
+test_that("convert_dir correctly processes a directory to new directory", {
+  # Input and output directories
   temp_dir <- withr::local_tempdir()
-
-  # Path to example directory
   example_dir <- test_path("fixtures", "example_dir")
 
   # Run the conversion
@@ -412,28 +409,31 @@ test_that("convert_dir correctly processes a directory with default parameters",
   expect_type(result, "list")
   expect_named(result, c("changed", "not_changed"))
 
-  # Check that files with penguins references were modified - check basenames
-  changed_basenames <- basename(names(result$changed))
+  # Spot-check that a file with penguins references was modified
+  # (not checking all files, one should be sufficient here)
+  penguin_r_content <- readLines(file.path(temp_dir, "penguins.R"))
+  expect_false(any(grepl("bill_length_mm", penguin_r_content)))
   expect_true(any(grepl("bill_len", penguin_r_content)))
 
   # Instead of directly checking paths, check that we have the expected number
-  # of changed files and that they have penguins in their names
-  penguin_file_count <- sum(grepl(
-    "penguins",
-    list.files(temp_dir, recursive = TRUE, pattern = "\\.(R|qmd|rmd|Rmd)$")
-  ))
+  # of changed files and that their file name starts with "penguins"
+  file_names <- basename(
+    list.files(
+      temp_dir,
+      recursive = TRUE,
+      pattern = "\\.(R|r|qmd|rmd|Rmd)$"
+    )
+  )
+  penguin_file_count <- sum(grepl("^penguins", file_names))
   expect_equal(length(result$changed), penguin_file_count)
-
-  changed_basenames <- basename(names(result$changed))
-  expect_true(all(grepl("penguins", changed_basenames)))
-  expect_true(all(grepl("penguins\\.R$", changed_basenames)))
-  expect_true(any(grepl("penguins\\.qmd$", changed_basenames)))
-  expect_true(any(grepl("penguins\\.rmd$", changed_basenames)))
+  changed_basenames <- basename(result$changed)
+  expect_true(all(grepl("^penguins", changed_basenames)))
 
   # Check that non-penguin files were not modified
-  not_changed_basenames <- basename(names(result$not_changed))
+  not_changed_basenames <- basename(result$not_changed)
   expect_true(any(grepl("no_penguins\\.R$", not_changed_basenames)))
   expect_true(any(grepl("no_penguins\\.Rmd$", not_changed_basenames)))
+  expect_true(any(grepl("empty\\.R$", not_changed_basenames)))
 
   # Verify output directory structure
   expect_true(dir.exists(file.path(temp_dir, "nested")))

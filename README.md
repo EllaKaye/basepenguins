@@ -8,8 +8,8 @@ is a fully-comprehensive test suite. **Still to do: documentation.**
 
 Convert scripts that use the
 **[palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html)**
-library to use the version of the `penguins` and `penguins_raw` datasets
-that are now in R-devel, so coming in R 4.5.
+library to use the versions of the `penguins` and `penguins_raw`
+datasets that are now in R-devel, so coming in R 4.5.
 
 The Palmer Penguins data has become [very
 popular](https://apreshill.github.io/palmerpenguins-useR-2022/) in the R
@@ -19,7 +19,7 @@ dataset](https://journal.r-project.org/articles/RJ-2022-020/). Including
 the datasets in R makes them more widely available, and easier to get
 started with, especially for new R users, and for use in teaching.
 
-The version of `penguins` in R’s **datasets** package use some shorter
+The version of `penguins` in R’s **datasets** package has some shorter
 variable names than the **palmerpenguins** equivalent. The differences
 are:
 
@@ -44,6 +44,14 @@ variable names with the shorter R equivalents. It also deals with
 vignette](https://allisonhorst.github.io/palmerpenguins/articles/intro.html)).
 **DETAILS OF THIS SUBSTITUTION WILL BE GIVEN IN THE GET STARTED
 VIGNETTE, WHEN WRITTEN.**
+
+The versions of `penguins_raw` in **palmerpenguins** and **datasets**
+are identical, expect that in the former it’ll have class `tbl_df` if
+the [tibble](https://tibble.tidyverse.org) package is installed. No
+specific changes are made to `penguins_raw` in **basepenguins**, but by
+removing the call to `library(palmerpenguins)`, the **datasets** version
+will be used in any scripts, which is always a `data.frame` (never a
+`tbl_df`).
 
 Note that the **palmerpenguins** package provides features that are not
 in R, such as vignettes and articles on the [package

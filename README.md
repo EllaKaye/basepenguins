@@ -3,9 +3,10 @@
 
 # basepenguins
 
-A work-in-progress package in very early stages of development.
+A work-in-progress package. The main functionality is now in place, as
+is a fully-comprehensive test suite. **Still to do: documentation.**
 
-Convert .R/.qmd/.rmd/.Rmd files that use the
+Convert scripts that use the
 **[palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html)**
 library to use the version of the `penguins` and `penguins_raw` datasets
 that are now in R-devel, so coming in R 4.5.
@@ -34,9 +35,15 @@ It does mean, however, that for those wanting to use R’s version of
 `penguins`, it isn’t simply a case of removing the call to
 `library(palmerpenguins)` and the script still running.
 
-This package will provide a function that will take a file or directory,
-remove any calls to `library(palmerpenguins)` and replace long
-palmerpenguins variable names with the shorter R equivalents.
+This package provides functions that will take a vector of files
+(`convert_files()`) or a directory (`convert_dir()`), and for all files
+with specified extensions (by default .R/.r/.qmd/.rmd/.Rmd ), remove any
+calls to `library(palmerpenguins)` and replace long palmerpenguins
+variable names with the shorter R equivalents. It also deals with
+`ends_with("_mm")` (a selector used in the [palmerpenguins Get Started
+vignette](https://allisonhorst.github.io/palmerpenguins/articles/intro.html)).
+**DETAILS OF THIS SUBSTITUTION WILL BE GIVEN IN THE GET STARTED
+VIGNETTE, WHEN WRITTEN.**
 
 Note that the **palmerpenguins** package provides features that are not
 in R, such as vignettes and articles on the [package

@@ -10,5 +10,6 @@ library(dplyr)
 
 ```{r}
 penguins |>
-    select(body_mass_g, ends_with("_mm"))
+    select(body_mass_g, ends_with("_mm")) |> 
+    select("bill_length_mm")
 ```

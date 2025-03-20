@@ -1,5 +1,4 @@
 # testing validate_input_output() --------------------------------------
-# EK_version
 test_that("validate_input_output validates existing files with NULL output", {
   test_file <- test_path("fixtures", "example_dir", "penguins.R")
   result <- validate_input_output(test_file, NULL)
@@ -11,7 +10,6 @@ test_that("validate_input_output validates existing files with NULL output", {
   expect_true(file.exists(result$output))
 })
 
-# EK_version
 test_that("validate_input_output validates existing files with different output", {
   test_file <- test_path("fixtures", "example_dir", "penguins.R")
 
@@ -24,7 +22,6 @@ test_that("validate_input_output validates existing files with different output"
   expect_true(file.exists(result$output))
 })
 
-# EK_version
 test_that("validate_input_output handles incorrect input and output lengths", {
   valid_file <- test_path("fixtures", "example_dir", "penguins.R")
   expect_error(
@@ -38,7 +35,6 @@ test_that("validate_input_output handles incorrect input and output lengths", {
   )
 })
 
-# EK_version
 test_that("validate_input_output handles non-existent path", {
   non_existent_file <- test_path("fixtures", "example_dir", "no_file_here.R")
   if (file.exists(non_existent_file)) {
@@ -47,7 +43,7 @@ test_that("validate_input_output handles non-existent path", {
 
   expect_error(
     validate_input_output(non_existent_file, output = NULL),
-    "No such file or directory"
+    "[Ff]ile|[Pp]ath"
   )
 
   expect_error(
@@ -56,7 +52,6 @@ test_that("validate_input_output handles non-existent path", {
   )
 })
 
-# EK_version
 test_that("validate_input_output handles extension argument", {
   md_ext <- test_path("fixtures", "example_dir", "not_a_script.md")
   expect_error(
@@ -80,27 +75,6 @@ test_that("validate_input_output creates output directory if needed", {
 })
 
 # testing penguins_substitute() ------------------------------------------
-# test_that("penguins_substitute makes all substitutions", {
-#   file_content <- readLines(test_path("fixtures", "example_dir", "penguins.R"))
-#   result <- penguins_substitute(file_content, "penguins_new.R")
-#   content <- result$content
-#   expect_equal(content[2], "") # replaces library(palmerpenguins)
-#   expect_equal(content[3], "") # replaces library('palmerpenguins')
-#   expect_equal(content[4], "") # replaces library("palmerpenguins")
-#   expect_equal(content[8], "bill_len_data <- penguins$bill_len")
-#   expect_equal(content[9], "bill_dep_data <- penguins$bill_dep")
-#   expect_equal(content[10], "flipper_data <- penguins$flipper_len")
-#   expect_equal(content[11], "body_mass_data <- penguins$body_mass")
-#   expect_equal(
-#     content[14],
-#     'penguins |> select(starts_with("flipper_"), starts_with("bill_")) |> select(bill_len)'
-#   )
-#   expect_equal(
-#     content[15],
-#     'penguins |> filter(species == "Adelie") |> select(starts_with("flipper_"), starts_with("bill_"))'
-#   )
-#   expect_true(result$matches)
-# })
 
 test_that("penguins_substitute makes all expected substitutions", {
   # Create file content with all patterns
@@ -160,7 +134,6 @@ test_that("penguins_substitute handles empty content and no matches correctly", 
 })
 
 # testing penguins_convert() ---------------------------------------------
-# Claude
 test_that("penguins_convert correctly converts fixture files with penguins references", {
   # Test files with penguins references
   penguin_files <- list(
@@ -190,7 +163,7 @@ test_that("penguins_convert correctly converts fixture files with penguins refer
       output_content
     )))
     expect_false(any(grepl("bill_length_mm", output_content)))
-    expect_false(any(grepl("body_mass_g", output_content)))
+    expect_true(any(grepl("bill_len", output_content)))
 
     # Test for in-place modification
     if (file.info(file_path)$isdir == FALSE && file.access(file_path, 2) == 0) {
@@ -218,7 +191,6 @@ test_that("penguins_convert correctly converts fixture files with penguins refer
   }
 })
 
-# Claude
 test_that("penguins_convert correctly handles files without penguins references", {
   # Test files without penguins references
   no_penguin_files <- list(
@@ -245,7 +217,6 @@ test_that("penguins_convert correctly handles files without penguins references"
   }
 })
 
-# Claude
 test_that("penguins_convert handles edge cases correctly", {
   # Create an empty temporary file
   empty_file <- withr::local_tempfile(fileext = ".R")

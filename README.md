@@ -64,6 +64,8 @@ artwork](https://allisonhorst.github.io/palmerpenguins/articles/art.html)!
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://app.codecov.io/gh/EllaKaye/basepenguins)
 <!-- badges: end -->
 
 <!-- 

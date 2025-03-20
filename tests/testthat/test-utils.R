@@ -3,15 +3,59 @@
 test_that("penguins_examples with NULL uses recursive argument", {
   expect_false("analysis/penguins.qmd" %in% penguins_examples())
   expect_true("analysis/penguins.qmd" %in% penguins_examples(recursive = TRUE))
-  expect_true("penguins_graph.R" %in% penguins_examples())
+  expect_true("penguins.R" %in% penguins_examples())
   expect_true("analysis" %in% penguins_examples())
   expect_false("analysis" %in% penguins_examples(recursive = TRUE))
 })
 
 test_that("penguins_examples with file returns correct path", {
-  expect_true(file.exists(penguins_examples("penguins_graph.R")))
+  expect_true(file.exists(penguins_examples("penguins.R")))
   expect_true(file.exists(penguins_examples("analysis/penguins.qmd")))
   expect_error(file.exists(penguins_examples("not_a_file.R")))
+})
+
+test_that("penguins_examples with NULL uses full.names argument correctly", {
+  # Get results with and without full.names (for non-recursive case)
+  without_full_names <- penguins_examples(recursive = FALSE)
+  with_full_names <- penguins_examples(recursive = FALSE, full.names = TRUE)
+
+  # For non-recursive case, check we have simple filenames without full paths
+  expect_true(all(!grepl("^/|^[A-Za-z]:|^\\\\\\\\", without_full_names)))
+
+  # For full.names case, check we have absolute paths
+  expect_true(all(grepl("^/|^[A-Za-z]:|^\\\\\\\\", with_full_names)))
+
+  # Check some specific filename from non-full.names appears at the end of full paths
+  if (length(without_full_names) > 0) {
+    sample_name <- without_full_names[1]
+    expect_true(any(grepl(paste0(sample_name, "$"), with_full_names)))
+  }
+
+  # Test with recursive = TRUE as well
+  recursive_without_full <- penguins_examples(recursive = TRUE)
+  recursive_with_full <- penguins_examples(recursive = TRUE, full.names = TRUE)
+
+  # Even in recursive case, full.names = FALSE should never have absolute paths
+  expect_false(any(grepl("^/|^[A-Za-z]:|^\\\\\\\\", recursive_without_full)))
+
+  # With full.names = TRUE and recursive = TRUE, we should have absolute paths
+  expect_true(all(grepl("^/|^[A-Za-z]:|^\\\\\\\\", recursive_with_full)))
+
+  # Verify at least one recursive file appears in both sets
+  if (length(recursive_without_full) > 0) {
+    # Pick a file that's likely in a subdirectory
+    nested_files <- recursive_without_full[grepl("/", recursive_without_full)]
+    if (length(nested_files) > 0) {
+      sample_nested <- nested_files[1]
+      # Escape special regex chars in the sample name
+      escaped_sample <- gsub(
+        "([.|()\\^{}+$*?]|\\[|\\])",
+        "\\\\\\1",
+        sample_nested
+      )
+      expect_true(any(grepl(paste0(escaped_sample, "$"), recursive_with_full)))
+    }
+  }
 })
 
 

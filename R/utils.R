@@ -1,8 +1,21 @@
-penguins_examples <- function(path = NULL, recursive = FALSE) {
+penguins_examples <- function(
+  path = NULL,
+  recursive = FALSE,
+  full.names = FALSE
+) {
   if (is.null(path)) {
-    dir(system.file("extdata", package = "basepenguins"), recursive = recursive)
+    dir(
+      system.file("extdata", package = "basepenguins"),
+      recursive = recursive,
+      full.names = full.names
+    )
   } else {
-    system.file("extdata", path, package = "basepenguins", mustWork = TRUE)
+    system.file(
+      "extdata",
+      path,
+      package = "basepenguins",
+      mustWork = TRUE
+    )
   }
 }
 

@@ -1,15 +1,12 @@
 # penguins_examples() ----------------------------------------------------
 
-test_that("penguins_examples with NULL lists files and directories non-recursively", {
+test_that("penguins_examples with NULL uses recursive argument", {
   expect_false("analysis/penguins.qmd" %in% penguins_examples())
+  expect_true("analysis/penguins.qmd" %in% penguins_examples(recursive = TRUE))
   expect_true("penguins_graph.R" %in% penguins_examples())
   expect_true("analysis" %in% penguins_examples())
+  expect_false("analysis" %in% penguins_examples(recursive = TRUE))
 })
-
-# test_that("penguins_examples with NULL lists files", {
-#   expect_true("analysis/penguins.qmd" %in% penguins_examples())
-#   expect_true("penguins_graph.R" %in% penguins_examples())
-# })
 
 test_that("penguins_examples with file returns correct path", {
   expect_true(file.exists(penguins_examples("penguins_graph.R")))

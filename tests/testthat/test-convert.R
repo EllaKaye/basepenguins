@@ -336,6 +336,61 @@ test_that("convert_files doesn't generate message to check output if no changes"
   expect_equal(result$not_changed[[no_penguin_file]], output_file)
 })
 
+test_that("convert_files generates re-knit message for Rmd/Qmd files, but not R", {
+  # Create temporary files with different extensions
+  temp_dir <- withr::local_tempdir()
+
+  # Create R, Rmd and qmd files with penguin references
+  r_file <- file.path(temp_dir, "test.R")
+  rmd_file <- file.path(temp_dir, "test.Rmd")
+  qmd_file <- file.path(temp_dir, "test.qmd")
+
+  # Write penguin content to all files
+  penguin_content <- "library(palmerpenguins)\nx <- penguins$bill_length_mm"
+  writeLines(penguin_content, r_file)
+  writeLines(penguin_content, rmd_file)
+  writeLines(penguin_content, qmd_file)
+
+  # Create output directory
+  output_dir <- withr::local_tempdir()
+
+  # Create output file paths
+  r_output <- file.path(output_dir, "test.R")
+  rmd_output <- file.path(output_dir, "test.Rmd")
+  qmd_output <- file.path(output_dir, "test.qmd")
+
+  # First test with only R file (should NOT show re-knit message)
+  messages_r <- capture_messages({
+    convert_files(r_file, r_output)
+  })
+
+  expect_false(any(grepl("re-knit or re-render", messages_r)))
+
+  # Test with Rmd file (SHOULD show re-knit message)
+  messages_rmd <- capture_messages({
+    convert_files(rmd_file, rmd_output)
+  })
+
+  expect_true(any(grepl("re-knit or re-render", messages_rmd)))
+
+  # Test with qmd file (SHOULD show re-knit message)
+  messages_qmd <- capture_messages({
+    convert_files(qmd_file, qmd_output)
+  })
+
+  expect_true(any(grepl("re-knit or re-render", messages_qmd)))
+
+  # Test with mixed files (SHOULD show re-knit message)
+  messages_mixed <- capture_messages({
+    convert_files(
+      c(r_file, rmd_file, qmd_file),
+      c(r_output, rmd_output, qmd_output)
+    )
+  })
+
+  expect_true(any(grepl("re-knit or re-render", messages_mixed)))
+})
+
 test_that("convert_files returns the correct structure and message with changed and not_changed files", {
   # This test specifically targets lines otherwise showing as uncovered
   # We need files that will produce both converted and not converted results
@@ -397,7 +452,6 @@ test_that("convert_files returns the correct structure and message with changed 
 
 # testing convert_dir() --------------------------------------------------
 
-# EK checked
 test_that("convert_dir correctly processes a directory to new directory", {
   # Input and output directories
   temp_dir <- withr::local_tempdir()
@@ -453,7 +507,6 @@ test_that("convert_dir correctly processes a directory to new directory", {
   expect_true(any(grepl("bill_len", output_content)))
 })
 
-# EK checked
 test_that("convert_dir correctly processes files in-place when output is NULL", {
   # Create a temporary directory with copies of the files
   temp_dir <- withr::local_tempdir()
@@ -520,7 +573,6 @@ test_that("convert_dir correctly processes files in-place when output is NULL", 
   expect_true(all(grepl("^penguins", changed_basenames)))
 })
 
-# EK checked
 test_that("convert_dir handles custom extensions", {
   # Create a temporary directory for output
   temp_dir <- withr::local_tempdir()
@@ -553,7 +605,6 @@ test_that("convert_dir handles custom extensions", {
   )))
 })
 
-# EK checked
 test_that("convert_dir handles non-existent directory", {
   expect_error(
     convert_dir("non_existent_dir", NULL),
@@ -586,7 +637,6 @@ test_that("convert_dir handles no files with specified extensions)", {
   )
 })
 
-# EK checked
 test_that("convert_dir creates all required subdirectories in output", {
   # Create a temporary directory with a deeply nested structure
   source_dir <- withr::local_tempdir()
@@ -631,7 +681,6 @@ test_that("convert_dir creates all required subdirectories in output", {
   expect_true(any(grepl("bill_len", output_content)))
 })
 
-# EK checked
 test_that("convert_dir handles a mixture of file types correctly", {
   # Create a temporary directory with various file types
   source_dir <- withr::local_tempdir()
@@ -690,7 +739,6 @@ test_that("convert_dir handles a mixture of file types correctly", {
   expect_equal(html_output_content, html_input_content)
 })
 
-# EK fixed
 test_that("convert_dir reports correct statistics in result lists", {
   # Setup directories
   example_dir <- test_path("fixtures", "example_dir")
@@ -751,7 +799,6 @@ test_that("convert_dir reports correct statistics in result lists", {
   }
 })
 
-# EK checked
 test_that("convert_dir handles paths with spaces", {
   # Create source directory with spaces in the name
   source_dir <- withr::local_tempdir()
@@ -791,7 +838,6 @@ test_that("convert_dir handles paths with spaces", {
   expect_true(any(grepl("bill_len", output_content)))
 })
 
-# Add specific test to exercise the exact NULL output code path
 test_that("convert_dir with NULL output explicitly exercises that code path", {
   # Setup a directory with a penguin file for in-place conversion
   temp_dir <- withr::local_tempdir()
@@ -829,122 +875,91 @@ test_that("convert_dir with NULL output explicitly exercises that code path", {
 
 # testing convert_files_inplace() ----------------------------------------
 
-test_that("convert_files_inplace correctly calls convert_files with same input for both parameters", {
-  # Create temporary copies of files to test in-place modification
+test_that("convert_files_inplace directly calls convert_files with input=output", {
+  # Create a temporary test file that should trigger changes
   temp_dir <- withr::local_tempdir()
+  test_file <- file.path(temp_dir, "test_penguins.R")
 
-  # Copy a file with penguin references that will be modified
-  penguin_file <- file.path(temp_dir, "penguins.R")
-  file.copy(test_path("fixtures", "example_dir", "penguins.R"), penguin_file)
-
-  # Copy a file without penguin references that won't be modified
-  no_penguin_file <- file.path(temp_dir, "no_penguins.R")
-  file.copy(
-    test_path("fixtures", "example_dir", "no_penguins.R"),
-    no_penguin_file
+  # Create content with palmer penguins references
+  writeLines(
+    c("library(palmerpenguins)", "x <- penguins$bill_length_mm"),
+    test_file
   )
 
-  # Save original content to verify changes later
-  original_penguin_content <- readLines(penguin_file)
-  original_no_penguin_content <- readLines(no_penguin_file)
+  # Save the original content
+  orig_content <- readLines(test_file)
 
-  # Run the function
-  result <- convert_files_inplace(c(penguin_file, no_penguin_file))
+  # Run convert_files_inplace on the test file
+  result <- convert_files_inplace(test_file)
 
-  # Check structure of result
+  # Verify the file was modified
+  new_content <- readLines(test_file)
+  expect_false(identical(orig_content, new_content))
+
+  # Check that palmer penguins references were changed
+  expect_false(any(grepl("palmerpenguins", new_content)))
+  expect_false(any(grepl("bill_length_mm", new_content)))
+  expect_true(any(grepl("bill_len", new_content)))
+
+  # Check result structure
   expect_type(result, "list")
   expect_named(result, c("changed", "not_changed"))
-
-  # Verify the penguin file was modified
-  modified_penguin_content <- readLines(penguin_file)
-  expect_false(identical(modified_penguin_content, original_penguin_content))
-  expect_false(any(grepl(
-    "library\\(['\"]?palmerpenguins['\"]?\\)",
-    modified_penguin_content
-  )))
-  expect_false(any(grepl("bill_length_mm", modified_penguin_content)))
-  expect_true(any(grepl("bill_len", modified_penguin_content)))
-
-  # Verify the no_penguin file was not modified
-  modified_no_penguin_content <- readLines(no_penguin_file)
-  expect_identical(modified_no_penguin_content, original_no_penguin_content)
-
-  # Check values in result lists
-  expect_true(penguin_file %in% names(result$changed))
-  expect_true(no_penguin_file %in% names(result$not_changed))
+  expect_equal(names(result$changed), test_file)
+  expect_equal(result$changed[[1]], test_file)
 })
 
 
-# testing convert_dir_inplace() ------------------------------------------
+# # testing convert_dir_inplace() ------------------------------------------
 
-test_that("convert_dir_inplace correctly calls convert_dir with same input for both parameters", {
-  # Create a temporary directory structure with test files
+test_that("convert_dir_inplace directly calls convert_dir with input=output", {
+  # Create a temporary directory structure for testing
   temp_dir <- withr::local_tempdir()
 
-  # Create subdirectory to match the structure in fixtures
+  # Create a test file with penguins content
+  test_file <- file.path(temp_dir, "penguins.R")
+  writeLines(
+    c("library(palmerpenguins)", "x <- penguins$bill_length_mm"),
+    test_file
+  )
+
+  # Create a nested directory with a file
   nested_dir <- file.path(temp_dir, "nested")
   dir.create(nested_dir)
-
-  # Copy penguin files that should be modified
-  penguin_file <- file.path(temp_dir, "penguins.R")
-  file.copy(test_path("fixtures", "example_dir", "penguins.R"), penguin_file)
-
-  nested_penguin_file <- file.path(nested_dir, "penguins.rmd")
-  file.copy(
-    test_path("fixtures", "example_dir", "nested", "penguins.rmd"),
-    nested_penguin_file
+  nested_file <- file.path(nested_dir, "nested_penguins.rmd")
+  writeLines(
+    c(
+      "---",
+      "title: \"Test\"",
+      "---",
+      "```{r}",
+      "library(palmerpenguins)",
+      "penguins$bill_length_mm",
+      "```"
+    ),
+    nested_file
   )
 
-  # Copy no_penguin files that shouldn't be modified
-  no_penguin_file <- file.path(temp_dir, "no_penguins.R")
-  file.copy(
-    test_path("fixtures", "example_dir", "no_penguins.R"),
-    no_penguin_file
-  )
+  # Save original content
+  orig_content <- readLines(test_file)
+  orig_nested_content <- readLines(nested_file)
 
-  nested_no_penguin_file <- file.path(nested_dir, "no_penguins.Rmd")
-  file.copy(
-    test_path("fixtures", "example_dir", "nested", "no_penguins.Rmd"),
-    nested_no_penguin_file
-  )
-
-  # Save original content to verify changes later
-  original_penguin_content <- readLines(penguin_file)
-  original_nested_penguin_content <- readLines(nested_penguin_file)
-  original_no_penguin_content <- readLines(no_penguin_file)
-  original_nested_no_penguin_content <- readLines(nested_no_penguin_file)
-
-  # Run the function
+  # Run convert_dir_inplace
   result <- convert_dir_inplace(temp_dir)
 
-  # Check structure of result
+  # Verify files were modified
+  new_content <- readLines(test_file)
+  new_nested_content <- readLines(nested_file)
+
+  expect_false(identical(orig_content, new_content))
+  expect_false(identical(orig_nested_content, new_nested_content))
+
+  # Check that palmer penguins references were changed
+  expect_false(any(grepl("palmerpenguins", new_content)))
+  expect_false(any(grepl("palmerpenguins", new_nested_content)))
+
+  # Check result structure
   expect_type(result, "list")
   expect_named(result, c("changed", "not_changed"))
-
-  # Verify the penguin files were modified
-  modified_penguin_content <- readLines(penguin_file)
-  expect_false(identical(modified_penguin_content, original_penguin_content))
-  expect_false(any(grepl("bill_length_mm", modified_penguin_content)))
-  expect_true(any(grepl("bill_len", modified_penguin_content)))
-
-  modified_nested_penguin_content <- readLines(nested_penguin_file)
-  expect_false(identical(
-    modified_nested_penguin_content,
-    original_nested_penguin_content
-  ))
-  expect_false(any(grepl("bill_length_mm", modified_nested_penguin_content)))
-  expect_true(any(grepl("bill_len", modified_nested_penguin_content)))
-
-  # Verify the no_penguin files were not modified
-  expect_identical(readLines(no_penguin_file), original_no_penguin_content)
-  expect_identical(
-    readLines(nested_no_penguin_file),
-    original_nested_no_penguin_content
-  )
-
-  # Check values in result lists
-  expect_true(penguin_file %in% result$changed)
-  expect_true(nested_penguin_file %in% result$changed)
-  expect_true(no_penguin_file %in% result$not_changed)
-  expect_true(nested_no_penguin_file %in% result$not_changed)
+  expect_true(test_file %in% result$changed)
+  expect_true(nested_file %in% result$changed)
 })

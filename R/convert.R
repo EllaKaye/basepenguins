@@ -55,7 +55,13 @@ convert_files <- function(
 
   if (length(changed) > 0) {
     message(
-      "- Please check the changed output files and remember to re-knit or re-render any Rmarkdown or quarto documents."
+      "- Please check the changed output files."
+    )
+  }
+
+  if (any(tolower(tools::file_ext(changed)) %in% c("qmd", "rmd"))) {
+    message(
+      "- Remember to re-knit or re-render and changed Rmarkdown or Quarto documents."
     )
   }
 

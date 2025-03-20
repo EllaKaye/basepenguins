@@ -1,3 +1,6 @@
+# Define here so don't require R 4.4, which causes R CMD check to fail on oldrel
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 penguins_examples <- function(
   path = NULL,
   recursive = FALSE,

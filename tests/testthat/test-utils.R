@@ -1,3 +1,11 @@
+# %||%
+test_that("NULL coalescing operator works", {
+  expect_equal(NULL %||% 3, 3)
+  expect_equal(3 %||% NULL, 3)
+  expect_equal(4 %||% 3, 4)
+  expect_null(NULL %||% NULL)
+})
+
 # penguins_examples() ----------------------------------------------------
 
 test_that("penguins_examples with NULL uses recursive argument", {

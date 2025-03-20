@@ -3,6 +3,13 @@
 
 # basepenguins
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://app.codecov.io/gh/EllaKaye/basepenguins)
+<!-- badges: end -->
+
 A work-in-progress package. The main functionality is now in place, as
 is a fully-comprehensive test suite. **Still to do: documentation.**
 
@@ -60,13 +67,6 @@ package also contains the data in two csv files and provides a
 [function](https://allisonhorst.github.io/palmerpenguins/reference/path_to_file.html)
 to access them. And, of course, Allison Horst’s wonderful [penguins
 artwork](https://allisonhorst.github.io/palmerpenguins/articles/art.html)!
-
-<!-- badges: start -->
-
-[![R-CMD-check](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://app.codecov.io/gh/EllaKaye/basepenguins)
-<!-- badges: end -->
 
 <!-- 
 The goal of basepenguins is to ...

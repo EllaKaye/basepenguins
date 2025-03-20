@@ -63,6 +63,7 @@ artwork](https://allisonhorst.github.io/palmerpenguins/articles/art.html)!
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 <!-- 

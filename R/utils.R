@@ -147,6 +147,49 @@ extend_name <- function(path, prefix = "", suffix = "_new") {
   }
 }
 
+#' Generate modified file paths by adding prefixes and/or suffixes
+#'
+#' @description
+#' This function takes a vector of file paths and returns a vector of modified paths
+#' with prefixes and/or suffixes added to the filenames. It's useful for generating
+#' output paths for the `convert_files()` and `convert_dir()` functions.
+#' `files_to_convert()` is useful for generating the input `paths`.
+#'
+#' @param paths A character vector of file paths to modify
+#' @param prefix A character string to add at the beginning of each filename. Default is "".
+#' @param suffix A character string to add at the end of each filename, before the extension.
+#'   Default is "_new".
+#' @param dir An optional character string specifying the output directory.
+#'   If provided, the modified filenames will be placed in this directory.
+#'   This is useful if `paths` are relative and a different output directory is required.
+#'   Default is NULL.
+#'
+#' @return A character vector of modified file paths with the specified prefixes and suffixes.
+#'   The original paths are preserved as names of the returned vector.
+#'
+#' @examples
+#' # Get all convertible files from examples directory
+#' input_files_full <- files_to_convert(penguins_examples_dir(), full.names = TRUE)
+#'
+#' # Generate output paths with "_converted" suffix
+#' extend_names(input_files_full, suffix = "_converted")
+#'
+#' # Generate output paths in a specific directory, with relative paths as input
+#' input_files <- files_to_convert(penguins_examples_dir())
+#' extend_names(input_files, dir = "new_dir") # relative output paths
+#' extend_names(input_files, dir = tempdir()) # absolute output paths
+#'
+#' # Add both prefix and suffix and place in a new directory
+#' extend_names(
+#'   c("analysis.R", "report.qmd"),
+#'   prefix = "processed_",
+#'   suffix = "_v2",
+#'   dir = tempdir()
+#' ) # Results in paths like "tempdir/processed_analysis_v2.R"
+#'
+#' @seealso [convert_files()], [files_to_convert()]
+#'
+#' @export
 extend_names <- function(paths, prefix = "", suffix = "_new", dir = NULL) {
   if (length(paths) == 0) {
     stop("`paths` must have length at least 1 (not 0)")

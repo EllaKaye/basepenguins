@@ -1,18 +1,24 @@
 #' Convert files to use datasets versions of penguins and penguins_raw
 #'
 #' @description
-#' This function converts files that use the
+#' These function converts files that use the
 #' [palmerpenguins](https://CRAN.R-project.org/package=palmerpenguins) package
 #' to use the versions of `penguins` and `penguins_raw` included in the datasets
 #' package in R 4.5.0. It removes calls to `library(palmerpenguins)` and makes
 #' necessary changes to the variable names.
 #'
-#' @param input A character vector of file paths to convert.
-#' @param output A character vector of output file paths,
-#'   or NULL to modify files in place.
+#' @param input For `convert_files()` and `convert_files_inplace()`:
+#'   A character vector of file paths to convert.
+#'   For `convert_dir() and `convert_dir_inplace()`:
+#'   A string with a path to a directory of files to convert.
+#' @param output For `convert_files()`:
+#'   A character vector of output file paths, or NULL to modify files in place.
 #'   If provided, must be the same length as `input`.
+#'   For `convert_dir()`:
+#'   A string with the output directory,
+#'   or `NULL` to modify the files in the directory in place.
 #' @param extensions A character vector of file extensions to process,
-#'   defaults to c("R", "r", "qmd", "rmd", "Rmd").
+#'   defaults to R scripts and R Markdown and Quarto documents.
 #'
 #' @returns
 #' An invisible list with two components:
@@ -37,41 +43,41 @@
 #'      \item `flipper_length_mm` -> `flipper_len`
 #'      \item `body_mass_g` -> `body_mass`
 #'   }
-#'   \item ends_with("_mm")` -> `starts_with("flipper_"), starts_with(bill_)`
+#'   \item `ends_with("_mm")` -> `starts_with("flipper_"), starts_with(bill_)`
 #' }
+#'
 #'
 #' Non-convertible files (those without the specified extensions) are copied to
 #' the output location if `output` is provided, but are not modified.
 #'
-#' @seealso [convert_dir()], [penguins_examples()]
+#' If the `output` files or directory do not (yet) exist, they will be created
+#' (recursively if necessary).
+#'
+#' @seealso [penguins_examples()], [penguins_examples_dir()]
 #'
 #' @examples
-#' # Get a sample file that uses palmerpenguins
+#' # Single file
 #' penguin_file <- penguins_examples("penguins.R")
-#'
-#' # Create a temporary file for output
 #' output_file <- withr::local_tempfile(fileext = ".R")
-#'
-#' # Convert the file
 #' result <- convert_files(penguin_file, output_file)
-#'
-#' # View the changes made
-#' cat(readLines(output_file), sep = "\n")
+#' cat(readLines(output_file), sep = "\n") # view changes
 #'
 #' # Convert multiple files to new locations
 #' input_files <- c(
 #'   penguins_examples("penguins.R"),
 #'   penguins_examples("analysis/penguins.qmd")
 #' )
-#'
-#' # Create temporary output files
 #' output_files <- c(
 #'   withr::local_tempfile(fileext = ".R"),
 #'   withr::local_tempfile(fileext = ".qmd")
 #' )
-#'
-#' # Convert all files
 #' result <- convert_files(input_files, output_files)
+#'
+#' # Convert all files in a directory
+#' penguins_dir <- penguins_examples_dir()
+#' output_dir <- withr::local_tempdir()
+#' result <- convert_dir(penguins_dir, output_dir)
+#' result$changed # see which files have changed
 #'
 #' # Modify files in-place
 #' input_file <- penguins_examples("penguins.R")
@@ -168,7 +174,8 @@ convert_files_inplace <- function(
   convert_files(input, input, extensions)
 }
 
-# TODO: document
+#' @rdname convert_files
+#' @export
 convert_dir <- function(
   input,
   output,
@@ -220,6 +227,8 @@ convert_dir <- function(
   invisible(result)
 }
 
+#' @rdname convert_files
+#' @export
 convert_dir_inplace <- function(
   input,
   extensions = c("R", "r", "qmd", "rmd", "Rmd")

@@ -3,21 +3,33 @@
 \name{convert_files}
 \alias{convert_files}
 \alias{convert_files_inplace}
+\alias{convert_dir}
+\alias{convert_dir_inplace}
 \title{Convert files to use datasets versions of penguins and penguins_raw}
 \usage{
 convert_files(input, output, extensions = c("R", "r", "qmd", "rmd", "Rmd"))
 
 convert_files_inplace(input, extensions = c("R", "r", "qmd", "rmd", "Rmd"))
+
+convert_dir(input, output, extensions = c("R", "r", "qmd", "rmd", "Rmd"))
+
+convert_dir_inplace(input, extensions = c("R", "r", "qmd", "rmd", "Rmd"))
 }
 \arguments{
-\item{input}{A character vector of file paths to convert.}
+\item{input}{For \code{convert_files()} and \code{convert_files_inplace()}:
+A character vector of file paths to convert.
+For \verb{convert_dir() and }convert_dir_inplace()`:
+A string with a path to a directory of files to convert.}
 
-\item{output}{A character vector of output file paths,
-or NULL to modify files in place.
-If provided, must be the same length as \code{input}.}
+\item{output}{For \code{convert_files()}:
+A character vector of output file paths, or NULL to modify files in place.
+If provided, must be the same length as \code{input}.
+For \code{convert_dir()}:
+A string with the output directory,
+or \code{NULL} to modify the files in the directory in place.}
 
 \item{extensions}{A character vector of file extensions to process,
-defaults to c("R", "r", "qmd", "rmd", "Rmd").}
+defaults to R scripts and R Markdown and Quarto documents.}
 }
 \value{
 An invisible list with two components:
@@ -32,7 +44,7 @@ listed in the Details section, or if they do not have a specified
 }
 }
 \description{
-This function converts files that use the
+These function converts files that use the
 \href{https://CRAN.R-project.org/package=palmerpenguins}{palmerpenguins} package
 to use the versions of \code{penguins} and \code{penguins_raw} included in the datasets
 package in R 4.5.0. It removes calls to \code{library(palmerpenguins)} and makes
@@ -49,39 +61,38 @@ Files are converted by:
 \item \code{flipper_length_mm} -> \code{flipper_len}
 \item \code{body_mass_g} -> \code{body_mass}
 }
-\item ends_with("\emph{mm")\verb{->}starts_with("flipper}"), starts_with(bill_)`
+\item \code{ends_with("_mm")} -> \verb{starts_with("flipper_"), starts_with(bill_)}
 }
 
 Non-convertible files (those without the specified extensions) are copied to
 the output location if \code{output} is provided, but are not modified.
+
+If the \code{output} files or directory do not (yet) exist, they will be created
+(recursively if necessary).
 }
 \examples{
-# Get a sample file that uses palmerpenguins
+# Single file
 penguin_file <- penguins_examples("penguins.R")
-
-# Create a temporary file for output
 output_file <- withr::local_tempfile(fileext = ".R")
-
-# Convert the file
 result <- convert_files(penguin_file, output_file)
-
-# View the changes made
-cat(readLines(output_file), sep = "\n")
+cat(readLines(output_file), sep = "\n") # view changes
 
 # Convert multiple files to new locations
 input_files <- c(
   penguins_examples("penguins.R"),
   penguins_examples("analysis/penguins.qmd")
 )
-
-# Create temporary output files
 output_files <- c(
   withr::local_tempfile(fileext = ".R"),
   withr::local_tempfile(fileext = ".qmd")
 )
-
-# Convert all files
 result <- convert_files(input_files, output_files)
+
+# Convert all files in a directory
+penguins_dir <- penguins_examples_dir()
+output_dir <- withr::local_tempdir()
+result <- convert_dir(penguins_dir, output_dir)
+result$changed # see which files have changed
 
 # Modify files in-place
 input_file <- penguins_examples("penguins.R")
@@ -101,5 +112,5 @@ convert_files_inplace(copy_path)
 
 }
 \seealso{
-\code{\link[=convert_dir]{convert_dir()}}, \code{\link[=penguins_examples]{penguins_examples()}}
+\code{\link[=penguins_examples]{penguins_examples()}}, \code{\link[=penguins_examples_dir]{penguins_examples_dir()}}
 }

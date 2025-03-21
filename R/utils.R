@@ -1,6 +1,34 @@
 # Define here so don't require R 4.4, which causes R CMD check to fail on oldrel
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
+#' List or Find Example Files from basepenguins Package
+#'
+#' @description
+#' This function provides access to example files included with the basepenguins package.
+#' When called with `path = NULL`, it lists available example files. When called with a
+#' specific path, it returns the full path to that file.
+#'
+#' @param path Character string. If NULL (default), lists all available example files.
+#'   If specified, returns the full path to the specified file or directory.
+#' @param recursive Logical. If TRUE, lists files in subdirectories recursively.
+#'   Only used when `path = NULL`. Default is FALSE.
+#' @param full.names Logical. If TRUE, returns full file paths rather than relative paths.
+#'   Only used when `path = NULL`. Default is FALSE.
+#'
+#' @return
+#' If `path = NULL`, returns a character vector of available file/directory names.
+#' If `path` is specified, returns the full file path to the requested resource.
+#'
+#' @examples
+#' # List all files and directories in the root directory
+#' penguins_examples()
+#' penguins_examples(recursive = TRUE)
+#'
+#' # Get the full path to a specific example files
+#' penguins_examples("penguins.R")
+#' penguins_examples("analysis/penguins.qmd")
+#'
+#' @export
 penguins_examples <- function(
   path = NULL,
   recursive = FALSE,

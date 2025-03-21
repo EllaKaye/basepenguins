@@ -1,4 +1,95 @@
-# TODO: document
+#' Convert files to use datasets versions of penguins and penguins_raw
+#'
+#' @description
+#' This function converts files that use the
+#' [palmerpenguins](https://CRAN.R-project.org/package=palmerpenguins) package
+#' to use the versions of `penguins` and `penguins_raw` included in the datasets
+#' package in R 4.5.0. It removes calls to `library(palmerpenguins)` and makes
+#' necessary changes to the variable names.
+#'
+#' @param input A character vector of file paths to convert.
+#' @param output A character vector of output file paths,
+#'   or NULL to modify files in place.
+#'   If provided, must be the same length as `input`.
+#' @param extensions A character vector of file extensions to process,
+#'   defaults to c("R", "r", "qmd", "rmd", "Rmd").
+#'
+#' @returns
+#' An invisible list with two components:
+#' \itemize{
+#'   \item `changed`: A named character vector of output paths for files that
+#'     were modified, with input paths as the names.
+#'   \item `not_changed`: A named character vector of output paths for files
+#'     that were not modified, with input paths as names. Files are not changed
+#'     if they do not contain references to palmerpenguins (i.e. the patterns)
+#'     listed in the Details section, or if they do not have a specified
+#'     `extension`.
+#' }
+#'
+#' @details
+#' Files are converted by:
+#' \itemize{
+#'   \item Replacing `library(palmerpenguins)` with `""`
+#'   \item Replacing variable names:
+#'   \itemize{
+#'      \item `bill_length_mm` -> `bill_len`
+#'      \item `bill_depth_mm` -> `bill_dep`
+#'      \item `flipper_length_mm` -> `flipper_len`
+#'      \item `body_mass_g` -> `body_mass`
+#'   }
+#'   \item ends_with("_mm")` -> `starts_with("flipper_"), starts_with(bill_)`
+#' }
+#'
+#' Non-convertible files (those without the specified extensions) are copied to
+#' the output location if `output` is provided, but are not modified.
+#'
+#' @seealso [convert_dir()], [penguins_examples()]
+#'
+#' @examples
+#' # Get a sample file that uses palmerpenguins
+#' penguin_file <- penguins_examples("penguins.R")
+#'
+#' # Create a temporary file for output
+#' output_file <- withr::local_tempfile(fileext = ".R")
+#'
+#' # Convert the file
+#' result <- convert_files(penguin_file, output_file)
+#'
+#' # View the changes made
+#' cat(readLines(output_file), sep = "\n")
+#'
+#' # Convert multiple files to new locations
+#' input_files <- c(
+#'   penguins_examples("penguins.R"),
+#'   penguins_examples("analysis/penguins.qmd")
+#' )
+#'
+#' # Create temporary output files
+#' output_files <- c(
+#'   withr::local_tempfile(fileext = ".R"),
+#'   withr::local_tempfile(fileext = ".qmd")
+#' )
+#'
+#' # Convert all files
+#' result <- convert_files(input_files, output_files)
+#'
+#' # Modify files in-place
+#' input_file <- penguins_examples("penguins.R")
+#'
+#' # Copy file so don't overwrite example provided by package
+#' copy_path <- withr::local_tempfile(fileext = ".R")
+#' file.copy(input_file, copy_path)
+#' convert_files_inplace(copy_path)
+#'
+#' \dontrun{ # don't overwrite the example files provided by the package
+#'   # Get all example files
+#'   input_files <- penguins_examples(recursive = TRUE, full.names = TRUE)
+#'
+#'   # Convert them in place
+#'   convert_files_inplace(input_files)
+#' }
+#'
+#' @export
 convert_files <- function(
   input,
   output,
@@ -68,8 +159,13 @@ convert_files <- function(
   invisible(list(changed = changed, not_changed = not_changed))
 }
 
-convert_files_inplace <- function(input) {
-  convert_files(input, input)
+#' @rdname convert_files
+#' @export
+convert_files_inplace <- function(
+  input,
+  extensions = c("R", "r", "qmd", "rmd", "Rmd")
+) {
+  convert_files(input, input, extensions)
 }
 
 # TODO: document
@@ -124,6 +220,9 @@ convert_dir <- function(
   invisible(result)
 }
 
-convert_dir_inplace <- function(input) {
-  convert_dir(input, input)
+convert_dir_inplace <- function(
+  input,
+  extensions = c("R", "r", "qmd", "rmd", "Rmd")
+) {
+  convert_dir(input, input, extensions)
 }

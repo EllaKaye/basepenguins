@@ -79,7 +79,8 @@ directly will cause an error if that column isn't in the data frame).
 In an educational context, we suggest manually editing the converted files to
 replace \code{starts_with("flipper_")} to \code{flipper_len} if appropriate.
 To facilitate this, the functions documented here produce a message
-indicating the files and line numbers where the \code{ends_with("_mm")} was made.
+indicating the files and line numbers where the \code{ends_with("_mm")}
+substitution was made.
 }
 \examples{
 # Single file

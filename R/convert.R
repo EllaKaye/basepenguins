@@ -62,7 +62,8 @@
 #' In an educational context, we suggest manually editing the converted files to
 #' replace `starts_with("flipper_")` to `flipper_len` if appropriate.
 #' To facilitate this, the functions documented here produce a message
-#' indicating the files and line numbers where the `ends_with("_mm")` was made.
+#' indicating the files and line numbers where the `ends_with("_mm")`
+#' substitution was made.
 #'
 #' @seealso [penguins_examples()], [penguins_examples_dir()]
 #'

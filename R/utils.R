@@ -1,7 +1,7 @@
 # Define here so don't require R 4.4, which causes R CMD check to fail on oldrel
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
-#' List or Find Example Files from basepenguins Package
+#' List or find example files from basepenguins package
 #'
 #' @description
 #' These functions provides access to example files included with the basepenguins package.

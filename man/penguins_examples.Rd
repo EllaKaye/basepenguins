@@ -3,7 +3,7 @@
 \name{penguins_examples}
 \alias{penguins_examples}
 \alias{penguins_examples_dir}
-\title{List or Find Example Files from basepenguins Package}
+\title{List or find example files from basepenguins package}
 \usage{
 penguins_examples(path = NULL, recursive = FALSE, full.names = FALSE)
 

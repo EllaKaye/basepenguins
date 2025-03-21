@@ -37,10 +37,10 @@ These changes were made for more compact code and data display.
 
 It does mean, however, that for those wanting to use R’s version of
 `penguins`, it isn’t simply a case of removing the call to
-`library(palmerpenguins)` and the script still running. Using
-**basepenguins** takes care of converting files to remove the call to
-`library(palmerpenguins)` and makes the necessary conversions to
-variable names.
+`library(palmerpenguins)` and the script still running. The
+**basepenguins** package takes care of converting files to remove the
+call to `library(palmerpenguins)` and makes the necessary conversions to
+variable names, ensuring that the resulting scripts still run.
 
 ## Installation
 
@@ -86,33 +86,32 @@ cat(readLines(input[2]), sep = "\n")
 ```
 
 ``` r
-
 # generate output file paths (by default prefix "_new" to input filenames)
 output <- extend_names(input) 
+```
 
+``` r
 # convert the files
 result <- convert_files(input, output)
-#> - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+#> - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
 #> - Please check the changed output files.
 #> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
 ```
 
 ``` r
-
 # See which files have changed
 result
 #> $changed
-#>       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/analysis/penguins.qmd 
-#> "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/analysis/penguins_new.qmd" 
-#>                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins.R 
-#>            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins_new.R" 
+#>       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins.qmd 
+#> "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins_new.qmd" 
+#>                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins.R 
+#>            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins_new.R" 
 #> 
 #> $not_changed
 #> character(0)
 ```
 
 ``` r
-
 # See the changes to the input file we saw above
 cat(readLines(output[2]), sep = "\n") 
 #> 
@@ -140,11 +139,37 @@ convert_files_inplace(input, extensions = "R")
 
 ## Coverting a directory
 
+Whilst `convert_files()` allows the conversion of specified files,
+`convert_dir()` will convert all the files (with the stated extensions)
+in a given directory (and its subdirectories).
+
 ``` r
 example_dir <- penguins_examples_dir()
 output_dir <- tempdir()
-convert_dir(example_dir, output_dir)
-#> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//Rtmp10hg85/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+result <- convert_dir(example_dir, output_dir)
+#> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
 #> - Please check the changed output files.
 #> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
+```
+
+``` r
+
+result
+#> $changed
+#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins.qmd 
+#>                                                    "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/analysis/penguins.qmd" 
+#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins.R 
+#>                                                               "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/penguins.R" 
+#> 
+#> $not_changed
+#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins_new.qmd 
+#>                                                    "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/analysis/penguins_new.qmd" 
+#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins_new.R 
+#>                                                               "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/penguins_new.R"
+```
+
+There is also a version to modify files in place (not executed here):
+
+``` r
+convert_dir_inplace(example_dir)
 ```

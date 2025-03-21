@@ -4,9 +4,9 @@
 #' List or Find Example Files from basepenguins Package
 #'
 #' @description
-#' This function provides access to example files included with the basepenguins package.
-#' When called with `path = NULL`, it lists available example files. When called with a
-#' specific path, it returns the full path to that file.
+#' These functions provides access to example files included with the basepenguins package.
+#' When `penguins_examples()` is called with `path = NULL`, it lists available example files.
+#' When called with a specific path, it returns the full path to that file.
 #'
 #' @param path Character string. If NULL (default), lists all available example files.
 #'   If specified, returns the full path to the specified file or directory.
@@ -16,8 +16,14 @@
 #'   Only used when `path = NULL`. Default is FALSE.
 #'
 #' @return
-#' If `path = NULL`, returns a character vector of available file/directory names.
-#' If `path` is specified, returns the full file path to the requested resource.
+#' \itemize{
+#'   \item `penguins_examples`:
+#'   \itemize{
+#'     \item If `path = NULL`, returns a character vector of available file/directory names.
+#'     \item If `path` is specified, returns the full file path to the requested resource.
+#'   }
+#' \item `penguins_examples_dir`: The path to the directory containing all examples.
+#' }
 #'
 #' @examples
 #' # List all files and directories in the root directory
@@ -27,6 +33,9 @@
 #' # Get the full path to a specific example files
 #' penguins_examples("penguins.R")
 #' penguins_examples("analysis/penguins.qmd")
+#'
+#' # Get the path to all examples
+#' penguins_examples_dir()
 #'
 #' @export
 penguins_examples <- function(
@@ -48,6 +57,12 @@ penguins_examples <- function(
       mustWork = TRUE
     )
   }
+}
+
+#' @rdname penguins_examples
+#' @export
+penguins_examples_dir <- function() {
+  system.file("extdata", package = "basepenguins")
 }
 
 filter_by_extensions <- function(extensions) {

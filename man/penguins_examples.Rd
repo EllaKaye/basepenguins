@@ -2,9 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{penguins_examples}
 \alias{penguins_examples}
+\alias{penguins_examples_dir}
 \title{List or Find Example Files from basepenguins Package}
 \usage{
 penguins_examples(path = NULL, recursive = FALSE, full.names = FALSE)
+
+penguins_examples_dir()
 }
 \arguments{
 \item{path}{Character string. If NULL (default), lists all available example files.
@@ -17,13 +20,19 @@ Only used when \code{path = NULL}. Default is FALSE.}
 Only used when \code{path = NULL}. Default is FALSE.}
 }
 \value{
-If \code{path = NULL}, returns a character vector of available file/directory names.
-If \code{path} is specified, returns the full file path to the requested resource.
+\itemize{
+\item \code{penguins_examples}:
+\itemize{
+\item If \code{path = NULL}, returns a character vector of available file/directory names.
+\item If \code{path} is specified, returns the full file path to the requested resource.
+}
+\item \code{penguins_examples_dir}: The path to the directory containing all examples.
+}
 }
 \description{
-This function provides access to example files included with the basepenguins package.
-When called with \code{path = NULL}, it lists available example files. When called with a
-specific path, it returns the full path to that file.
+These functions provides access to example files included with the basepenguins package.
+When \code{penguins_examples()} is called with \code{path = NULL}, it lists available example files.
+When called with a specific path, it returns the full path to that file.
 }
 \examples{
 # List all files and directories in the root directory
@@ -33,5 +42,8 @@ penguins_examples(recursive = TRUE)
 # Get the full path to a specific example files
 penguins_examples("penguins.R")
 penguins_examples("analysis/penguins.qmd")
+
+# Get the path to all examples
+penguins_examples_dir()
 
 }

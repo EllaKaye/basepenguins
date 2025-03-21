@@ -67,6 +67,13 @@ test_that("penguins_examples with NULL uses full.names argument correctly", {
 })
 
 
+# penguins_examples_dir() ------------------------------------------------
+
+test_that("penguins_example_dir works", {
+  expect_true(dir.exists(penguins_examples_dir()))
+  expect_match(penguins_examples_dir(), "extdata")
+})
+
 # filter_by_extensions() -------------------------------------------------
 
 test_that("filter_by_extensions returns correct patterns", {

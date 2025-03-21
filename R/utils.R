@@ -75,6 +75,35 @@ filter_by_extensions <- function(extensions) {
   paste0("\\.(", extensions_pattern, ")$")
 }
 
+#' List files to convert in a directory
+#'
+#' @description
+#' This function lists all files in a directory (and subdirectories) that match
+#' the specified file extensions. It can be used as a helper to find files paths
+#' to pass to `convert_files()` and `convert_files_inplace()`,
+#' or to preview which files those functions, as well as `convert_dir()` and
+#' `convert_dir_inplace()` will look to convert. It can also be used as input to
+#' `extend_names()` to help generate output paths for new files.
+#'
+#' @param dir A character string specifying the directory path to search
+#' @param full.names Logical. If TRUE, returns full file paths rather than relative paths.
+#'   Default is FALSE.
+#' @param extensions A character vector of file extensions to filter by.
+#'   Default is c("R", "r", "qmd", "rmd", "Rmd"). If NULL or empty, returns all files.
+#'
+#' @return A character vector of file paths that match the specified extensions.
+#'
+#' @seealso [convert_files()], [convert_files_inplace()], [convert_dir()], [convert_dir_inplace()],
+#' [extend_names()].
+#'
+#' @examples
+#' example_dir <- penguins_examples_dir() # Get examples directory
+#' files_to_convert(example_dir)
+#' files_to_convert(example_dir, full.names = TRUE)
+#' files_to_convert(example_dir, extensions = "R")
+#' files_to_convert(example_dir, extensions = NULL) # all files
+#'
+#' @export
 files_to_convert <- function(
   dir,
   full.names = FALSE,

@@ -1,4 +1,36 @@
 url: https://ellakaye.github.io/basepenguins/
+
+authors:
+  Ella Kaye:
+    href: https://ellakaye.co.uk
+  Heather Turner:
+    href: https://www.heatherturner.net
+
 template:
   bootstrap: 5
+  light-switch: true
+  theme: arrow-light
+  bslib:
+    primary: "#008585"
+    base_font: {google: "Figtree"}
+    heading_font: {google: "Outfit"}
+    code_font: {google: Fira Mono}
 
+reference:
+- title: "Converting files"
+  desc: >
+    Convert scripts to use R's built-in `penguins` and `penguins_raw` data frames, 
+    instead of those from the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) package.
+  contents:
+  - convert_files
+  - convert_files_inplace
+  - convert_dir
+  - convert_dir_inplace
+- title: "Path helpers"
+  desc: >
+    Functions to get and modify relevant file paths
+  contents:
+  - penguins_examples
+  - penguins_examples_dir
+  - files_to_convert
+  - extend_names

@@ -34,6 +34,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="articles/basepenguins.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -61,7 +62,6 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>A work-in-progress package. The main functionality is now in place, as is a fully-comprehensive test suite. <strong>Still to do: documentation.</strong></p>
 <p>Convert scripts that use the <strong><a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link">palmerpenguins</a></strong> library to use the versions of the <code>penguins</code> and <code>penguins_raw</code> datasets that are now in R-devel, so coming in R 4.5.</p>
 <p>The Palmer Penguins data has become <a href="https://apreshill.github.io/palmerpenguins-useR-2022/" class="external-link">very popular</a> in the R community, especially in educational contexts, and as an <a href="https://journal.r-project.org/articles/RJ-2022-020/" class="external-link">alternative to the <code>iris</code> dataset</a>. Including the datasets in R makes them more widely available, and easier to get started with, especially for new R users, and for use in teaching.</p>
 <p>The version of <code>penguins</code> in R’s <strong>datasets</strong> package has some shorter variable names than the <strong>palmerpenguins</strong> equivalent. The differences are:</p>
@@ -80,19 +80,98 @@
 </li>
 </ul>
 <p>These changes were made for more compact code and data display. (e.g. printing <code>penguins</code> now shows all columns in under 80 characters).</p>
-<p>It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and the script still running.</p>
-<p>This package provides functions that will take a vector of files (<code><a href="reference/convert_files.html">convert_files()</a></code>) or a directory (<code><a href="reference/convert_files.html">convert_dir()</a></code>), and for all files with specified extensions (by default .R/.r/.qmd/.rmd/.Rmd ), remove any calls to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and replace long palmerpenguins variable names with the shorter R equivalents. It also deals with <code>ends_with("_mm")</code> (a selector used in the <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="external-link">palmerpenguins Get Started vignette</a>). <strong>DETAILS OF THIS SUBSTITUTION WILL BE GIVEN IN THE GET STARTED VIGNETTE, WHEN WRITTEN.</strong></p>
-<p>The versions of <code>penguins_raw</code> in <strong>palmerpenguins</strong> and <strong>datasets</strong> are identical, expect that in the former it’ll have class <code>tbl_df</code> if the <a href="https://tibble.tidyverse.org" class="external-link">tibble</a> package is installed. No specific changes are made to <code>penguins_raw</code> in <strong>basepenguins</strong>, but by removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, the <strong>datasets</strong> version will be used in any scripts, which is always a <code>data.frame</code> (never a <code>tbl_df</code>).</p>
-<p>Note that the <strong>palmerpenguins</strong> package provides features that are not in R, such as vignettes and articles on the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link">package website</a>. The package also contains the data in two csv files and provides a <a href="https://allisonhorst.github.io/palmerpenguins/reference/path_to_file.html" class="external-link">function</a> to access them. And, of course, Allison Horst’s wonderful <a href="https://allisonhorst.github.io/palmerpenguins/articles/art.html" class="external-link">penguins artwork</a>!</p>
-<!--
-The goal of basepenguins is to ...
-&#10;## Installation
-&#10;You can install the development version of basepenguins from [GitHub](https://github.com/) with:
-&#10;``` r
-# install.packages("pak")
-pak::pak("EllaKaye/basepenguins")
-```
-&#10;-->
+<p>It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and the script still running. Using <strong>basepenguins</strong> takes care of converting files to remove the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and makes the necessary conversions to variable names.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the development version of basepenguins from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"EllaKaye/basepenguins"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<p>This is a quick tour. For a more extensive guide, see the <a href="https://ellakaye.github.io/basepenguins/articles/basepenguins.html">Get Started</a> vignette, <code><a href="articles/basepenguins.html">vignette("basepenguins")</a></code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EllaKaye/basepenguins" class="external-link">basepenguins</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="converting-files">Converting files<a class="anchor" aria-label="anchor" href="#converting-files"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get absolute paths of example files</span></span>
+<span><span class="va">input</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/penguins_examples.html">penguins_examples</a></span><span class="op">(</span>recursive <span class="op">=</span> <span class="cn">TRUE</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># See one of the input files</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">input</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; library(palmerpenguins)</span></span>
+<span><span class="co">#&gt; library(ggplot2)</span></span>
+<span><span class="co">#&gt; library(dplyr)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # exploring scatterplots</span></span>
+<span><span class="co">#&gt; penguins |&gt;</span></span>
+<span><span class="co">#&gt;   select(body_mass_g, ends_with("_mm")) |&gt;</span></span>
+<span><span class="co">#&gt;   glimpse()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # Scatterplot example: penguin flipper length versus body mass</span></span>
+<span><span class="co">#&gt; ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +</span></span>
+<span><span class="co">#&gt;   geom_point(aes(color = species, shape = species), size = 2) +</span></span>
+<span><span class="co">#&gt;   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># generate output file paths (by default prefix "_new" to input filenames)</span></span>
+<span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extend_names.html">extend_names</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># convert the files</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/convert_files.html">convert_files</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span></span>
+<span><span class="co">#&gt; - Please check the changed output files.</span></span>
+<span><span class="co">#&gt; - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># See which files have changed</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">#&gt; $changed</span></span>
+<span><span class="co">#&gt;       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/analysis/penguins.qmd </span></span>
+<span><span class="co">#&gt; "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/analysis/penguins_new.qmd" </span></span>
+<span><span class="co">#&gt;                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins.R </span></span>
+<span><span class="co">#&gt;            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins_new.R" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $not_changed</span></span>
+<span><span class="co">#&gt; character(0)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># See the changes to the input file we saw above</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">output</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; library(ggplot2)</span></span>
+<span><span class="co">#&gt; library(dplyr)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # exploring scatterplots</span></span>
+<span><span class="co">#&gt; penguins |&gt;</span></span>
+<span><span class="co">#&gt;   select(body_mass, starts_with("flipper_"), starts_with("bill_")) |&gt;</span></span>
+<span><span class="co">#&gt;   glimpse()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # Scatterplot example: penguin flipper length versus body mass</span></span>
+<span><span class="co">#&gt; ggplot(data = penguins, aes(x = flipper_len, y = body_mass)) +</span></span>
+<span><span class="co">#&gt;   geom_point(aes(color = species, shape = species), size = 2) +</span></span>
+<span><span class="co">#&gt;   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span></span></code></pre></div>
+<p>Conversions can also be run in-place, which will overwrite files. Here’s how do to that, limited to R scripts, though we don’t execute the chunk below:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/convert_files.html">convert_files_inplace</a></span><span class="op">(</span><span class="va">input</span>, extensions <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="coverting-a-directory">Coverting a directory<a class="anchor" aria-label="anchor" href="#coverting-a-directory"></a>
+</h2>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">example_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/penguins_examples.html">penguins_examples_dir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/convert_files.html">convert_dir</a></span><span class="op">(</span><span class="va">example_dir</span>, <span class="va">output_dir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//Rtmp10hg85/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span></span>
+<span><span class="co">#&gt; - Please check the changed output files.</span></span>
+<span><span class="co">#&gt; - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>

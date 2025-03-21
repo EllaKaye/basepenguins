@@ -57,3 +57,94 @@ pak::pak("EllaKaye/basepenguins")
 This is a quick tour. For a more extensive guide, see the [Get
 Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html)
 vignette, `vignette("basepenguins")`.
+
+``` r
+library(basepenguins)
+```
+
+## Converting files
+
+``` r
+# get absolute paths of example files
+input <- penguins_examples(recursive = TRUE, full.names = TRUE)
+
+# See one of the input files
+cat(readLines(input[2]), sep = "\n") 
+#> library(palmerpenguins)
+#> library(ggplot2)
+#> library(dplyr)
+#> 
+#> # exploring scatterplots
+#> penguins |>
+#>   select(body_mass_g, ends_with("_mm")) |>
+#>   glimpse()
+#> 
+#> # Scatterplot example: penguin flipper length versus body mass
+#> ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+#>   geom_point(aes(color = species, shape = species), size = 2) +
+#>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
+```
+
+``` r
+
+# generate output file paths (by default prefix "_new" to input filenames)
+output <- extend_names(input) 
+
+# convert the files
+result <- convert_files(input, output)
+#> - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+#> - Please check the changed output files.
+#> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
+```
+
+``` r
+
+# See which files have changed
+result
+#> $changed
+#>       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/analysis/penguins.qmd 
+#> "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/analysis/penguins_new.qmd" 
+#>                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins.R 
+#>            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d14dd2ac2/basepenguins/extdata/penguins_new.R" 
+#> 
+#> $not_changed
+#> character(0)
+```
+
+``` r
+
+# See the changes to the input file we saw above
+cat(readLines(output[2]), sep = "\n") 
+#> 
+#> library(ggplot2)
+#> library(dplyr)
+#> 
+#> # exploring scatterplots
+#> penguins |>
+#>   select(body_mass, starts_with("flipper_"), starts_with("bill_")) |>
+#>   glimpse()
+#> 
+#> # Scatterplot example: penguin flipper length versus body mass
+#> ggplot(data = penguins, aes(x = flipper_len, y = body_mass)) +
+#>   geom_point(aes(color = species, shape = species), size = 2) +
+#>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
+```
+
+Conversions can also be run in-place, which will overwrite files. Here’s
+how do to that, limited to R scripts, though we don’t execute the chunk
+below:
+
+``` r
+convert_files_inplace(input, extensions = "R")
+```
+
+## Coverting a directory
+
+``` r
+example_dir <- penguins_examples_dir()
+output_dir <- tempdir()
+convert_dir(example_dir, output_dir)
+#> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//Rtmp10hg85/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+#> - Please check the changed output files.
+#> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
+```

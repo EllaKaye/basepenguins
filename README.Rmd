@@ -57,6 +57,43 @@ pak::pak("EllaKaye/basepenguins")
 This is a quick tour. 
 For a more extensive guide, see the [Get Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html) vignette, `vignette("basepenguins")`.
 
+```{r}
+library(basepenguins)
+```
 
+## Converting files
 
+```{r}
+# get absolute paths of example files
+input <- penguins_examples(recursive = TRUE, full.names = TRUE)
 
+# See one of the input files
+cat(readLines(input[2]), sep = "\n") 
+
+# generate output file paths (by default prefix "_new" to input filenames)
+output <- extend_names(input) 
+
+# convert the files
+result <- convert_files(input, output)
+
+# See which files have changed
+result
+
+# See the changes to the input file we saw above
+cat(readLines(output[2]), sep = "\n") 
+```
+
+Conversions can also be run in-place, which will overwrite files.
+Here's how do to that, limited to R scripts, though we don't execute the chunk below:
+
+```{r eval = FALSE}
+convert_files_inplace(input, extensions = "R")
+```
+
+## Coverting a directory
+
+```{r}
+example_dir <- penguins_examples_dir()
+output_dir <- tempdir()
+convert_dir(example_dir, output_dir)
+```

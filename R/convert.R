@@ -1,15 +1,15 @@
 #' Convert files to use datasets versions of penguins and penguins_raw
 #'
 #' @description
-#' These function converts files that use the
+#' These functions convert files that use the
 #' [palmerpenguins](https://CRAN.R-project.org/package=palmerpenguins) package
 #' to use the versions of `penguins` and `penguins_raw` included in the datasets
-#' package in R 4.5.0. It removes calls to `library(palmerpenguins)` and makes
-#' necessary changes to the variable names.
+#' package in R 4.5.0. They removes calls to `library(palmerpenguins)` and make
+#' necessary changes to some variable names (see Details section below).
 #'
 #' @param input For `convert_files()` and `convert_files_inplace()`:
 #'   A character vector of file paths to convert.
-#'   For `convert_dir() and `convert_dir_inplace()`:
+#'   For `convert_dir()` and `convert_dir_inplace()`:
 #'   A string with a path to a directory of files to convert.
 #' @param output For `convert_files()`:
 #'   A character vector of output file paths, or NULL to modify files in place.
@@ -28,8 +28,8 @@
 #'   \item `not_changed`: A named character vector of output paths for files
 #'     that were not modified, with input paths as names. Files are not changed
 #'     if they do not contain references to palmerpenguins (i.e. the patterns)
-#'     listed in the Details section, or if they do not have a specified
-#'     `extension`.
+#'     listed in the Details section, or if they do not have one of the
+#'     specified `extensions`.
 #' }
 #'
 #' @details
@@ -43,7 +43,7 @@
 #'      \item `flipper_length_mm` -> `flipper_len`
 #'      \item `body_mass_g` -> `body_mass`
 #'   }
-#'   \item `ends_with("_mm")` -> `starts_with("flipper_"), starts_with(bill_)`
+#'   \item Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
 #' }
 #'
 #'
@@ -52,6 +52,17 @@
 #'
 #' If the `output` files or directory do not (yet) exist, they will be created
 #' (recursively if necessary).
+#'
+#' Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
+#' ensures that modified R code will always run. `starts_with("flipper_")` isn't
+#' intuitively necessary, as there is only one variable starting with "flipper_",
+#' in `penguins`, but this code will not error inside `dplyr::(select)`, even if
+#' `flipper_len` isn't in the data frame (trying to select `flipper_len`
+#' directly will cause an error if that column isn't in the data frame).
+#' In an educational context, we suggest manually editing the converted files to
+#' replace `starts_with("flipper_")` to `flipper_len` if appropriate.
+#' To facilitate this, the functions documented here produce a message
+#' indicating the files and line numbers where the `ends_with("_mm")` was made.
 #'
 #' @seealso [penguins_examples()], [penguins_examples_dir()]
 #'

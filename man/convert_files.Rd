@@ -18,7 +18,7 @@ convert_dir_inplace(input, extensions = c("R", "r", "qmd", "rmd", "Rmd"))
 \arguments{
 \item{input}{For \code{convert_files()} and \code{convert_files_inplace()}:
 A character vector of file paths to convert.
-For \verb{convert_dir() and }convert_dir_inplace()`:
+For \code{convert_dir()} and \code{convert_dir_inplace()}:
 A string with a path to a directory of files to convert.}
 
 \item{output}{For \code{convert_files()}:
@@ -39,16 +39,16 @@ were modified, with input paths as the names.
 \item \code{not_changed}: A named character vector of output paths for files
 that were not modified, with input paths as names. Files are not changed
 if they do not contain references to palmerpenguins (i.e. the patterns)
-listed in the Details section, or if they do not have a specified
-\code{extension}.
+listed in the Details section, or if they do not have one of the
+specified \code{extensions}.
 }
 }
 \description{
-These function converts files that use the
+These functions convert files that use the
 \href{https://CRAN.R-project.org/package=palmerpenguins}{palmerpenguins} package
 to use the versions of \code{penguins} and \code{penguins_raw} included in the datasets
-package in R 4.5.0. It removes calls to \code{library(palmerpenguins)} and makes
-necessary changes to the variable names.
+package in R 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
+necessary changes to some variable names (see Details section below).
 }
 \details{
 Files are converted by:
@@ -61,7 +61,7 @@ Files are converted by:
 \item \code{flipper_length_mm} -> \code{flipper_len}
 \item \code{body_mass_g} -> \code{body_mass}
 }
-\item \code{ends_with("_mm")} -> \verb{starts_with("flipper_"), starts_with(bill_)}
+\item Replacing \code{ends_with("_mm")} with \verb{starts_with("flipper_"), starts_with(bill_)}
 }
 
 Non-convertible files (those without the specified extensions) are copied to
@@ -69,6 +69,17 @@ the output location if \code{output} is provided, but are not modified.
 
 If the \code{output} files or directory do not (yet) exist, they will be created
 (recursively if necessary).
+
+Replacing \code{ends_with("_mm")} with \verb{starts_with("flipper_"), starts_with(bill_)}
+ensures that modified R code will always run. \code{starts_with("flipper_")} isn't
+intuitively necessary, as there is only one variable starting with "flipper_",
+in \code{penguins}, but this code will not error inside \verb{dplyr::(select)}, even if
+\code{flipper_len} isn't in the data frame (trying to select \code{flipper_len}
+directly will cause an error if that column isn't in the data frame).
+In an educational context, we suggest manually editing the converted files to
+replace \code{starts_with("flipper_")} to \code{flipper_len} if appropriate.
+To facilitate this, the functions documented here produce a message
+indicating the files and line numbers where the \code{ends_with("_mm")} was made.
 }
 \examples{
 # Single file

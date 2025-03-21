@@ -317,3 +317,15 @@ test_that("extend_names preserves names if input is named", {
   expect_equal(names(result), c("a", "b"))
   expect_equal(result, c(a = "file1_new.txt", b = "file2_new.R"))
 })
+
+test_that("extend_names works with given dir", {
+  paths <- c("file1.txt", "file2.R", "nested/file3.qmd")
+  dir <- "new_output"
+  expected <- c(
+    "new_output/file1_new.txt",
+    "new_output/file2_new.R",
+    file.path(dir, "nested", "file3_new.qmd")
+  )
+  names(expected) <- paths
+  expect_equal(extend_names(paths, dir = dir), expected)
+})

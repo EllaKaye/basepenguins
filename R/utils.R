@@ -147,10 +147,17 @@ extend_name <- function(path, prefix = "", suffix = "_new") {
   }
 }
 
-extend_names <- function(paths, prefix = "", suffix = "_new") {
+extend_names <- function(paths, prefix = "", suffix = "_new", dir = NULL) {
   if (length(paths) == 0) {
     stop("`paths` must have length at least 1 (not 0)")
   }
 
-  sapply(paths, extend_name, prefix = prefix, suffix = suffix)
+  out <- sapply(paths, extend_name, prefix = prefix, suffix = suffix)
+
+  if (!is.null(dir)) {
+    out <- file.path(dir, out)
+    names(out) <- paths
+  }
+
+  out
 }

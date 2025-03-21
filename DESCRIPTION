@@ -22,6 +22,9 @@ BugReports: https://github.com/EllaKaye/basepenguins/issues
 Depends:
     R (>= 4.2.0)
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
+VignetteBuilder: knitr

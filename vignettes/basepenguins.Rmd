@@ -18,6 +18,11 @@ knitr::opts_chunk$set(
 library(basepenguins)
 ```
 
+**TODO: finish writing this:**
+
+- full demonstration of package functionality
+- justification of the `ends_with("_mm")` substitution
+- explanation of the package messages
 
 This package provides functions that will take a vector of files (`convert_files()`) or a directory (`convert_dir()`), 
 and for all files with specified extensions (by default .R/.r/.qmd/.rmd/.Rmd ), 

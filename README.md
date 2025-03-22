@@ -66,7 +66,7 @@ library(basepenguins)
 
 ``` r
 # get absolute paths of example files
-input <- penguins_examples(recursive = TRUE, full.names = TRUE)
+input <- penguins_examples(full.names = TRUE)
 
 # See one of the input files
 cat(readLines(input[2]), sep = "\n") 
@@ -93,7 +93,7 @@ output <- extend_names(input)
 ``` r
 # convert the files
 result <- convert_files(input, output)
-#> - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+#> - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
 #> - Please check the changed output files.
 #> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
 ```
@@ -102,10 +102,10 @@ result <- convert_files(input, output)
 # See which files have changed
 result
 #> $changed
-#>       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins.qmd 
-#> "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins_new.qmd" 
-#>                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins.R 
-#>            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins_new.R" 
+#>       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins.qmd 
+#> "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins_new.qmd" 
+#>                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins.R 
+#>            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins_new.R" 
 #> 
 #> $not_changed
 #> character(0)
@@ -147,7 +147,7 @@ in a given directory (and its subdirectories).
 example_dir <- penguins_examples_dir()
 output_dir <- tempdir()
 result <- convert_dir(example_dir, output_dir)
-#> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+#> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
 #> - Please check the changed output files.
 #> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
 ```
@@ -156,16 +156,16 @@ result <- convert_dir(example_dir, output_dir)
 
 result
 #> $changed
-#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins.qmd 
-#>                                                    "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/analysis/penguins.qmd" 
-#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins.R 
-#>                                                               "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/penguins.R" 
+#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins.qmd 
+#>                                                     "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/analysis/penguins.qmd" 
+#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins.R 
+#>                                                                "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins.R" 
 #> 
 #> $not_changed
-#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/analysis/penguins_new.qmd 
-#>                                                    "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/analysis/penguins_new.qmd" 
-#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/Rtmp7OHK1E/temp_libpathdf6d71d1d23a/basepenguins/extdata/penguins_new.R 
-#>                                                               "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpUk8YDa/penguins_new.R"
+#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins_new.qmd 
+#>                                                     "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/analysis/penguins_new.qmd" 
+#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins_new.R 
+#>                                                                "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins_new.R"
 ```
 
 There is also a version to modify files in place (not executed here):

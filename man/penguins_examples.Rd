@@ -5,7 +5,7 @@
 \alias{penguins_examples_dir}
 \title{List or find example files from basepenguins package}
 \usage{
-penguins_examples(path = NULL, recursive = FALSE, full.names = FALSE)
+penguins_examples(path = NULL, full.names = FALSE, recursive = TRUE)
 
 penguins_examples_dir()
 }
@@ -13,10 +13,10 @@ penguins_examples_dir()
 \item{path}{Character string. If NULL (default), lists all available example files.
 If specified, returns the full path to the specified file or directory.}
 
-\item{recursive}{Logical. If TRUE, lists files in subdirectories recursively.
+\item{full.names}{Logical. If TRUE, returns full file paths rather than relative paths.
 Only used when \code{path = NULL}. Default is FALSE.}
 
-\item{full.names}{Logical. If TRUE, returns full file paths rather than relative paths.
+\item{recursive}{Logical. If TRUE, lists files in subdirectories recursively.
 Only used when \code{path = NULL}. Default is FALSE.}
 }
 \value{
@@ -37,7 +37,8 @@ When called with a specific path, it returns the full path to that file.
 \examples{
 # List all files and directories in the root directory
 penguins_examples()
-penguins_examples(recursive = TRUE)
+penguins_examples(recursive = FALSE)
+penguins_examples(full.names = TRUE)
 
 # Get the full path to a specific example files
 penguins_examples("penguins.R")

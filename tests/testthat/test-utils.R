@@ -9,11 +9,13 @@ test_that("NULL coalescing operator works", {
 # penguins_examples() ----------------------------------------------------
 
 test_that("penguins_examples with NULL uses recursive argument", {
-  expect_false("analysis/penguins.qmd" %in% penguins_examples())
-  expect_true("analysis/penguins.qmd" %in% penguins_examples(recursive = TRUE))
+  expect_false(
+    "analysis/penguins.qmd" %in% penguins_examples(recursive = FALSE)
+  )
+  expect_true("analysis/penguins.qmd" %in% penguins_examples())
   expect_true("penguins.R" %in% penguins_examples())
-  expect_true("analysis" %in% penguins_examples())
-  expect_false("analysis" %in% penguins_examples(recursive = TRUE))
+  expect_true("analysis" %in% penguins_examples(recursive = FALSE))
+  expect_false("analysis" %in% penguins_examples())
 })
 
 test_that("penguins_examples with file returns correct path", {

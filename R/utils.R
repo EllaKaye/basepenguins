@@ -28,7 +28,8 @@
 #' @examples
 #' # List all files and directories in the root directory
 #' penguins_examples()
-#' penguins_examples(recursive = TRUE)
+#' penguins_examples(recursive = FALSE)
+#' penguins_examples(full.names = TRUE)
 #'
 #' # Get the full path to a specific example files
 #' penguins_examples("penguins.R")
@@ -40,8 +41,8 @@
 #' @export
 penguins_examples <- function(
   path = NULL,
-  recursive = FALSE,
-  full.names = FALSE
+  full.names = FALSE,
+  recursive = TRUE
 ) {
   if (is.null(path)) {
     dir(

@@ -116,7 +116,7 @@ convert_files_inplace(copy_path)
 
 \dontrun{ # don't overwrite the example files provided by the package
   # Get all example files
-  input_files <- penguins_examples(recursive = TRUE, full.names = TRUE)
+  input_files <- penguins_examples(full.names = TRUE)
 
   # Convert them in place
   convert_files_inplace(input_files)

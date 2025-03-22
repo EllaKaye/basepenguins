@@ -65,7 +65,7 @@ library(basepenguins)
 
 ```{r}
 # get absolute paths of example files
-input <- penguins_examples(recursive = TRUE, full.names = TRUE)
+input <- penguins_examples(full.names = TRUE)
 
 # See one of the input files
 cat(readLines(input[2]), sep = "\n") 

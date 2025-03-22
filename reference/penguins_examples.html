@@ -51,7 +51,7 @@ When called with a specific path, it returns the full path to that file.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">penguins_examples</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, recursive <span class="op">=</span> <span class="cn">FALSE</span>, full.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">penguins_examples</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, full.names <span class="op">=</span> <span class="cn">FALSE</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">penguins_examples_dir</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -65,13 +65,13 @@ When called with a specific path, it returns the full path to that file.</p>
 If specified, returns the full path to the specified file or directory.</p></dd>
 
 
-<dt id="arg-recursive">recursive<a class="anchor" aria-label="anchor" href="#arg-recursive"></a></dt>
-<dd><p>Logical. If TRUE, lists files in subdirectories recursively.
+<dt id="arg-full-names">full.names<a class="anchor" aria-label="anchor" href="#arg-full-names"></a></dt>
+<dd><p>Logical. If TRUE, returns full file paths rather than relative paths.
 Only used when <code>path = NULL</code>. Default is FALSE.</p></dd>
 
 
-<dt id="arg-full-names">full.names<a class="anchor" aria-label="anchor" href="#arg-full-names"></a></dt>
-<dd><p>Logical. If TRUE, returns full file paths rather than relative paths.
+<dt id="arg-recursive">recursive<a class="anchor" aria-label="anchor" href="#arg-recursive"></a></dt>
+<dd><p>Logical. If TRUE, lists files in subdirectories recursively.
 Only used when <code>path = NULL</code>. Default is FALSE.</p></dd>
 
 </dl></div>
@@ -88,9 +88,12 @@ Only used when <code>path = NULL</code>. Default is FALSE.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># List all files and directories in the root directory</span></span></span>
 <span class="r-in"><span><span class="fu">penguins_examples</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "analysis"   "penguins.R"</span>
-<span class="r-in"><span><span class="fu">penguins_examples</span><span class="op">(</span>recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "analysis/penguins.qmd" "penguins.R"           </span>
+<span class="r-in"><span><span class="fu">penguins_examples</span><span class="op">(</span>recursive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "analysis"   "penguins.R"</span>
+<span class="r-in"><span><span class="fu">penguins_examples</span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/runner/work/_temp/Library/basepenguins/extdata/analysis/penguins.qmd"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/home/runner/work/_temp/Library/basepenguins/extdata/penguins.R"           </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get the full path to a specific example files</span></span></span>
 <span class="r-in"><span><span class="fu">penguins_examples</span><span class="op">(</span><span class="st">"penguins.R"</span><span class="op">)</span></span></span>

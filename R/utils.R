@@ -10,10 +10,10 @@
 #'
 #' @param path Character string. If NULL (default), lists all available example files.
 #'   If specified, returns the full path to the specified file or directory.
-#' @param recursive Logical. If TRUE, lists files in subdirectories recursively.
-#'   Only used when `path = NULL`. Default is FALSE.
 #' @param full.names Logical. If TRUE, returns full file paths rather than relative paths.
 #'   Only used when `path = NULL`. Default is FALSE.
+#' @param recursive Logical. If TRUE, lists files in subdirectories recursively.
+#'   Only used when `path = NULL`. Default is TRUE.
 #'
 #' @return
 #' \itemize{

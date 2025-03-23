@@ -17,7 +17,7 @@ If specified, returns the full path to the specified file or directory.}
 Only used when \code{path = NULL}. Default is FALSE.}
 
 \item{recursive}{Logical. If TRUE, lists files in subdirectories recursively.
-Only used when \code{path = NULL}. Default is FALSE.}
+Only used when \code{path = NULL}. Default is TRUE.}
 }
 \value{
 \itemize{

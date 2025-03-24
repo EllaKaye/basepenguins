@@ -83,36 +83,31 @@ indicating the files and line numbers where the \code{ends_with("_mm")}
 substitution was made.
 }
 \examples{
-# Single file
+\dontshow{.old_wd <- setwd(tempdir())}
+# Note that all examples below write output to a temporary directory
+# and file paths are relative to that directory (unless otherwise stated).
+
+# Single file - new output
 penguin_file <- penguins_examples("penguins.R")
-output_file <- withr::local_tempfile(fileext = ".R")
-result <- convert_files(penguin_file, output_file)
-cat(readLines(output_file), sep = "\n") # view changes
+result <- convert_files(penguin_file, "penguins_new.R")
+cat(readLines("penguins_new.R"), sep = "\n") # view changes
+
+# Single file - modify in place
+# Copy penguin_file so don't overwrite example provided by package
+file.copy(penguin_file, "penguins_copy.R")
+convert_files_inplace("penguins_copy.R")
 
 # Convert multiple files to new locations
-input_files <- c(
-  penguins_examples("penguins.R"),
-  penguins_examples("analysis/penguins.qmd")
-)
-output_files <- c(
-  withr::local_tempfile(fileext = ".R"),
-  withr::local_tempfile(fileext = ".qmd")
-)
+input_files <- penguins_examples(full.names = TRUE) # absolute paths
+output_files <- extend_names(input_files)
 result <- convert_files(input_files, output_files)
 
 # Convert all files in a directory
 penguins_dir <- penguins_examples_dir()
-output_dir <- withr::local_tempdir()
-result <- convert_dir(penguins_dir, output_dir)
+result <- convert_dir(penguins_dir, "new_directory")
 result$changed # see which files have changed
 
-# Modify files in-place
-input_file <- penguins_examples("penguins.R")
-
-# Copy file so don't overwrite example provided by package
-copy_path <- withr::local_tempfile(fileext = ".R")
-file.copy(input_file, copy_path)
-convert_files_inplace(copy_path)
+\dontshow{setwd(.old_wd)}
 
 \dontrun{ # don't overwrite the example files provided by the package
   # Get all example files

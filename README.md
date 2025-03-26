@@ -87,7 +87,7 @@ cat(readLines(input[2]), sep = "\n")
 
 ``` r
 # generate output file paths (by default prefix "_new" to input filenames)
-output <- extend_names(input) 
+output <- output_paths(input) 
 ```
 
 ``` r

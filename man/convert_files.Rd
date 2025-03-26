@@ -99,7 +99,7 @@ convert_files_inplace("penguins_copy.R")
 
 # Convert multiple files to new locations
 input_files <- example_files(full.names = TRUE) # absolute paths
-output_files <- extend_names(input_files)
+output_files <- output_paths(input_files)
 result <- convert_files(input_files, output_files)
 
 # Convert all files in a directory

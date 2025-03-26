@@ -28,7 +28,7 @@ the specified file extensions. It can be used as a helper to find files paths
 to pass to \code{convert_files()} and \code{convert_files_inplace()},
 or to preview which files those functions, as well as \code{convert_dir()} and
 \code{convert_dir_inplace()} will look to convert. It can also be used as input to
-\code{extend_names()} to help generate output paths for new files.
+\code{output_paths()} to help generate output paths for new files.
 }
 \examples{
 example_dir <- example_dir() # Get examples directory
@@ -40,5 +40,5 @@ files_to_convert(example_dir, extensions = NULL) # all files
 }
 \seealso{
 \code{\link[=convert_files]{convert_files()}}, \code{\link[=convert_files_inplace]{convert_files_inplace()}}, \code{\link[=convert_dir]{convert_dir()}}, \code{\link[=convert_dir_inplace]{convert_dir_inplace()}},
-\code{\link[=extend_names]{extend_names()}}.
+\code{\link[=output_paths]{output_paths()}}.
 }

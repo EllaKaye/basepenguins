@@ -219,74 +219,74 @@ test_that("files_to_convert errors when dir does not exist", {
   expect_error(files_to_convert(123))
 })
 
-# extend_name() ------------------------------------------------------------
+# output_path() ------------------------------------------------------------
 
-test_that("extend_name works with default parameters", {
-  expect_equal(extend_name("file.txt"), "file_new.txt")
-  expect_equal(extend_name("dir/file.txt"), file.path("dir", "file_new.txt"))
-  expect_equal(extend_name("file"), "file_new")
-  expect_equal(extend_name("dir/file"), file.path("dir", "file_new"))
+test_that("output_path works with default parameters", {
+  expect_equal(output_path("file.txt"), "file_new.txt")
+  expect_equal(output_path("dir/file.txt"), file.path("dir", "file_new.txt"))
+  expect_equal(output_path("file"), "file_new")
+  expect_equal(output_path("dir/file"), file.path("dir", "file_new"))
 })
 
-test_that("extend_name applies prefix correctly", {
-  expect_equal(extend_name("file.txt", prefix = "pre_"), "pre_file_new.txt")
+test_that("output_path applies prefix correctly", {
+  expect_equal(output_path("file.txt", prefix = "pre_"), "pre_file_new.txt")
   expect_equal(
-    extend_name("dir/file.txt", prefix = "pre_"),
+    output_path("dir/file.txt", prefix = "pre_"),
     file.path("dir", "pre_file_new.txt")
   )
 })
 
-test_that("extend_name applies custom suffix correctly", {
+test_that("output_path applies custom suffix correctly", {
   expect_equal(
-    extend_name("file.txt", suffix = "_modified"),
+    output_path("file.txt", suffix = "_modified"),
     "file_modified.txt"
   )
   expect_equal(
-    extend_name("dir/file.txt", suffix = "_modified"),
+    output_path("dir/file.txt", suffix = "_modified"),
     file.path("dir", "file_modified.txt")
   )
 })
 
-test_that("extend_name applies both prefix and suffix correctly", {
+test_that("output_path applies both prefix and suffix correctly", {
   expect_equal(
-    extend_name("file.txt", prefix = "pre_", suffix = "_post"),
+    output_path("file.txt", prefix = "pre_", suffix = "_post"),
     "pre_file_post.txt"
   )
   expect_equal(
-    extend_name("dir/file.txt", prefix = "pre_", suffix = "_post"),
+    output_path("dir/file.txt", prefix = "pre_", suffix = "_post"),
     file.path("dir", "pre_file_post.txt")
   )
 })
 
-test_that("extend_name handles complex paths correctly", {
+test_that("output_path handles complex paths correctly", {
   expect_equal(
-    extend_name("dir1/dir2/file.txt"),
+    output_path("dir1/dir2/file.txt"),
     file.path("dir1/dir2", "file_new.txt")
   )
 
   # Test with absolute paths (platform independent test)
   if (.Platform$OS.type == "windows") {
     expect_equal(
-      extend_name("C:/dir/file.txt"),
+      output_path("C:/dir/file.txt"),
       file.path("C:/dir", "file_new.txt")
     )
   } else {
     expect_equal(
-      extend_name("/dir/file.txt"),
+      output_path("/dir/file.txt"),
       file.path("/dir", "file_new.txt")
     )
   }
 })
 
-test_that("extend_name handles non-valid input", {
-  expect_error(extend_name(""))
-  expect_error(extend_name(123))
+test_that("output_path handles non-valid input", {
+  expect_error(output_path(""))
+  expect_error(output_path(123))
 })
 
 
-# extend_names() ---------------------------------------------------------
+# output_paths() ---------------------------------------------------------
 
-test_that("extend_names works with a vector of paths", {
+test_that("output_paths works with a vector of paths", {
   paths <- c("file1.txt", "file2.R", "dir/file3.qmd")
   expected <- c(
     "file1_new.txt",
@@ -294,10 +294,10 @@ test_that("extend_names works with a vector of paths", {
     file.path("dir", "file3_new.qmd")
   )
   names(expected) <- paths
-  expect_equal(extend_names(paths), expected)
+  expect_equal(output_paths(paths), expected)
 })
 
-test_that("extend_names applies custom prefix and suffix to all paths", {
+test_that("output_paths applies custom prefix and suffix to all paths", {
   paths <- c("file1.txt", "file2.R", "dir/file3.qmd")
   expected <- c(
     "pre_file1_post.txt",
@@ -305,22 +305,22 @@ test_that("extend_names applies custom prefix and suffix to all paths", {
     file.path("dir", "pre_file3_post.qmd")
   )
   names(expected) <- paths
-  expect_equal(extend_names(paths, prefix = "pre_", suffix = "_post"), expected)
+  expect_equal(output_paths(paths, prefix = "pre_", suffix = "_post"), expected)
 })
 
-test_that("extend_names handles empty vector", {
-  expect_error(extend_names(character(0)))
+test_that("output_paths handles empty vector", {
+  expect_error(output_paths(character(0)))
 })
 
-test_that("extend_names preserves names if input is named", {
+test_that("output_paths preserves names if input is named", {
   # Test with named vector
   paths <- c(a = "file1.txt", b = "file2.R")
-  result <- extend_names(paths)
+  result <- output_paths(paths)
   expect_equal(names(result), c("a", "b"))
   expect_equal(result, c(a = "file1_new.txt", b = "file2_new.R"))
 })
 
-test_that("extend_names works with given dir", {
+test_that("output_paths works with given dir", {
   paths <- c("file1.txt", "file2.R", "nested/file3.qmd")
   dir <- "new_output"
   expected <- c(
@@ -329,5 +329,5 @@ test_that("extend_names works with given dir", {
     file.path(dir, "nested", "file3_new.qmd")
   )
   names(expected) <- paths
-  expect_equal(extend_names(paths, dir = dir), expected)
+  expect_equal(output_paths(paths, dir = dir), expected)
 })

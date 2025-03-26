@@ -33,4 +33,4 @@ reference:
   - example_files
   - example_dir
   - files_to_convert
-  - extend_names
+  - output_paths

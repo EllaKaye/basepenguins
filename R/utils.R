@@ -84,7 +84,7 @@ filter_by_extensions <- function(extensions) {
 #' to pass to `convert_files()` and `convert_files_inplace()`,
 #' or to preview which files those functions, as well as `convert_dir()` and
 #' `convert_dir_inplace()` will look to convert. It can also be used as input to
-#' `extend_names()` to help generate output paths for new files.
+#' `output_paths()` to help generate output paths for new files.
 #'
 #' @param dir A character string specifying the directory path to search
 #' @param full.names Logical. If TRUE, returns full file paths rather than relative paths.
@@ -95,7 +95,7 @@ filter_by_extensions <- function(extensions) {
 #' @return A character vector of file paths that match the specified extensions.
 #'
 #' @seealso [convert_files()], [convert_files_inplace()], [convert_dir()], [convert_dir_inplace()],
-#' [extend_names()].
+#' [output_paths()].
 #'
 #' @examples
 #' example_dir <- example_dir() # Get examples directory
@@ -119,7 +119,7 @@ files_to_convert <- function(
   list.files(dir, full.names = full.names, recursive = TRUE, pattern = pattern)
 }
 
-extend_name <- function(path, prefix = "", suffix = "_new") {
+output_path <- function(path, prefix = "", suffix = "_new") {
   if (!is.character(path)) {
     stop("`path` must be a string")
   }
@@ -173,15 +173,15 @@ extend_name <- function(path, prefix = "", suffix = "_new") {
 #' input_files_full <- files_to_convert(example_dir(), full.names = TRUE)
 #'
 #' # Generate output paths with "_converted" suffix
-#' extend_names(input_files_full, suffix = "_converted")
+#' output_paths(input_files_full, suffix = "_converted")
 #'
 #' # Generate output paths in a specific directory, with relative paths as input
 #' input_files <- files_to_convert(example_dir())
-#' extend_names(input_files, dir = "new_dir") # relative output paths
-#' extend_names(input_files, dir = tempdir()) # absolute output paths
+#' output_paths(input_files, dir = "new_dir") # relative output paths
+#' output_paths(input_files, dir = tempdir()) # absolute output paths
 #'
 #' # Add both prefix and suffix and place in a new directory
-#' extend_names(
+#' output_paths(
 #'   c("analysis.R", "report.qmd"),
 #'   prefix = "processed_",
 #'   suffix = "_v2",
@@ -191,12 +191,12 @@ extend_name <- function(path, prefix = "", suffix = "_new") {
 #' @seealso [convert_files()], [files_to_convert()]
 #'
 #' @export
-extend_names <- function(paths, prefix = "", suffix = "_new", dir = NULL) {
+output_paths <- function(paths, prefix = "", suffix = "_new", dir = NULL) {
   if (length(paths) == 0) {
     stop("`paths` must have length at least 1 (not 0)")
   }
 
-  out <- sapply(paths, extend_name, prefix = prefix, suffix = suffix)
+  out <- sapply(paths, output_path, prefix = prefix, suffix = suffix)
 
   if (!is.null(dir)) {
     out <- file.path(dir, out)

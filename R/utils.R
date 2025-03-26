@@ -5,7 +5,7 @@
 #'
 #' @description
 #' These functions provides access to example files included with the basepenguins package.
-#' When `penguins_examples()` is called with `path = NULL`, it lists available example files.
+#' When `example_files()` is called with `path = NULL`, it lists available example files.
 #' When called with a specific path, it returns the full path to that file.
 #'
 #' @param path Character string. If NULL (default), lists all available example files.
@@ -17,29 +17,29 @@
 #'
 #' @return
 #' \itemize{
-#'   \item `penguins_examples`:
+#'   \item `example_files`:
 #'   \itemize{
 #'     \item If `path = NULL`, returns a character vector of available file/directory names.
 #'     \item If `path` is specified, returns the full file path to the requested resource.
 #'   }
-#' \item `penguins_examples_dir`: The path to the directory containing all examples.
+#' \item `example_dir`: The path to the directory containing all examples.
 #' }
 #'
 #' @examples
 #' # List all files and directories in the root directory
-#' penguins_examples()
-#' penguins_examples(recursive = FALSE)
-#' penguins_examples(full.names = TRUE)
+#' example_files()
+#' example_files(recursive = FALSE)
+#' example_files(full.names = TRUE)
 #'
 #' # Get the full path to a specific example files
-#' penguins_examples("penguins.R")
-#' penguins_examples("nested/penguins.qmd")
+#' example_files("penguins.R")
+#' example_files("nested/penguins.qmd")
 #'
 #' # Get the path to all examplesss
-#' penguins_examples_dir()
+#' example_dir()
 #'
 #' @export
-penguins_examples <- function(
+example_files <- function(
   path = NULL,
   full.names = FALSE,
   recursive = TRUE
@@ -60,9 +60,9 @@ penguins_examples <- function(
   }
 }
 
-#' @rdname penguins_examples
+#' @rdname example_files
 #' @export
-penguins_examples_dir <- function() {
+example_dir <- function() {
   system.file("extdata", package = "basepenguins")
 }
 
@@ -98,7 +98,7 @@ filter_by_extensions <- function(extensions) {
 #' [extend_names()].
 #'
 #' @examples
-#' example_dir <- penguins_examples_dir() # Get examples directory
+#' example_dir <- example_dir() # Get examples directory
 #' files_to_convert(example_dir)
 #' files_to_convert(example_dir, full.names = TRUE)
 #' files_to_convert(example_dir, extensions = "R")
@@ -170,13 +170,13 @@ extend_name <- function(path, prefix = "", suffix = "_new") {
 #'
 #' @examples
 #' # Get all convertible files from examples directory
-#' input_files_full <- files_to_convert(penguins_examples_dir(), full.names = TRUE)
+#' input_files_full <- files_to_convert(example_dir(), full.names = TRUE)
 #'
 #' # Generate output paths with "_converted" suffix
 #' extend_names(input_files_full, suffix = "_converted")
 #'
 #' # Generate output paths in a specific directory, with relative paths as input
-#' input_files <- files_to_convert(penguins_examples_dir())
+#' input_files <- files_to_convert(example_dir())
 #' extend_names(input_files, dir = "new_dir") # relative output paths
 #' extend_names(input_files, dir = tempdir()) # absolute output paths
 #'

@@ -30,7 +30,7 @@ reference:
   desc: >
     Functions to get and modify relevant file paths
   contents:
-  - penguins_examples
-  - penguins_examples_dir
+  - example_files
+  - example_dir
   - files_to_convert
   - extend_names

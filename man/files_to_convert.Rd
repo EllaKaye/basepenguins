@@ -31,7 +31,7 @@ or to preview which files those functions, as well as \code{convert_dir()} and
 \code{extend_names()} to help generate output paths for new files.
 }
 \examples{
-example_dir <- penguins_examples_dir() # Get examples directory
+example_dir <- example_dir() # Get examples directory
 files_to_convert(example_dir)
 files_to_convert(example_dir, full.names = TRUE)
 files_to_convert(example_dir, extensions = "R")

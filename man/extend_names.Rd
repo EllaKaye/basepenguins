@@ -31,13 +31,13 @@ output paths for the \code{convert_files()} and \code{convert_dir()} functions.
 }
 \examples{
 # Get all convertible files from examples directory
-input_files_full <- files_to_convert(penguins_examples_dir(), full.names = TRUE)
+input_files_full <- files_to_convert(example_dir(), full.names = TRUE)
 
 # Generate output paths with "_converted" suffix
 extend_names(input_files_full, suffix = "_converted")
 
 # Generate output paths in a specific directory, with relative paths as input
-input_files <- files_to_convert(penguins_examples_dir())
+input_files <- files_to_convert(example_dir())
 extend_names(input_files, dir = "new_dir") # relative output paths
 extend_names(input_files, dir = tempdir()) # absolute output paths
 

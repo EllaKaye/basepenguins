@@ -66,7 +66,7 @@ library(basepenguins)
 
 ``` r
 # get absolute paths of example files
-input <- penguins_examples(full.names = TRUE)
+input <- example_files(full.names = TRUE)
 
 # See one of the input files
 cat(readLines(input[2]), sep = "\n") 
@@ -144,7 +144,7 @@ Whilst `convert_files()` allows the conversion of specified files,
 in a given directory (and its subdirectories).
 
 ``` r
-example_dir <- penguins_examples_dir()
+example_dir <- example_dir()
 output_dir <- tempdir()
 result <- convert_dir(example_dir, output_dir)
 #> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.

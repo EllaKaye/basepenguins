@@ -65,7 +65,7 @@
 #' indicating the files and line numbers where the `ends_with("_mm")`
 #' substitution was made.
 #'
-#' @seealso [penguins_examples()], [penguins_examples_dir()]
+#' @seealso [example_files()], [example_dir()]
 #'
 #' @examples
 #' \dontshow{.old_wd <- setwd(tempdir())}
@@ -73,7 +73,7 @@
 #' # and file paths are relative to that directory (unless otherwise stated).
 #'
 #' # Single file - new output
-#' penguin_file <- penguins_examples("penguins.R")
+#' penguin_file <- example_files("penguins.R")
 #' result <- convert_files(penguin_file, "penguins_new.R")
 #' cat(readLines("penguins_new.R"), sep = "\n") # view changes
 #'
@@ -83,12 +83,12 @@
 #' convert_files_inplace("penguins_copy.R")
 #'
 #' # Convert multiple files to new locations
-#' input_files <- penguins_examples(full.names = TRUE) # absolute paths
+#' input_files <- example_files(full.names = TRUE) # absolute paths
 #' output_files <- extend_names(input_files)
 #' result <- convert_files(input_files, output_files)
 #'
 #' # Convert all files in a directory
-#' penguins_dir <- penguins_examples_dir()
+#' penguins_dir <- example_dir()
 #' result <- convert_dir(penguins_dir, "new_directory")
 #' result$changed # see which files have changed
 #'
@@ -96,7 +96,7 @@
 #'
 #' \dontrun{ # don't overwrite the example files provided by the package
 #'   # Get all example files
-#'   input_files <- penguins_examples(full.names = TRUE)
+#'   input_files <- example_files(full.names = TRUE)
 #'
 #'   # Convert them in place
 #'   convert_files_inplace(input_files)

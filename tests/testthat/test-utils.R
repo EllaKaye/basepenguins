@@ -6,28 +6,28 @@ test_that("NULL coalescing operator works", {
   expect_null(NULL %||% NULL)
 })
 
-# penguins_examples() ----------------------------------------------------
+# example_files() ----------------------------------------------------
 
-test_that("penguins_examples with NULL uses recursive argument", {
+test_that("example_files with NULL uses recursive argument", {
   expect_false(
-    "nested/penguins.qmd" %in% penguins_examples(recursive = FALSE)
+    "nested/penguins.qmd" %in% example_files(recursive = FALSE)
   )
-  expect_true("nested/penguins.qmd" %in% penguins_examples())
-  expect_true("penguins.R" %in% penguins_examples())
-  expect_true("nested" %in% penguins_examples(recursive = FALSE))
-  expect_false("nested" %in% penguins_examples())
+  expect_true("nested/penguins.qmd" %in% example_files())
+  expect_true("penguins.R" %in% example_files())
+  expect_true("nested" %in% example_files(recursive = FALSE))
+  expect_false("nested" %in% example_files())
 })
 
-test_that("penguins_examples with file returns correct path", {
-  expect_true(file.exists(penguins_examples("penguins.R")))
-  expect_true(file.exists(penguins_examples("nested/penguins.qmd")))
-  expect_error(file.exists(penguins_examples("not_a_file.R")))
+test_that("example_files with file returns correct path", {
+  expect_true(file.exists(example_files("penguins.R")))
+  expect_true(file.exists(example_files("nested/penguins.qmd")))
+  expect_error(file.exists(example_files("not_a_file.R")))
 })
 
-test_that("penguins_examples with NULL uses full.names argument correctly", {
+test_that("example_files with NULL uses full.names argument correctly", {
   # Get results with and without full.names (for non-recursive case)
-  without_full_names <- penguins_examples(recursive = FALSE)
-  with_full_names <- penguins_examples(recursive = FALSE, full.names = TRUE)
+  without_full_names <- example_files(recursive = FALSE)
+  with_full_names <- example_files(recursive = FALSE, full.names = TRUE)
 
   # For non-recursive case, check we have simple filenames without full paths
   expect_true(all(!grepl("^/|^[A-Za-z]:|^\\\\\\\\", without_full_names)))
@@ -42,8 +42,8 @@ test_that("penguins_examples with NULL uses full.names argument correctly", {
   }
 
   # Test with recursive = TRUE as well
-  recursive_without_full <- penguins_examples(recursive = TRUE)
-  recursive_with_full <- penguins_examples(recursive = TRUE, full.names = TRUE)
+  recursive_without_full <- example_files(recursive = TRUE)
+  recursive_with_full <- example_files(recursive = TRUE, full.names = TRUE)
 
   # Even in recursive case, full.names = FALSE should never have absolute paths
   expect_false(any(grepl("^/|^[A-Za-z]:|^\\\\\\\\", recursive_without_full)))
@@ -69,11 +69,11 @@ test_that("penguins_examples with NULL uses full.names argument correctly", {
 })
 
 
-# penguins_examples_dir() ------------------------------------------------
+# example_dir() ------------------------------------------------
 
 test_that("penguins_example_dir works", {
-  expect_true(dir.exists(penguins_examples_dir()))
-  expect_match(penguins_examples_dir(), "extdata")
+  expect_true(dir.exists(example_dir()))
+  expect_match(example_dir(), "extdata")
 })
 
 # filter_by_extensions() -------------------------------------------------

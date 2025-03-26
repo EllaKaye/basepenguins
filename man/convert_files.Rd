@@ -88,7 +88,7 @@ substitution was made.
 # and file paths are relative to that directory (unless otherwise stated).
 
 # Single file - new output
-penguin_file <- penguins_examples("penguins.R")
+penguin_file <- example_files("penguins.R")
 result <- convert_files(penguin_file, "penguins_new.R")
 cat(readLines("penguins_new.R"), sep = "\n") # view changes
 
@@ -98,12 +98,12 @@ file.copy(penguin_file, "penguins_copy.R")
 convert_files_inplace("penguins_copy.R")
 
 # Convert multiple files to new locations
-input_files <- penguins_examples(full.names = TRUE) # absolute paths
+input_files <- example_files(full.names = TRUE) # absolute paths
 output_files <- extend_names(input_files)
 result <- convert_files(input_files, output_files)
 
 # Convert all files in a directory
-penguins_dir <- penguins_examples_dir()
+penguins_dir <- example_dir()
 result <- convert_dir(penguins_dir, "new_directory")
 result$changed # see which files have changed
 
@@ -111,7 +111,7 @@ result$changed # see which files have changed
 
 \dontrun{ # don't overwrite the example files provided by the package
   # Get all example files
-  input_files <- penguins_examples(full.names = TRUE)
+  input_files <- example_files(full.names = TRUE)
 
   # Convert them in place
   convert_files_inplace(input_files)
@@ -119,5 +119,5 @@ result$changed # see which files have changed
 
 }
 \seealso{
-\code{\link[=penguins_examples]{penguins_examples()}}, \code{\link[=penguins_examples_dir]{penguins_examples_dir()}}
+\code{\link[=example_files]{example_files()}}, \code{\link[=example_dir]{example_dir()}}
 }

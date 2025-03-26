@@ -42,9 +42,9 @@ penguins_examples(full.names = TRUE)
 
 # Get the full path to a specific example files
 penguins_examples("penguins.R")
-penguins_examples("analysis/penguins.qmd")
+penguins_examples("nested/penguins.qmd")
 
-# Get the path to all examples
+# Get the path to all examplesss
 penguins_examples_dir()
 
 }

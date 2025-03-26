@@ -7,17 +7,19 @@
 \usage{
 example_files(path = NULL, full.names = FALSE, recursive = TRUE)
 
-example_dir()
+example_dir(copy.dir = NULL)
 }
 \arguments{
-\item{path}{Character string. If NULL (default), lists all available example files.
+\item{path}{Character string. If \code{NULL} (default), lists all available example files.
 If specified, returns the full path to the specified file or directory.}
 
-\item{full.names}{Logical. If TRUE, returns full file paths rather than relative paths.
-Only used when \code{path = NULL}. Default is FALSE.}
+\item{full.names}{Logical. If \verb{TRUE``, returns full file paths rather than relative paths. Only used when }path = NULL`. Default is FALSE.}
 
-\item{recursive}{Logical. If TRUE, lists files in subdirectories recursively.
-Only used when \code{path = NULL}. Default is TRUE.}
+\item{recursive}{Logical. If \verb{TRUE``, lists files in subdirectories recursively. Only used when }path = NULL`. Default is TRUE.}
+
+\item{copy.dir}{Character string. A directory name or path to a directory
+into which the files in the example directory will be copied.
+If \code{NULL} (default) returns path to example directory installed with the package.}
 }
 \value{
 \itemize{

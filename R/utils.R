@@ -8,12 +8,15 @@
 #' When `example_files()` is called with `path = NULL`, it lists available example files.
 #' When called with a specific path, it returns the full path to that file.
 #'
-#' @param path Character string. If NULL (default), lists all available example files.
+#' @param path Character string. If `NULL` (default), lists all available example files.
 #'   If specified, returns the full path to the specified file or directory.
-#' @param full.names Logical. If TRUE, returns full file paths rather than relative paths.
+#' @param full.names Logical. If `TRUE``, returns full file paths rather than relative paths.
 #'   Only used when `path = NULL`. Default is FALSE.
-#' @param recursive Logical. If TRUE, lists files in subdirectories recursively.
+#' @param recursive Logical. If `TRUE``, lists files in subdirectories recursively.
 #'   Only used when `path = NULL`. Default is TRUE.
+#' @param copy.dir Character string. A directory name or path to a directory
+#'   into which the files in the example directory will be copied.
+#'   If `NULL` (default) returns path to example directory installed with the package.
 #'
 #' @return
 #' \itemize{
@@ -62,8 +65,33 @@ example_files <- function(
 
 #' @rdname example_files
 #' @export
-example_dir <- function() {
-  system.file("extdata", package = "basepenguins")
+example_dir <- function(copy.dir = NULL) {
+  if (is.null(copy.dir)) {
+    return(system.file("extdata", package = "basepenguins"))
+  }
+
+  # copy over all example files to new folder
+  if (!dir.exists(copy.dir)) {
+    dir.create(copy.dir)
+  }
+
+  copy.path <- normalizePath(copy.dir)
+
+  from <- example_files(full.names = TRUE, recursive = TRUE)
+  rel_paths <- example_files(full.names = FALSE, recursive = TRUE)
+  to <- file.path(copy.path, rel_paths)
+
+  # Create all necessary directories
+  for (file_path in to) {
+    dir_path <- dirname(file_path)
+    if (!dir.exists(dir_path)) {
+      dir.create(dir_path, recursive = TRUE)
+    }
+  }
+
+  file.copy(from = from, to = to, overwrite = TRUE)
+
+  invisible(copy.path)
 }
 
 filter_by_extensions <- function(extensions) {

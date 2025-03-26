@@ -76,6 +76,108 @@ test_that("penguins_example_dir works", {
   expect_match(example_dir(), "extdata")
 })
 
+test_that("example_dir with copy.dir copies all files including in nested directories", {
+  # Create a temporary directory for the test
+  temp_dir <- withr::local_tempdir()
+
+  # Call example_dir with copy.dir parameter
+  example_dir(copy.dir = temp_dir)
+
+  # Get expected files (all files that should be copied)
+  expected_files <- example_files(recursive = TRUE)
+
+  # Check if all files exist in the copied directory
+  for (file in expected_files) {
+    expect_true(
+      file.exists(file.path(temp_dir, file)),
+      info = paste("Expected file not found:", file)
+    )
+  }
+
+  # Specifically check if nested directory exists and has files
+  expect_true(dir.exists(file.path(temp_dir, "nested")))
+
+  # Get nested files to check specifically
+  nested_files <- example_files(recursive = TRUE)
+  nested_files <- nested_files[grepl("^nested/", nested_files)]
+
+  # Ensure we have some nested files to test with
+  expect_true(length(nested_files) > 0)
+
+  # Check each nested file exists in the copied directory
+  for (file in nested_files) {
+    expect_true(
+      file.exists(file.path(temp_dir, file)),
+      info = paste("Expected nested file not found:", file)
+    )
+  }
+})
+
+test_that("example_dir with copy.dir copies file content correctly", {
+  # Create a temporary directory for the test
+  temp_dir <- withr::local_tempdir()
+
+  # Call example_dir with copy.dir parameter
+  example_dir(copy.dir = temp_dir)
+
+  # Sample a few files to check content
+  files_to_check <- c(
+    "penguins.R",
+    file.path("nested", "penguins.qmd")
+  )
+
+  for (file in files_to_check) {
+    # Get content of original file using example_files
+    original_path <- example_files(file)
+    original_content <- readLines(original_path)
+
+    # Get content of copied file
+    copied_path <- file.path(temp_dir, file)
+    copied_content <- readLines(copied_path)
+
+    # Compare content
+    expect_identical(
+      copied_content,
+      original_content,
+      info = paste("Content mismatch for file:", file)
+    )
+  }
+})
+
+test_that("example_dir with copy.dir handles existing directory", {
+  # Create a temporary directory that already exists
+  temp_dir <- withr::local_tempdir()
+
+  # Create a marker file to verify the directory is not deleted
+  marker_file <- file.path(temp_dir, "marker.txt")
+  writeLines("This is a marker file", marker_file)
+
+  # Call example_dir with the existing directory
+  example_dir(copy.dir = temp_dir)
+
+  # Verify marker file still exists (directory was not recreated)
+  expect_true(file.exists(marker_file))
+
+  # Also verify that example files were copied
+  expect_true(file.exists(file.path(temp_dir, "penguins.R")))
+})
+
+test_that("example_dir with copy.dir returns the normalized path invisibly", {
+  # Create a temporary directory
+  temp_dir <- withr::local_tempdir()
+
+  # Call example_dir with copy.dir parameter and capture the result
+  result <- example_dir(copy.dir = temp_dir)
+
+  # Check that the result is the normalized path of the temp directory
+  expect_equal(result, normalizePath(temp_dir))
+
+  # Also verify that it's returned invisibly by capturing it with invisible wrapper
+  invisible_result <- withVisible(example_dir(copy.dir = temp_dir))
+  expect_false(invisible_result$visible)
+  expect_equal(invisible_result$value, normalizePath(temp_dir))
+})
+
 # filter_by_extensions() -------------------------------------------------
 
 test_that("filter_by_extensions returns correct patterns", {

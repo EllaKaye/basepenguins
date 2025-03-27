@@ -72,7 +72,7 @@ example_dir <- function(copy.dir = NULL) {
 
   # copy over all example files to new folder
   if (!dir.exists(copy.dir)) {
-    dir.create(copy.dir)
+    dir.create(copy.dir, recursive = TRUE)
   }
 
   copy.path <- normalizePath(copy.dir)

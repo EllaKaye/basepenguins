@@ -105,23 +105,22 @@ cat(readLines("penguins_new.R"), sep = "\n") # view changes
 file.copy("examples/penguins.R", "penguins_copy.R")
 convert_files_inplace("penguins_copy.R")
 
-# Convert all files in a directory
-result <- convert_dir("examples", "new_directory")
-result
-
-# Convert multiple files to new locations
+# Multiple files - new output locations
 input_files <- file.path("examples", example_files())
 output_files <- output_paths(input_files, dir = "new_dir")
-result <- convert_files(input_files, output_files)
+convert_files(input_files, output_files)
 
+# Directory - new output location
+result <- convert_dir("examples", "new_directory")
+result # see `changed` and `not_changed` files
 
-# Overwrite the files in `"examples"`
+# Overwrite the files in "examples"
 result <- convert_dir_inplace("examples")
-result
+result # see `changed` and `not_changed` files
 
 \dontshow{setwd(.old_wd)}
 
 }
 \seealso{
-\code{\link[=example_files]{example_files()}}, \code{\link[=example_dir]{example_dir()}}
+\code{\link[=example_dir]{example_dir()}}, \code{\link[=example_files]{example_files()}}, \code{\link[=output_paths]{output_paths()}}
 }

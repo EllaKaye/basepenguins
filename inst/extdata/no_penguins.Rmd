@@ -4,11 +4,9 @@ title: No penguins
 
 A file to make sure we're not changing `ends_with("_mm")` if the script doesn't load the palmerpenguins package.
 
-
 ```{r}
 dat <- data.frame(length_mm = 1:3, depth_mm = 4:6)
 
 dat |>
   dplyr::select(ends_with("_mm"))
-
 ```

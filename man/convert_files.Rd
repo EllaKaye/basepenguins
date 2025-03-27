@@ -105,14 +105,15 @@ cat(readLines("penguins_new.R"), sep = "\n") # view changes
 file.copy("examples/penguins.R", "penguins_copy.R")
 convert_files_inplace("penguins_copy.R")
 
-# Convert multiple files to new locations
-input_files <- file.path("examples", example_files())
-output_files <- output_paths(input_files) # e.g. path/to/penguins_new.R
-result <- convert_files(input_files, output_files)
-
 # Convert all files in a directory
 result <- convert_dir("examples", "new_directory")
 result
+
+# Convert multiple files to new locations
+input_files <- file.path("examples", example_files())
+output_files <- output_paths(input_files, dir = "new_dir")
+result <- convert_files(input_files, output_files)
+
 
 # Overwrite the files in `"examples"`
 result <- convert_dir_inplace("examples")

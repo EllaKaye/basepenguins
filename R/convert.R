@@ -9,11 +9,13 @@
 #'
 #' @param input For `convert_files()` and `convert_files_inplace()`:
 #'   A character vector of file paths to convert.
+#'   Can be relative or absolute paths.
 #'   For `convert_dir()` and `convert_dir_inplace()`:
 #'   A string with a path to a directory of files to convert.
 #' @param output For `convert_files()`:
 #'   A character vector of output file paths, or NULL to modify files in place.
 #'   If provided, must be the same length as `input`.
+#'   Can be absolute or relative paths.
 #'   For `convert_dir()`:
 #'   A string with the output directory,
 #'   or `NULL` to modify the files in the directory in place.
@@ -92,15 +94,12 @@
 #' result <- convert_dir(penguins_dir, "new_directory")
 #' result$changed # see which files have changed
 #'
+#' # Overwrite the example files from the package
+#' example_dir("examples_copy") # copy first, so don't overwrite package files
+#' result <- convert_dir_inplace("examples_copy")
+#' result # see the result
+#'
 #' \dontshow{setwd(.old_wd)}
-#'
-#' \dontrun{ # don't overwrite the example files provided by the package
-#'   # Get all example files
-#'   input_files <- example_files(full.names = TRUE)
-#'
-#'   # Convert them in place
-#'   convert_files_inplace(input_files)
-#' }
 #'
 #' @export
 convert_files <- function(

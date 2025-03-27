@@ -89,9 +89,9 @@ test_that("convert_files handles overwrite (output = NULL) correctly", {
 
   # Check values and names of result
   expected_changed <- input_files[1]
-  names(expected_changed) <- input_files[1]
   expected_not_changed <- input_files[2]
-  names(expected_not_changed) <- input_files[2]
+  expect_null(names(result$changed))
+  expect_null(names(result$not_changed))
   expect_equal(result$changed, expected_changed)
   expect_equal(result$not_changed, expected_not_changed)
 })
@@ -904,7 +904,7 @@ test_that("convert_files_inplace directly calls convert_files with input=output"
   # Check result structure
   expect_type(result, "list")
   expect_named(result, c("changed", "not_changed"))
-  expect_equal(names(result$changed), test_file)
+  expect_null(names(result$changed))
   expect_equal(result$changed[[1]], test_file)
 })
 

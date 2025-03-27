@@ -34,16 +34,19 @@ or \code{NULL} to modify the files in the directory in place.}
 defaults to R scripts and R Markdown and Quarto documents.}
 }
 \value{
-An invisible list with two components:
+A list (returned invisibly) with two components:
 \itemize{
-\item \code{changed}: A named character vector of output paths for files that
-were modified, with input paths as the names.
-\item \code{not_changed}: A named character vector of output paths for files
-that were not modified, with input paths as names. Files are not changed
-if they do not contain references to palmerpenguins (i.e. the patterns)
-listed in the Details section, or if they do not have one of the
-specified \code{extensions}.
+\item \code{changed}: A character vector of paths for files that were modified.
+\item \code{not_changed}: A character vector of paths for files that were not
+modified. Files are not changed if they do not contain the code
+\code{library(palmerpenguins)}, or if they do not have one of the specified
+\code{extensions}.
 }
+
+For both the \code{changed} and \code{not_changed} vectors, these will be subsets of
+the \code{output} paths, if they were provided, with the corresponding \code{input}
+paths as names. If \code{output} was not specified, then these vectors will be
+subsets of the \code{input} paths, and the vectors will not be named.
 }
 \description{
 These functions convert files that use the
@@ -89,30 +92,30 @@ substitution was made.
 # Note that all examples below write output to a temporary directory
 # and file paths are relative to that directory (unless otherwise stated).
 
+# For all examples below, use a copy of the examples provided by the package,
+# copied to an "examples" directory in the working directory
+example_dir("examples")
+
 # Single file - new output
-penguin_file <- example_files("penguins.R")
-result <- convert_files(penguin_file, "penguins_new.R")
+result <- convert_files("examples/penguins.R", "penguins_new.R")
 cat(readLines("penguins_new.R"), sep = "\n") # view changes
 
-# Single file - modify in place
-# Copy penguin_file so don't overwrite example provided by package
-file.copy(penguin_file, "penguins_copy.R")
+# Single file - copy, then modify that in place
+file.copy("examples/penguins.R", "penguins_copy.R")
 convert_files_inplace("penguins_copy.R")
 
 # Convert multiple files to new locations
-input_files <- example_files(full.names = TRUE) # absolute paths
-output_files <- output_paths(input_files)
+input_files <- file.path("examples", example_files())
+output_files <- output_paths(input_files) # e.g. path/to/penguins_new.R
 result <- convert_files(input_files, output_files)
 
 # Convert all files in a directory
-penguins_dir <- example_dir()
-result <- convert_dir(penguins_dir, "new_directory")
-result$changed # see which files have changed
+result <- convert_dir("examples", "new_directory")
+result
 
-# Overwrite the example files from the package
-example_dir("examples_copy") # copy first, so don't overwrite package files
-result <- convert_dir_inplace("examples_copy")
-result # see the result
+# Overwrite the files in `"examples"`
+result <- convert_dir_inplace("examples")
+result
 
 \dontshow{setwd(.old_wd)}
 

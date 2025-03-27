@@ -23,16 +23,19 @@
 #'   defaults to R scripts and R Markdown and Quarto documents.
 #'
 #' @returns
-#' An invisible list with two components:
+#' A list (returned invisibly) with two components:
 #' \itemize{
-#'   \item `changed`: A named character vector of output paths for files that
-#'     were modified, with input paths as the names.
-#'   \item `not_changed`: A named character vector of output paths for files
-#'     that were not modified, with input paths as names. Files are not changed
-#'     if they do not contain references to palmerpenguins (i.e. the patterns)
-#'     listed in the Details section, or if they do not have one of the
-#'     specified `extensions`.
+#'   \item `changed`: A character vector of paths for files that were modified.
+#'   \item `not_changed`: A character vector of paths for files that were not
+#'     modified. Files are not changed if they do not contain the code
+#'     `library(palmerpenguins)`, or if they do not have one of the specified
+#'     `extensions`.
 #' }
+#'
+#' For both the `changed` and `not_changed` vectors, these will be subsets of
+#' the `output` paths, if they were provided, with the corresponding `input`
+#' paths as names. If `output` was not specified, then these vectors will be
+#' subsets of the `input` paths, and the vectors will not be named.
 #'
 #' @details
 #' Files are converted by:
@@ -47,7 +50,6 @@
 #'   }
 #'   \item Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
 #' }
-#'
 #'
 #' Non-convertible files (those without the specified extensions) are copied to
 #' the output location if `output` is provided, but are not modified.
@@ -74,30 +76,30 @@
 #' # Note that all examples below write output to a temporary directory
 #' # and file paths are relative to that directory (unless otherwise stated).
 #'
+#' # For all examples below, use a copy of the examples provided by the package,
+#' # copied to an "examples" directory in the working directory
+#' example_dir("examples")
+#'
 #' # Single file - new output
-#' penguin_file <- example_files("penguins.R")
-#' result <- convert_files(penguin_file, "penguins_new.R")
+#' result <- convert_files("examples/penguins.R", "penguins_new.R")
 #' cat(readLines("penguins_new.R"), sep = "\n") # view changes
 #'
-#' # Single file - modify in place
-#' # Copy penguin_file so don't overwrite example provided by package
-#' file.copy(penguin_file, "penguins_copy.R")
+#' # Single file - copy, then modify that in place
+#' file.copy("examples/penguins.R", "penguins_copy.R")
 #' convert_files_inplace("penguins_copy.R")
 #'
 #' # Convert multiple files to new locations
-#' input_files <- example_files(full.names = TRUE) # absolute paths
-#' output_files <- output_paths(input_files)
+#' input_files <- file.path("examples", example_files())
+#' output_files <- output_paths(input_files) # e.g. path/to/penguins_new.R
 #' result <- convert_files(input_files, output_files)
 #'
 #' # Convert all files in a directory
-#' penguins_dir <- example_dir()
-#' result <- convert_dir(penguins_dir, "new_directory")
-#' result$changed # see which files have changed
+#' result <- convert_dir("examples", "new_directory")
+#' result
 #'
-#' # Overwrite the example files from the package
-#' example_dir("examples_copy") # copy first, so don't overwrite package files
-#' result <- convert_dir_inplace("examples_copy")
-#' result # see the result
+#' # Overwrite the files in `"examples"`
+#' result <- convert_dir_inplace("examples")
+#' result
 #'
 #' \dontshow{setwd(.old_wd)}
 #'
@@ -124,7 +126,6 @@ convert_files <- function(
   # only want to touch scripts, but still need to keep track of other files
   convertible <- tools::file_ext(input) %in% extensions
   not_convertible <- output[!convertible]
-  names(not_convertible) <- input[!convertible]
 
   # need a file for each output, so still copy not_convertible files,
   # but don't need to overwrite with something identical
@@ -149,12 +150,14 @@ convert_files <- function(
 
   # Create named vectors for changed and not_changed files
   changed <- convertible_output[converted]
-  names(changed) <- convertible_input[converted]
-
   not_changed_convertible <- convertible_output[!converted]
-  names(not_changed_convertible) <- convertible_input[!converted]
-
   not_changed <- c(not_changed_convertible, not_convertible)
+
+  # use input as names, if output is different from input
+  if (!overwrite) {
+    names(changed) <- convertible_input[converted]
+    names(not_changed) <- c(convertible_input[!converted], input[!convertible])
+  }
 
   if (length(changed) > 0) {
     message(

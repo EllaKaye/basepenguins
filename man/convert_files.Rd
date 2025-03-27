@@ -38,8 +38,9 @@ A list (returned invisibly) with two components:
 \itemize{
 \item \code{changed}: A character vector of paths for files that were modified.
 \item \code{not_changed}: A character vector of paths for files that were not
-modified. Files are not changed if they do not contain the code
-\code{library(palmerpenguins)}, or if they do not have one of the specified
+modified. Files are not changed if they do not load the palmerpenguins
+package via \code{library(palmerpenguins)}, \code{library('palmerpenguins')} or
+\code{library("palmerpenguins")}, or if they do not have one of the specified
 \code{extensions}.
 }
 

@@ -27,8 +27,9 @@
 #' \itemize{
 #'   \item `changed`: A character vector of paths for files that were modified.
 #'   \item `not_changed`: A character vector of paths for files that were not
-#'     modified. Files are not changed if they do not contain the code
-#'     `library(palmerpenguins)`, or if they do not have one of the specified
+#'     modified. Files are not changed if they do not load the palmerpenguins
+#'     package via `library(palmerpenguins)`, `library('palmerpenguins')` or
+#'     `library("palmerpenguins")`, or if they do not have one of the specified
 #'     `extensions`.
 #' }
 #'

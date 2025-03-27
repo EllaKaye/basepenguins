@@ -111,12 +111,12 @@ test_that("penguins_substitute produces expected messages", {
   # one ends_with
   expect_message(
     penguins_substitute(file_content[-15], "penguins_new.R"),
-    '- In penguins_new.R, ends_with\\("_mm"\\) replaced on line 14 - please check that the subsitution is appropriate.'
+    '- ends_with\\("_mm"\\) replaced on line 14 in penguins_new.R'
   )
   # multiple ends_with
   expect_message(
     penguins_substitute(file_content, "penguins_new.R"),
-    '- In penguins_new.R, ends_with\\("_mm"\\) replaced on lines 14, 15 - please check that the substitutions are appropriate.'
+    '- ends_with\\("_mm"\\) replaced on lines 14, 15 in penguins_new.R'
   )
 })
 

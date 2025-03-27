@@ -49,36 +49,28 @@ validate_input_output <- function(
   )
 }
 
-
 # Main substitution function
 penguins_substitute <- function(file_content, output_short) {
   # Define patterns to look for
   pp <- "library\\(['\"]?palmerpenguins['\"]?\\)" # may have "" or '' around it
-  bl <- "bill_length_mm"
-  bd <- "bill_depth_mm"
-  fl <- "flipper_length_mm"
-  bm <- "body_mass_g"
-  ew <- 'ends_with\\(["\']_mm["\']\\)'
 
-  patterns <- c(pp, bl, bd, fl, bm, ew)
-  pattern <- paste0(patterns, collapse = "|")
+  # Check for the library call pattern
+  matches_pp <- any(grepl(pp, file_content))
 
-  # Check if any patterns match
-  matches <- any(grepl(pattern, file_content))
-
-  # If matches found, perform substitutions
-  if (matches) {
+  # If palmerpenguins is loaded in the file, perform substitutions
+  if (matches_pp) {
     # Remove call(s) to palmerpenguins library
     file_content <- gsub(pp, "", file_content)
 
     # Replace variable names with shorter versions
     file_content <- file_content |>
-      gsub(bl, "bill_len", x = _, fixed = TRUE) |>
-      gsub(bd, "bill_dep", x = _, fixed = TRUE) |>
-      gsub(fl, "flipper_len", x = _, fixed = TRUE) |>
-      gsub(bm, "body_mass", x = _, fixed = TRUE)
+      gsub("bill_length_mm", "bill_len", x = _, fixed = TRUE) |>
+      gsub("bill_depth_mm", "bill_dep", x = _, fixed = TRUE) |>
+      gsub("flipper_length_mm", "flipper_len", x = _, fixed = TRUE) |>
+      gsub("body_mass_g", "body_mass", x = _, fixed = TRUE)
 
     # Check for ends_with("_mm") pattern
+    ew <- 'ends_with\\(["\']_mm["\']\\)'
     ew_matches <- grep(ew, file_content)
 
     if (length(ew_matches) > 0) {
@@ -90,16 +82,12 @@ penguins_substitute <- function(file_content, output_short) {
 
       message(
         paste0(
-          '- In ',
-          output_short,
-          ', ends_with("_mm") replaced on ',
+          '- ends_with("_mm") replaced on ',
           lns,
           " ",
           ew_matches_str,
-          " - ",
-          "please check that the ",
-          subs,
-          " appropriate."
+          " in ",
+          output_short
         )
       )
     }
@@ -116,7 +104,7 @@ penguins_substitute <- function(file_content, output_short) {
   # Return modified content and match status
   list(
     content = file_content,
-    matches = matches
+    matches = matches_pp
   )
 }
 

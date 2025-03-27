@@ -73,6 +73,7 @@ necessary changes to some variable names (see Details section below).</p>
 <dl><dt id="arg-input">input<a class="anchor" aria-label="anchor" href="#arg-input"></a></dt>
 <dd><p>For <code>convert_files()</code> and <code>convert_files_inplace()</code>:
 A character vector of file paths to convert.
+Can be relative or absolute paths.
 For <code>convert_dir()</code> and <code>convert_dir_inplace()</code>:
 A string with a path to a directory of files to convert.</p></dd>
 
@@ -81,6 +82,7 @@ A string with a path to a directory of files to convert.</p></dd>
 <dd><p>For <code>convert_files()</code>:
 A character vector of output file paths, or NULL to modify files in place.
 If provided, must be the same length as <code>input</code>.
+Can be absolute or relative paths.
 For <code>convert_dir()</code>:
 A string with the output directory,
 or <code>NULL</code> to modify the files in the directory in place.</p></dd>
@@ -93,14 +95,17 @@ defaults to R scripts and R Markdown and Quarto documents.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An invisible list with two components:</p><ul><li><p><code>changed</code>: A named character vector of output paths for files that
-were modified, with input paths as the names.</p></li>
-<li><p><code>not_changed</code>: A named character vector of output paths for files
-that were not modified, with input paths as names. Files are not changed
-if they do not contain references to palmerpenguins (i.e. the patterns)
-listed in the Details section, or if they do not have one of the
-specified <code>extensions</code>.</p></li>
-</ul></div>
+    <p>A list (returned invisibly) with two components:</p><ul><li><p><code>changed</code>: A character vector of paths for files that were modified.</p></li>
+<li><p><code>not_changed</code>: A character vector of paths for files that were not
+modified. Files are not changed if they do not load the palmerpenguins
+package via <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library('palmerpenguins')</a></code> or
+<code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library("palmerpenguins")</a></code>, or if they do not have one of the specified
+<code>extensions</code>.</p></li>
+</ul><p>For both the <code>changed</code> and <code>not_changed</code> vectors, these will be subsets of
+the <code>output</code> paths, if they were provided, with the corresponding <code>input</code>
+paths as names. If <code>output</code> was not specified, then these vectors will be
+subsets of the <code>input</code> paths, and the vectors will not be named.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Files are converted by:</p><ul><li><p>Replacing <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> with <code>""</code></p></li>
@@ -136,10 +141,13 @@ substitution was made.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Note that all examples below write output to a temporary directory</span></span></span>
 <span class="r-in"><span><span class="co"># and file paths are relative to that directory (unless otherwise stated).</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For all examples below, use a copy of the examples provided by the package,</span></span></span>
+<span class="r-in"><span><span class="co"># copied to an "examples" directory in the working directory</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="example_files.html">example_dir</a></span><span class="op">(</span><span class="st">"examples"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Single file - new output</span></span></span>
-<span class="r-in"><span><span class="va">penguin_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="example_files.html">example_files</a></span><span class="op">(</span><span class="st">"penguins.R"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_files</span><span class="op">(</span><span class="va">penguin_file</span>, <span class="st">"penguins_new.R"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_files</span><span class="op">(</span><span class="st">"examples/penguins.R"</span>, <span class="st">"penguins_new.R"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in penguins_new.R</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"penguins_new.R"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span> <span class="co"># view changes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -156,53 +164,61 @@ substitution was made.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   geom_point(aes(color = species, shape = species), size = 2) +</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Single file - modify in place</span></span></span>
-<span class="r-in"><span><span class="co"># Copy penguin_file so don't overwrite example provided by package</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="va">penguin_file</span>, <span class="st">"penguins_copy.R"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Single file - copy, then modify that in place</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="st">"examples/penguins.R"</span>, <span class="st">"penguins_copy.R"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu">convert_files_inplace</span><span class="op">(</span><span class="st">"penguins_copy.R"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In penguins_copy.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in penguins_copy.R</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Convert multiple files to new locations</span></span></span>
-<span class="r-in"><span><span class="va">input_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="example_files.html">example_files</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># absolute paths</span></span></span>
-<span class="r-in"><span><span class="va">output_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="output_paths.html">output_paths</a></span><span class="op">(</span><span class="va">input_files</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">input_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="fu"><a href="example_files.html">example_files</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">output_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="output_paths.html">output_paths</a></span><span class="op">(</span><span class="va">input_files</span><span class="op">)</span> <span class="co"># e.g. path/to/penguins_new.R</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_files</span><span class="op">(</span><span class="va">input_files</span>, <span class="va">output_files</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>incomplete final line found on '/home/runner/work/_temp/Library/basepenguins/extdata/no_penguins.Rmd'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In /home/runner/work/_temp/Library/basepenguins/extdata/no_penguins_new.Rmd, ends_with("_mm") replaced on lines 5, 12 - please check that the substitutions are appropriate.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In /home/runner/work/_temp/Library/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in examples/penguins_new.R</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Convert all files in a directory</span></span></span>
-<span class="r-in"><span><span class="va">penguins_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="example_files.html">example_dir</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_dir</span><span class="op">(</span><span class="va">penguins_dir</span>, <span class="st">"new_directory"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>incomplete final line found on '/home/runner/work/_temp/Library/basepenguins/extdata/no_penguins.Rmd'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In new_directory/no_penguins.Rmd, ends_with("_mm") replaced on lines 5, 12 - please check that the substitutions are appropriate.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In new_directory/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_dir</span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"new_directory"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in new_directory/penguins.R</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span>
-<span class="r-in"><span><span class="va">result</span><span class="op">$</span><span class="va">changed</span> <span class="co"># see which files have changed</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /home/runner/work/_temp/Library/basepenguins/extdata/nested/penguins.qmd </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      "new_directory/nested/penguins.qmd" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     /home/runner/work/_temp/Library/basepenguins/extdata/no_penguins.Rmd </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          "new_directory/no_penguins.Rmd" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          /home/runner/work/_temp/Library/basepenguins/extdata/penguins.R </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                               "new_directory/penguins.R" </span>
+<span class="r-in"><span><span class="va">result</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $changed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        examples/nested/penguins.qmd                 examples/penguins.R </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "new_directory/nested/penguins.qmd"          "new_directory/penguins.R" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $not_changed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           examples/nested/penguins_new.qmd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    "new_directory/nested/penguins_new.qmd" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   examples/no_penguins.Rmd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            "new_directory/no_penguins.Rmd" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               examples/no_penguins_new.Rmd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        "new_directory/no_penguins_new.Rmd" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    examples/penguins_new.R </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             "new_directory/penguins_new.R" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            examples/nested/not_a_script.md </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "new_directory/nested/not_a_script.md" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        examples/nested/not_a_script_new.md </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "new_directory/nested/not_a_script_new.md" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># don't overwrite the example files provided by the package</span></span></span>
-<span class="r-in"><span>  <span class="co"># Get all example files</span></span></span>
-<span class="r-in"><span>  <span class="va">input_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="example_files.html">example_files</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># Convert them in place</span></span></span>
-<span class="r-in"><span>  <span class="fu">convert_files_inplace</span><span class="op">(</span><span class="va">input_files</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>incomplete final line found on '/home/runner/work/_temp/Library/basepenguins/extdata/no_penguins.Rmd'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In /home/runner/work/_temp/Library/basepenguins/extdata/no_penguins.Rmd, ends_with("_mm") replaced on lines 5, 12 - please check that the substitutions are appropriate.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - In /home/runner/work/_temp/Library/basepenguins/extdata/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.</span>
+<span class="r-in"><span><span class="co"># Overwrite the files in `"examples"`</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_dir_inplace</span><span class="op">(</span><span class="st">"examples"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in examples/penguins.R</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span>
-<span class="r-in"><span> <span class="co"># \dontrun{}</span></span></span>
+<span class="r-in"><span><span class="va">result</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $changed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "examples/nested/penguins.qmd" "examples/penguins.R"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $not_changed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "examples/nested/penguins_new.qmd"    "examples/no_penguins.Rmd"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "examples/no_penguins_new.Rmd"        "examples/penguins_new.R"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "examples/nested/not_a_script.md"     "examples/nested/not_a_script_new.md"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

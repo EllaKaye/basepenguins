@@ -171,14 +171,6 @@ substitution was made.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in penguins_copy.R</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Convert multiple files to new locations</span></span></span>
-<span class="r-in"><span><span class="va">input_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="fu"><a href="example_files.html">example_files</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">output_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="output_paths.html">output_paths</a></span><span class="op">(</span><span class="va">input_files</span><span class="op">)</span> <span class="co"># e.g. path/to/penguins_new.R</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_files</span><span class="op">(</span><span class="va">input_files</span>, <span class="va">output_files</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in examples/penguins_new.R</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Convert all files in a directory</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_dir</span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"new_directory"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in new_directory/penguins.R</span>
@@ -190,19 +182,18 @@ substitution was made.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "new_directory/nested/penguins.qmd"          "new_directory/penguins.R" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $not_changed</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           examples/nested/penguins_new.qmd </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    "new_directory/nested/penguins_new.qmd" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   examples/no_penguins.Rmd </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            "new_directory/no_penguins.Rmd" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               examples/no_penguins_new.Rmd </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        "new_directory/no_penguins_new.Rmd" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    examples/penguins_new.R </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             "new_directory/penguins_new.R" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            examples/nested/not_a_script.md </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "new_directory/nested/not_a_script.md" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        examples/nested/not_a_script_new.md </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "new_directory/nested/not_a_script_new.md" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               examples/no_penguins.Rmd        examples/nested/not_a_script.md </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        "new_directory/no_penguins.Rmd" "new_directory/nested/not_a_script.md" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Convert multiple files to new locations</span></span></span>
+<span class="r-in"><span><span class="va">input_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="fu"><a href="example_files.html">example_files</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">output_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="output_paths.html">output_paths</a></span><span class="op">(</span><span class="va">input_files</span>, dir <span class="op">=</span> <span class="st">"new_dir"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_files</span><span class="op">(</span><span class="va">input_files</span>, <span class="va">output_files</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - ends_with("_mm") replaced on line 7 in new_dir/examples/penguins_new.R</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - Please check the changed output files.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Overwrite the files in `"examples"`</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">convert_dir_inplace</span><span class="op">(</span><span class="st">"examples"</span><span class="op">)</span></span></span>
@@ -214,9 +205,7 @@ substitution was made.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "examples/nested/penguins.qmd" "examples/penguins.R"         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $not_changed</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "examples/nested/penguins_new.qmd"    "examples/no_penguins.Rmd"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "examples/no_penguins_new.Rmd"        "examples/penguins_new.R"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "examples/nested/not_a_script.md"     "examples/nested/not_a_script_new.md"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "examples/no_penguins.Rmd"        "examples/nested/not_a_script.md"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

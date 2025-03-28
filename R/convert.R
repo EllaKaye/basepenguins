@@ -70,7 +70,7 @@
 #' indicating the files and line numbers where the `ends_with("_mm")`
 #' substitution was made.
 #'
-#' @seealso [example_dir()], [example_files()], [output_paths()]
+#' @seealso [example_dir()], [output_paths()]
 #'
 #' @examples
 #' \dontshow{.old_wd <- setwd(tempdir())}
@@ -90,7 +90,7 @@
 #' convert_files_inplace("penguins_copy.R")
 #'
 #' # Multiple files - new output locations
-#' input_files <- file.path("examples", example_files())
+#' input_files <- c("examples/penguins.R", "examples/nested/penguins.qmd")
 #' output_files <- output_paths(input_files, dir = "new_dir")
 #' convert_files(input_files, output_files)
 #'

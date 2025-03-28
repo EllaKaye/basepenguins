@@ -106,7 +106,7 @@ file.copy("examples/penguins.R", "penguins_copy.R")
 convert_files_inplace("penguins_copy.R")
 
 # Multiple files - new output locations
-input_files <- file.path("examples", example_files())
+input_files <- c("examples/penguins.R", "examples/nested/penguins.qmd")
 output_files <- output_paths(input_files, dir = "new_dir")
 convert_files(input_files, output_files)
 
@@ -122,5 +122,5 @@ result # see `changed` and `not_changed` files
 
 }
 \seealso{
-\code{\link[=example_dir]{example_dir()}}, \code{\link[=example_files]{example_files()}}, \code{\link[=output_paths]{output_paths()}}
+\code{\link[=example_dir]{example_dir()}}, \code{\link[=output_paths]{output_paths()}}
 }

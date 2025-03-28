@@ -12,9 +12,9 @@ validate_input_output <- function(
     stop("`output` must be a single character string (a path) or NULL")
   }
 
-  # Set output_short path - if NULL, use input path
+  # Set output_non_norm path - if NULL, use input path
   # keep non-normalized for display, before normalizing input
-  output_short <- output %||% input
+  output_non_norm <- output %||% input
 
   # Normalize input path and check if it exists
   input <- normalizePath(input, mustWork = TRUE)
@@ -24,7 +24,7 @@ validate_input_output <- function(
     stop("`input` does not have a valid file extension")
   }
 
-  # Set output path - if NULL, use input path
+  # Set output path - if NULL, use input path (now normalised)
   output <- output %||% input
 
   # Create parent directory if it doesn't exist
@@ -38,19 +38,16 @@ validate_input_output <- function(
     file.create(output)
   }
 
-  # Normalize output path
-  output <- normalizePath(output)
-
   # Return validated paths
   list(
     input = input,
-    output = output,
-    output_short = output_short
+    output = normalizePath(output),
+    output_non_norm = output_non_norm
   )
 }
 
 # Main substitution function
-penguins_substitute <- function(file_content, output_short) {
+penguins_substitute <- function(file_content, output_non_norm) {
   # Define patterns to look for
   pp <- "library\\(['\"]?palmerpenguins['\"]?\\)" # may have "" or '' around it
 
@@ -87,7 +84,7 @@ penguins_substitute <- function(file_content, output_short) {
           " ",
           ew_matches_str,
           " in ",
-          output_short
+          output_non_norm
         )
       )
     }
@@ -114,7 +111,7 @@ penguins_convert <- function(input, output) {
 
   file_content <- readLines(paths$input)
 
-  result <- penguins_substitute(file_content, paths$output_short)
+  result <- penguins_substitute(file_content, paths$output_non_norm)
 
   writeLines(result$content, paths$output)
 

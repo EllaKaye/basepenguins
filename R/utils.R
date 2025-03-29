@@ -25,7 +25,7 @@
 #' @return
 #' `example_files`:
 #'  - If `path = NULL`, a character vector of available file/directory names.
-#'  - If `path` is specified, the absolute path to the requested resource.
+#'  - If `path` is specified, the absolute path to the requested file.
 #'
 #'` example_dir`:
 #'  - If `copy.dir = NULL`, the absolute path to the directory containing all examples.

@@ -27,7 +27,7 @@ If \code{NULL} (default) the files will not be copied.}
 \code{example_files}:
 \itemize{
 \item If \code{path = NULL}, a character vector of available file/directory names.
-\item If \code{path} is specified, the absolute path to the requested resource.
+\item If \code{path} is specified, the absolute path to the requested file.
 }
 
 \code{ example_dir}:

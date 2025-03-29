@@ -69,10 +69,10 @@ example_files("nested/penguins.qmd")
 
 # Get the path to the directory containing the example files
 example_dir() # path/to/basepenguins/extdata/
-
-# Copy the example files to a new directory
 \dontshow{.old_wd <- setwd(tempdir())}
-example_dir("examples")
+# Copy all files in the example directory
+example_dir(".") # copy example files into working directory
+example_dir("examples") # create subdirectory
 \dontshow{setwd(.old_wd)}
 
 }

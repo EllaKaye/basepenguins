@@ -96,7 +96,13 @@
 #' result <- convert_dir_inplace("examples")
 #' result # see `changed` and `not_changed` files
 #'
+#' \dontrun{
+#' # Overwrite all convertible files in the working directory
+#' convert_dir_inplace(".")
+#' }
+#'
 #' \dontshow{setwd(.old_wd)}
+#'
 #'
 #' @export
 convert_files <- function(

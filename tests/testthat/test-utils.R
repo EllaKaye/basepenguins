@@ -178,6 +178,33 @@ test_that("example_dir with copy.dir returns the normalized path invisibly", {
   expect_equal(invisible_result$value, normalizePath(temp_dir))
 })
 
+test_that("example_dir creates directories recursively when copy.dir doesn't exist", {
+  # Create a complex nested path that doesn't exist
+  temp_base <- withr::local_tempdir()
+  deep_nested_dir <- file.path(temp_base, "level1", "level2", "level3")
+
+  # Verify that the nested directory doesn't exist yet
+  expect_false(dir.exists(deep_nested_dir))
+
+  # Call example_dir with the nested directory path
+  result <- example_dir(copy.dir = deep_nested_dir)
+
+  # Verify that the directory was created
+  expect_true(dir.exists(deep_nested_dir))
+
+  # Verify that files were copied to the directory
+  expected_files <- example_files(recursive = TRUE)
+  for (file in expected_files) {
+    expect_true(
+      file.exists(file.path(deep_nested_dir, file)),
+      info = paste("File not found in created directory:", file)
+    )
+  }
+
+  # Check that the function returns the normalized path
+  expect_equal(result, normalizePath(deep_nested_dir))
+})
+
 # filter_by_extensions() -------------------------------------------------
 
 test_that("filter_by_extensions returns correct patterns", {

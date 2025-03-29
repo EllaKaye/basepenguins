@@ -24,14 +24,12 @@
 #'
 #' @returns
 #' A list (returned invisibly) with two components:
-#' \itemize{
-#'   \item `changed`: A character vector of paths for files that were modified.
-#'   \item `not_changed`: A character vector of paths for files that were not
-#'     modified. Files are not changed if they do not load the palmerpenguins
-#'     package via `library(palmerpenguins)`, `library('palmerpenguins')` or
-#'     `library("palmerpenguins")`, or if they do not have one of the specified
-#'     `extensions`.
-#' }
+#' - `changed`: A character vector of paths for files that were modified.
+#' - `not_changed`: A character vector of paths for files that were not
+#'    modified. Files are not changed if they do not load the palmerpenguins
+#'    package via `library(palmerpenguins)`, `library('palmerpenguins')` or
+#'    `library("palmerpenguins")`, or if they do not have one of the specified
+#'    `extensions`.
 #'
 #' For both the `changed` and `not_changed` vectors, these will be subsets of
 #' the `output` paths, if they were provided, with the corresponding `input`
@@ -40,17 +38,13 @@
 #'
 #' @details
 #' Files are converted by:
-#' \itemize{
-#'   \item Replacing `library(palmerpenguins)` with `""`
-#'   \item Replacing variable names:
-#'   \itemize{
-#'      \item `bill_length_mm` -> `bill_len`
-#'      \item `bill_depth_mm` -> `bill_dep`
-#'      \item `flipper_length_mm` -> `flipper_len`
-#'      \item `body_mass_g` -> `body_mass`
-#'   }
-#'   \item Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
-#' }
+#' - Replacing `library(palmerpenguins)` with `""`
+#' - Replacing variable names:
+#'   - `bill_length_mm` -> `bill_len`
+#'   - `bill_depth_mm` -> `bill_dep`
+#'   - `flipper_length_mm` -> `flipper_len`
+#'   - `body_mass_g` -> `body_mass`
+#' - Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
 #'
 #' Non-convertible files (those without the specified extensions) are copied to
 #' the output location if `output` is provided, but are not modified.

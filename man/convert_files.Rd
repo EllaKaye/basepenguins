@@ -91,7 +91,7 @@ substitution was made.
 \examples{
 \dontshow{.old_wd <- setwd(tempdir())}
 # Note that all examples below write output to a temporary directory
-# and file paths are relative to that directory (unless otherwise stated).
+# and file paths are relative to that directory.
 
 # For all examples below, use a copy of the examples provided by the package,
 # copied to an "examples" directory in the working directory

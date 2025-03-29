@@ -52,68 +52,45 @@ You can install the development version of basepenguins from [GitHub](https://gi
 pak::pak("EllaKaye/basepenguins")
 ```
 
-## Usage
+## Converting a file
 
-This is a quick tour. 
-For a more extensive guide, see the [Get Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html) vignette, `vignette("basepenguins")`.
+If a file contains `library(palmerpenguins)`, and is 'convertible', i.e. 
+has one of a specified set of extensions (by default .R, .r, .qmd, .rmd, .Rmd), 
+then converting it will do the following:
+
+- Replace `library(palmerpenguins)` with `""` 
+- Replace variable names:
+  - `bill_length_mm` -> `bill_len`
+  - `bill_depth_mm` -> `bill_dep`
+  - `flipper_length_mm` -> `flipper_len`
+  - `body_mass_g` -> `body_mass`
+- Replace `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
+
+Here, we simply show the 'before-and-after' when converting a single file.
+
+For a more extensive guide to using the pacakge, 
+see the [Get Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html) vignette, `vignette("basepenguins")`.
+
+```{r, include = FALSE}
+# Set up a temp directory and set it as the root directory for all chunks
+temp_dir <- tempdir()
+knitr::opts_knit$set(root.dir = temp_dir)
+```
 
 ```{r}
 library(basepenguins)
 ```
 
-## Converting files
+Get and see an example file provided by the package:
 
 ```{r}
-# get absolute paths of example files
-input <- example_files(full.names = TRUE)
-
-# See one of the input files
-cat(readLines(input[2]), sep = "\n") 
+penguin_file <- example_files("penguins.R")
+cat(readLines(penguin_file), sep = "\n")
 ```
+
+Then, convert the file (saving it to a new file) and see the new script:
 
 ```{r}
-# generate output file paths (by default prefix "_new" to input filenames)
-output <- output_paths(input) 
-```
-
-```{r}
-# convert the files
-result <- convert_files(input, output)
-```
-
-```{r}
-# See which files have changed
-result
-```
-
-```{r}
-# See the changes to the input file we saw above
-cat(readLines(output[2]), sep = "\n") 
-```
-
-Conversions can also be run in-place, which will overwrite files.
-Here's how do to that, limited to R scripts, though we don't execute the chunk below:
-
-```{r eval = FALSE}
-convert_files_inplace(input, extensions = "R")
-```
-
-## Coverting a directory
-
-Whilst `convert_files()` allows the conversion of specified files,
-`convert_dir()` will convert all the files (with the stated extensions) in a given directory (and its subdirectories).
-
-```{r}
-example_dir <- example_dir()
-output_dir <- tempdir()
-result <- convert_dir(example_dir, output_dir)
-
-result
-```
-
-There is also a version to modify files in place (not executed here):
-
-
-```{r eval = FALSE}
-convert_dir_inplace(example_dir)
+convert_files(penguin_file, "penguins_converted.R")
+cat(readLines("penguins_converted.R"), sep = "\n")
 ```

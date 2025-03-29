@@ -52,9 +52,25 @@ You can install the development version of basepenguins from
 pak::pak("EllaKaye/basepenguins")
 ```
 
-## Usage
+## Converting a file
 
-This is a quick tour. For a more extensive guide, see the [Get
+If a file contains `library(palmerpenguins)`, and is ‘convertible’,
+i.e.  has one of a specified set of extensions (by default .R, .r, .qmd,
+.rmd, .Rmd), then converting it will do the following:
+
+- Replace `library(palmerpenguins)` with `""`
+- Replace variable names:
+  - `bill_length_mm` -\> `bill_len`
+  - `bill_depth_mm` -\> `bill_dep`
+  - `flipper_length_mm` -\> `flipper_len`
+  - `body_mass_g` -\> `body_mass`
+- Replace `ends_with("_mm")` with
+  `starts_with("flipper_"), starts_with(bill_)`
+
+Here, we simply show the ‘before-and-after’ when converting a single
+file.
+
+For a more extensive guide to using the pacakge, see the [Get
 Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html)
 vignette, `vignette("basepenguins")`.
 
@@ -62,14 +78,11 @@ vignette, `vignette("basepenguins")`.
 library(basepenguins)
 ```
 
-## Converting files
+Get and see an example file provided by the package:
 
 ``` r
-# get absolute paths of example files
-input <- example_files(full.names = TRUE)
-
-# See one of the input files
-cat(readLines(input[2]), sep = "\n") 
+penguin_file <- example_files("penguins.R")
+cat(readLines(penguin_file), sep = "\n")
 #> library(palmerpenguins)
 #> library(ggplot2)
 #> library(dplyr)
@@ -85,35 +98,16 @@ cat(readLines(input[2]), sep = "\n")
 #>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
 ```
 
-``` r
-# generate output file paths (by default prefix "_new" to input filenames)
-output <- output_paths(input) 
-```
+Then, convert the file (saving it to a new file) and see the new script:
 
 ``` r
-# convert the files
-result <- convert_files(input, output)
-#> - In /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins_new.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
+convert_files(penguin_file, "penguins_converted.R")
+#> - ends_with("_mm") replaced on line 7 in penguins_converted.R
 #> - Please check the changed output files.
-#> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
 ```
 
 ``` r
-# See which files have changed
-result
-#> $changed
-#>       /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins.qmd 
-#> "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins_new.qmd" 
-#>                  /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins.R 
-#>            "/private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins_new.R" 
-#> 
-#> $not_changed
-#> character(0)
-```
-
-``` r
-# See the changes to the input file we saw above
-cat(readLines(output[2]), sep = "\n") 
+cat(readLines("penguins_converted.R"), sep = "\n")
 #> 
 #> library(ggplot2)
 #> library(dplyr)
@@ -127,49 +121,4 @@ cat(readLines(output[2]), sep = "\n")
 #> ggplot(data = penguins, aes(x = flipper_len, y = body_mass)) +
 #>   geom_point(aes(color = species, shape = species), size = 2) +
 #>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
-```
-
-Conversions can also be run in-place, which will overwrite files. Here’s
-how do to that, limited to R scripts, though we don’t execute the chunk
-below:
-
-``` r
-convert_files_inplace(input, extensions = "R")
-```
-
-## Coverting a directory
-
-Whilst `convert_files()` allows the conversion of specified files,
-`convert_dir()` will convert all the files (with the stated extensions)
-in a given directory (and its subdirectories).
-
-``` r
-example_dir <- example_dir()
-output_dir <- tempdir()
-result <- convert_dir(example_dir, output_dir)
-#> - In /var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins.R, ends_with("_mm") replaced on line 7 - please check that the subsitution is appropriate.
-#> - Please check the changed output files.
-#> - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.
-```
-
-``` r
-
-result
-#> $changed
-#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins.qmd 
-#>                                                     "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/analysis/penguins.qmd" 
-#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins.R 
-#>                                                                "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins.R" 
-#> 
-#> $not_changed
-#> /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/analysis/penguins_new.qmd 
-#>                                                     "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/analysis/penguins_new.qmd" 
-#>            /private/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T/RtmpjX8utG/temp_libpath1164130dc63f2/basepenguins/extdata/penguins_new.R 
-#>                                                                "/var/folders/zd/v1_3x7fs7h9bjxmv6thqx30h0000gq/T//RtmpMwC006/penguins_new.R"
-```
-
-There is also a version to modify files in place (not executed here):
-
-``` r
-convert_dir_inplace(example_dir)
 ```

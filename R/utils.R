@@ -7,39 +7,57 @@
 #' These functions provides access to example files included with the basepenguins package.
 #' When `example_files()` is called with `path = NULL`, it lists available example files.
 #' When called with a specific path, it returns the full path to that file.
+#' `example_dir()` provides the path to the directory containing the examples,
+#' and also takes a `copy.dir` argument which, if specified, will copy all the
+#' example files to a new directory. This is useful for testing the `convert_dir_inplace()`
+#' and `convert_files_inplace()` functions without overwriting package files.
 #'
 #' @param path Character string. If `NULL` (default), lists all available example files.
 #'   If specified, returns the full path to the specified file or directory.
-#' @param full.names Logical. If `TRUE``, returns full file paths rather than relative paths.
+#' @param full.names Logical. If `TRUE`, returns full file paths rather than relative paths.
 #'   Only used when `path = NULL`. Default is FALSE.
-#' @param recursive Logical. If `TRUE``, lists files in subdirectories recursively.
+#' @param recursive Logical. If `TRUE`, lists files in subdirectories recursively.
 #'   Only used when `path = NULL`. Default is TRUE.
 #' @param copy.dir Character string. A directory name or path to a directory
 #'   into which the files in the example directory will be copied.
-#'   If `NULL` (default) returns path to example directory installed with the package.
+#'   If `NULL` (default) the files will not be copied.
 #'
 #' @return
-#' \itemize{
-#'   \item `example_files`:
-#'   \itemize{
-#'     \item If `path = NULL`, returns a character vector of available file/directory names.
-#'     \item If `path` is specified, returns the full file path to the requested resource.
-#'   }
-#' \item `example_dir`: The path to the directory containing all examples.
-#' }
+#' `example_files`:
+#'  - If `path = NULL`, a character vector of available file/directory names.
+#'  - If `path` is specified, the absolute path to the requested resource.
+#'
+#'` example_dir`:
+#'  - If `copy.dir = NULL`, the absolute path to the directory containing all examples.
+#'  - If `copy.dir` is specified, the specified directory is created if it
+#'    doesn't already exist, and all example files are copied into it,
+#'    preserving nesting structure. The absolute path to the directory is
+#'    returned invisibly.
+#'
+#' @details
+#' There are four example files in the example directory:
+#' - penguins.R - an R script using the palmerpenguins package
+#' - no_penguins.Rmd - an Rmarkdown file with `ends_with("_mm")`,
+#'   but *not* in the context of the palmerpenguins package
+#' - nested/penguins.qmd - a Quarto document that uses the palmerpenguins package
+#' - nested/not_a_script.md - contains `library(palmerpenguins)`, but is not a script,
+#'   i.e. not one of the default extensions for the convert functions.
 #'
 #' @examples
-#' # List all files and directories in the root directory
+#' # List all files in the example directory provided by the package
 #' example_files()
-#' example_files(recursive = FALSE)
-#' example_files(full.names = TRUE)
 #'
 #' # Get the full path to a specific example files
-#' example_files("penguins.R")
+#' example_files("penguins.R") # path/to/basepenguins/extdata/penguins.R
 #' example_files("nested/penguins.qmd")
 #'
-#' # Get the path to all examplesss
-#' example_dir()
+#' # Get the path to the directory containing the example files
+#' example_dir() # path/to/basepenguins/extdata/
+#'
+#' # Copy the example files to a new directory
+#' \dontshow{.old_wd <- setwd(tempdir())}
+#' example_dir("examples")
+#' \dontshow{setwd(.old_wd)}
 #'
 #' @export
 example_files <- function(

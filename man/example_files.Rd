@@ -13,40 +13,66 @@ example_dir(copy.dir = NULL)
 \item{path}{Character string. If \code{NULL} (default), lists all available example files.
 If specified, returns the full path to the specified file or directory.}
 
-\item{full.names}{Logical. If \verb{TRUE``, returns full file paths rather than relative paths. Only used when }path = NULL`. Default is FALSE.}
+\item{full.names}{Logical. If \code{TRUE}, returns full file paths rather than relative paths.
+Only used when \code{path = NULL}. Default is FALSE.}
 
-\item{recursive}{Logical. If \verb{TRUE``, lists files in subdirectories recursively. Only used when }path = NULL`. Default is TRUE.}
+\item{recursive}{Logical. If \code{TRUE}, lists files in subdirectories recursively.
+Only used when \code{path = NULL}. Default is TRUE.}
 
 \item{copy.dir}{Character string. A directory name or path to a directory
 into which the files in the example directory will be copied.
-If \code{NULL} (default) returns path to example directory installed with the package.}
+If \code{NULL} (default) the files will not be copied.}
 }
 \value{
+\code{example_files}:
 \itemize{
-\item \code{example_files}:
-\itemize{
-\item If \code{path = NULL}, returns a character vector of available file/directory names.
-\item If \code{path} is specified, returns the full file path to the requested resource.
+\item If \code{path = NULL}, a character vector of available file/directory names.
+\item If \code{path} is specified, the absolute path to the requested resource.
 }
-\item \code{example_dir}: The path to the directory containing all examples.
+
+\code{ example_dir}:
+\itemize{
+\item If \code{copy.dir = NULL}, the absolute path to the directory containing all examples.
+\item If \code{copy.dir} is specified, the specified directory is created if it
+doesn't already exist, and all example files are copied into it,
+preserving nesting structure. The absolute path to the directory is
+returned invisibly.
 }
 }
 \description{
 These functions provides access to example files included with the basepenguins package.
 When \code{example_files()} is called with \code{path = NULL}, it lists available example files.
 When called with a specific path, it returns the full path to that file.
+\code{example_dir()} provides the path to the directory containing the examples,
+and also takes a \code{copy.dir} argument which, if specified, will copy all the
+example files to a new directory. This is useful for testing the \code{convert_dir_inplace()}
+and \code{convert_files_inplace()} functions without overwriting package files.
+}
+\details{
+There are four example files in the example directory:
+\itemize{
+\item penguins.R - an R script using the palmerpenguins package
+\item no_penguins.Rmd - an Rmarkdown file with \code{ends_with("_mm")},
+but \emph{not} in the context of the palmerpenguins package
+\item nested/penguins.qmd - a Quarto document that uses the palmerpenguins package
+\item nested/not_a_script.md - contains \code{library(palmerpenguins)}, but is not a script,
+i.e. not one of the default extensions for the convert functions.
+}
 }
 \examples{
-# List all files and directories in the root directory
+# List all files in the example directory provided by the package
 example_files()
-example_files(recursive = FALSE)
-example_files(full.names = TRUE)
 
 # Get the full path to a specific example files
-example_files("penguins.R")
+example_files("penguins.R") # path/to/basepenguins/extdata/penguins.R
 example_files("nested/penguins.qmd")
 
-# Get the path to all examplesss
-example_dir()
+# Get the path to the directory containing the example files
+example_dir() # path/to/basepenguins/extdata/
+
+# Copy the example files to a new directory
+\dontshow{.old_wd <- setwd(tempdir())}
+example_dir("examples")
+\dontshow{setwd(.old_wd)}
 
 }

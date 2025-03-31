@@ -8,10 +8,11 @@
 [![R-CMD-check](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://app.codecov.io/gh/EllaKaye/basepenguins)
+
 <!-- badges: end -->
 
 Convert scripts that use the
-**[palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html)**
+[**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/index.html)
 library to use the versions of the `penguins` and `penguins_raw`
 datasets that are now in R-devel, so coming in R 4.5.
 
@@ -54,11 +55,13 @@ pak::pak("EllaKaye/basepenguins")
 
 ## Converting a file
 
-If a file contains `library(palmerpenguins)`, and is ‘convertible’,
-i.e.  has one of a specified set of extensions (by default .R, .r, .qmd,
-.rmd, .Rmd), then converting it will do the following:
+If a file is ‘convertible’, i.e. it contains `library(palmerpenguins)`,
+`library('palmerpenguins')` or \`library(“palmerpenguins”), and has one
+of a specified set of extensions (by default .R, .r, .qmd, .rmd, .Rmd),
+then converting it will do the following:
 
-- Replace `library(palmerpenguins)` with `""`
+- Replace `library(palmerpenguins)` (or same with `palmerpenguins` in
+  quotes) with `""`
 - Replace variable names:
   - `bill_length_mm` -\> `bill_len`
   - `bill_depth_mm` -\> `bill_dep`
@@ -68,9 +71,7 @@ i.e.  has one of a specified set of extensions (by default .R, .r, .qmd,
   `starts_with("flipper_"), starts_with(bill_)`
 
 Here, we simply show the ‘before-and-after’ when converting a single
-file.
-
-For a more extensive guide to using the pacakge, see the [Get
+file. For a more extensive guide to using the pacakge, see the [Get
 Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html)
 vignette, `vignette("basepenguins")`.
 
@@ -78,7 +79,10 @@ vignette, `vignette("basepenguins")`.
 library(basepenguins)
 ```
 
-Get and see an example file provided by the package:
+Get and see an example file provided by the package (adapted from a
+section of the **palmerpenguins** [Get
+Started](https://allisonhorst.github.io/palmerpenguins/articles/intro.html)
+vignette):
 
 ``` r
 penguin_file <- example_files("penguins.R")
@@ -90,10 +94,7 @@ cat(readLines(penguin_file), sep = "\n")
 #> # exploring scatterplots
 #> penguins |>
 #>   select(body_mass_g, ends_with("_mm")) |>
-#>   glimpse()
-#> 
-#> # Scatterplot example: penguin flipper length versus body mass
-#> ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+#>   ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
 #>   geom_point(aes(color = species, shape = species), size = 2) +
 #>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
 ```
@@ -115,10 +116,22 @@ cat(readLines("penguins_converted.R"), sep = "\n")
 #> # exploring scatterplots
 #> penguins |>
 #>   select(body_mass, starts_with("flipper_"), starts_with("bill_")) |>
-#>   glimpse()
-#> 
-#> # Scatterplot example: penguin flipper length versus body mass
-#> ggplot(data = penguins, aes(x = flipper_len, y = body_mass)) +
+#>   ggplot(aes(x = flipper_len, y = body_mass)) +
 #>   geom_point(aes(color = species, shape = species), size = 2) +
 #>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
 ```
+
+## Converting multiple files or a directory
+
+There are four functions in **basepenguins** to convert mulitple files.
+In each case, the default `extensions` (i.e. file types to convert) are
+“R”, “r”, “qmd”, “rmd”, “Rmd”. If input contains non-convertible files
+(i.e. without the specified extensions or without a call to
+`library(palmerpenguins)), they will be copied unmodified to their new output location (in`convert_files()`and`convert_dir()`or left untouched by`convert_files_inplace()`and`convert_dir_inplace()\`).
+
+|  |  |
+|----|----|
+| `convert_files(input, output, extensions)` | convert an `input` vector of files to new `output` locations |
+| `convert_files_inplace(input, extensions)` | convert a vector of files by overwriting them |
+| `convert_dir(input, output, extensions)` | convert all files in `input` directory into a new `output` directory (preserving nesting structure) |
+| `convert_dir_inplace(input, extensions)` | convert all files in a directory by overwriting them |

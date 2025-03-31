@@ -93,7 +93,7 @@
 <div class="section level2">
 <h2 id="converting-a-file">Converting a file<a class="anchor" aria-label="anchor" href="#converting-a-file"></a>
 </h2>
-<p>If a file is ‘convertible’, i.e. it contains <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library('palmerpenguins')</a></code> or `library(“palmerpenguins”), and has one of a specified set of extensions (by default .R, .r, .qmd, .rmd, .Rmd), then converting it will do the following:</p>
+<p>If a file is ‘convertible’, i.e. it contains <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library('palmerpenguins')</a></code> or <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library("palmerpenguins")</a></code>, and has one of a specified set of extensions (by default “R”, “r”, “qmd”, “rmd”, “Rmd”), then converting it will do the following:</p>
 <ul>
 <li>Replace <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> (or same with <code>palmerpenguins</code> in quotes) with <code>""</code>
 </li>
@@ -116,7 +116,7 @@
 <li>Replace <code>ends_with("_mm")</code> with <code>starts_with("flipper_"), starts_with(bill_)</code>
 </li>
 </ul>
-<p>Here, we simply show the ‘before-and-after’ when converting a single file. For a more extensive guide to using the pacakge, see the <a href="https://ellakaye.github.io/basepenguins/articles/basepenguins.html">Get Started</a> vignette, <code><a href="articles/basepenguins.html">vignette("basepenguins")</a></code>.</p>
+<p>Here, we simply show the ‘before-and-after’ when converting a single file. For a more extensive guide to using the package, see the <a href="https://ellakaye.github.io/basepenguins/articles/basepenguins.html">Get Started</a> vignette, <code><a href="articles/basepenguins.html">vignette("basepenguins")</a></code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EllaKaye/basepenguins" class="external-link">basepenguins</a></span><span class="op">)</span></span></code></pre></div>
 <p>Get and see an example file provided by the package (adapted from a section of the <strong>palmerpenguins</strong> <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="external-link">Get Started</a> vignette):</p>
@@ -154,7 +154,7 @@
 <div class="section level2">
 <h2 id="converting-multiple-files-or-a-directory">Converting multiple files or a directory<a class="anchor" aria-label="anchor" href="#converting-multiple-files-or-a-directory"></a>
 </h2>
-<p>There are four functions in <strong>basepenguins</strong> to convert mulitple files. In each case, the default <code>extensions</code> (i.e. file types to convert) are “R”, “r”, “qmd”, “rmd”, “Rmd”. If input contains non-convertible files (i.e. without the specified extensions or without a call to <code>library(palmerpenguins)), they will be copied unmodified to their new output location (in</code>convert_files()<code>and</code>convert_dir()<code>or left untouched by</code>convert_files_inplace()<code>and</code>convert_dir_inplace()`).</p>
+<p>There are four functions in <strong>basepenguins</strong> to convert mulitple files. In each case, the default <code>extensions</code> (i.e. file types to convert) are “R”, “r”, “qmd”, “rmd”, “Rmd”. If <code>input</code> contains non-convertible files (i.e. without the specified extensions or without a call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>), they will be copied unmodified to their new <code>output</code> location (in <code><a href="reference/convert_files.html">convert_files()</a></code> and <code><a href="reference/convert_files.html">convert_dir()</a></code> or left untouched by <code><a href="reference/convert_files.html">convert_files_inplace()</a></code> and <code><a href="reference/convert_files.html">convert_dir_inplace()</a></code>).</p>
 <table class="table">
 <colgroup>
 <col width="50%">

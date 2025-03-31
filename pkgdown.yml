@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   basepenguins: basepenguins.html
-last_built: 2025-03-31T06:38Z
+last_built: 2025-03-31T06:49Z
 urls:
   reference: https://ellakaye.github.io/basepenguins/reference
   article: https://ellakaye.github.io/basepenguins/articles

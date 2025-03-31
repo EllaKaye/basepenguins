@@ -28,10 +28,12 @@ The version of `penguins` in R’s **datasets** package has some shorter
 variable names than the **palmerpenguins** equivalent. The differences
 are:
 
-- `bill_dep` instead of `bill_depth_mm`
-- `bill_len` instead of `bill_length_mm`
-- `flipper_len` instead of `flipper_length_mm`
-- `body_mass` instead of `body_mass_g`
+| palmerpenguins    | R’s datasets package |
+|-------------------|----------------------|
+| bill_length_mm    | bill_len             |
+| bill_depth_mm     | bill_dep             |
+| flipper_length_mm | flipper_len          |
+| body_mass_g       | body_mass            |
 
 These changes were made for more compact code and data display.
 (e.g. printing `penguins` now shows all columns in under 80 characters).

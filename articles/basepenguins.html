@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>basepenguins • basepenguins</title>
+<title>Getting Started with basepenguins • basepenguins</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Figtree-0.4.9/font.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../deps/Outfit-0.4.9/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="basepenguins">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with basepenguins">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -61,7 +61,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>basepenguins</h1>
+      <h1>Getting Started with basepenguins</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/EllaKaye/basepenguins/blob/main/vignettes/basepenguins.Rmd" class="external-link"><code>vignettes/basepenguins.Rmd</code></a></small>
@@ -70,38 +70,505 @@
 
     
     
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The <strong>basepenguins</strong> package provides tools to convert R
+scripts and R Markdown/Quarto documents (or other specified file types)
+that use the <a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link"><strong>palmerpenguins</strong></a>
+library to use the versions of the <code>penguins</code> and
+<code>penguins_raw</code> datasets now included in R 4.5.0’s
+<strong>datasets</strong> package.</p>
+<p>With R 4.5.0, the popular Palmer Penguins datasets are now directly
+available without loading an external package. This makes them more
+accessible, especially for new R users and for teaching purposes.
+However, there are some important differences between the variable names
+in the <strong>palmerpenguins</strong> package and those in R’s built-in
+<strong>datasets</strong> package:</p>
+<table class="table">
+<thead><tr class="header">
+<th>palmerpenguins</th>
+<th>R’s datasets package</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>bill_length_mm</td>
+<td>bill_len</td>
+</tr>
+<tr class="even">
+<td>bill_depth_mm</td>
+<td>bill_dep</td>
+</tr>
+<tr class="odd">
+<td>flipper_length_mm</td>
+<td>flipper_len</td>
+</tr>
+<tr class="even">
+<td>body_mass_g</td>
+<td>body_mass</td>
+</tr>
+</tbody>
+</table>
+<p>These shorter variable names in the base R version were chosen for
+more compact code and data display. The <strong>basepenguins</strong>
+package helps you automatically convert files that use the longer
+<strong>palmerpenguins</strong> variable names to use the new, shorter
+variable names in R 4.5.0.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EllaKaye/basepenguins" class="external-link">basepenguins</a></span><span class="op">)</span></span></code></pre></div>
-<p><strong>TODO: finish writing this:</strong></p>
+</div>
+<div class="section level2">
+<h2 id="package-features">Package features<a class="anchor" aria-label="anchor" href="#package-features"></a>
+</h2>
+<p>The <strong>basepenguins</strong> package provides several functions
+to convert files:</p>
+<ol style="list-style-type: decimal">
+<li>
+<code><a href="../reference/convert_files.html">convert_files()</a></code>: Convert specified files to new output
+locations</li>
+<li>
+<code><a href="../reference/convert_files.html">convert_files_inplace()</a></code>: Modify files in-place</li>
+<li>
+<code><a href="../reference/convert_files.html">convert_dir()</a></code>: Convert files in a specified directory
+to a new output directory</li>
+<li>
+<code><a href="../reference/convert_files.html">convert_dir_inplace()</a></code>: Convert files in a directory
+in-place</li>
+</ol>
+<p>Additionally, there are helper functions:</p>
 <ul>
-<li>full demonstration of package functionality</li>
-<li>justification of the <code>ends_with("_mm")</code> substitution</li>
-<li>explanation of the package messages</li>
+<li>
+<code><a href="../reference/example_files.html">example_files()</a></code> and <code><a href="../reference/example_files.html">example_dir()</a></code>: Access
+example files included in the package</li>
+<li>
+<code><a href="../reference/output_paths.html">output_paths()</a></code>: Generate modified file paths</li>
+<li>
+<code><a href="../reference/files_to_convert.html">files_to_convert()</a></code>: List files in a directory with
+specified extensions</li>
 </ul>
-<p>This package provides functions that will take a vector of files
-(<code><a href="../reference/convert_files.html">convert_files()</a></code>) or a directory
-(<code><a href="../reference/convert_files.html">convert_dir()</a></code>), and for all files with specified
-extensions (by default .R/.r/.qmd/.rmd/.Rmd ), remove any calls to
-<code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and replace long palmerpenguins
-variable names with the shorter R equivalents. It also deals with
-<code>ends_with("_mm")</code> (a selector used in the <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="external-link">palmerpenguins
-Get Started vignette</a>).</p>
+</div>
+<div class="section level2">
+<h2 id="what-changes-when-converting-files">What changes when converting files?<a class="anchor" aria-label="anchor" href="#what-changes-when-converting-files"></a>
+</h2>
+<p>When a file is ‘convertible’ (contains a call to
+<code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and has one of the specified
+extensions), the conversion makes these changes:</p>
+<ol style="list-style-type: decimal">
+<li>Removes any <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>,
+<code>library('palmerpenguins') or</code>library(“palmerpenguins”)
+call</li>
+<li>Replaces the long variable names with their shorter equivalents:
+<ul>
+<li>
+<code>bill_length_mm</code> → <code>bill_len</code>
+</li>
+<li>
+<code>bill_depth_mm</code> → <code>bill_dep</code>
+</li>
+<li>
+<code>flipper_length_mm</code> → <code>flipper_len</code>
+</li>
+<li>
+<code>body_mass_g</code> → <code>body_mass</code>
+</li>
+</ul>
+</li>
+<li>Replaces <code>ends_with("_mm")</code> (a pattern used in
+<code>dplyr::select()</code>) with
+<code>starts_with("flipper_"), starts_with("bill_")</code>
+</li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="example-directory-and-files">Example directory and files<a class="anchor" aria-label="anchor" href="#example-directory-and-files"></a>
+</h2>
+<p>The package includes an example directory with four example files to
+demonstrate how the conversion works. These are accessible through two
+key functions: <code><a href="../reference/example_files.html">example_files()</a></code> and
+<code><a href="../reference/example_files.html">example_dir()</a></code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List all example files</span></span>
+<span><span class="fu"><a href="../reference/example_files.html">example_files</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "nested/not_a_script.md" "nested/penguins.qmd"    "no_penguins.Rmd"       </span></span>
+<span><span class="co">#&gt; [4] "penguins.R"</span></span></code></pre></div>
+<p>These example files include:</p>
+<ul>
+<li>
+<code>penguins.R</code>: An R script using the
+<strong>palmerpenguins</strong> package</li>
+<li>
+<code>no_penguins.Rmd</code>: An Rmarkdown file that includes
+<code>ends_with("_mm")</code> but <em>not</em> in the context of the
+palmerpenguins package</li>
+<li>
+<code>nested/penguins.qmd</code>: A Quarto document using the
+<strong>palmerpenguins</strong> package</li>
+<li>
+<code>nested/not_a_script.md</code>: Contains
+<code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, but is not a script type that is
+converted by default</li>
+</ul>
+<p>You can examine the content of any of these files, e.g.:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">penguins_script</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/example_files.html">example_files</a></span><span class="op">(</span><span class="st">"penguins.R"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">penguins_script</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; library(palmerpenguins)</span></span>
+<span><span class="co">#&gt; library(ggplot2)</span></span>
+<span><span class="co">#&gt; library(dplyr)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # exploring scatterplots</span></span>
+<span><span class="co">#&gt; penguins |&gt;</span></span>
+<span><span class="co">#&gt;   select(body_mass_g, ends_with("_mm")) |&gt;</span></span>
+<span><span class="co">#&gt;   ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +</span></span>
+<span><span class="co">#&gt;   geom_point(aes(color = species, shape = species), size = 2) +</span></span>
+<span><span class="co">#&gt;   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span></span></code></pre></div>
+<p>The <code><a href="../reference/example_files.html">example_dir()</a></code> function returns the path to the
+directory containing all example files. It also has a
+<code>copy.dir</code> argument that allows you to copy all the example
+files to a new directory. This is especially useful for testing the
+conversion functions that modify files in-place without affecting the
+original example files distributed with the package:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Copy all example files to a new subdirectory of the working directory </span></span>
+<span><span class="fu"><a href="../reference/example_files.html">example_dir</a></span><span class="op">(</span><span class="st">"my_examples"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># List the files in the copied directory</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"my_examples"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "nested/not_a_script.md" "nested/penguins.qmd"    "no_penguins.Rmd"       </span></span>
+<span><span class="co">#&gt; [4] "penguins.R"</span></span></code></pre></div>
+<p>Note that for the purposes of this vignette (and to adhere to CRAN
+policies), the working directory has been set to a <code>tempdir</code>
+and all new directories and files are written there, using relative
+paths.</p>
+</div>
+<div class="section level2">
+<h2 id="converting-files">Converting files<a class="anchor" aria-label="anchor" href="#converting-files"></a>
+</h2>
+<p>The package offers two main approaches to converting files: creating
+new converted versions (<code><a href="../reference/convert_files.html">convert_files()</a></code>) or modifying files
+in place (<code><a href="../reference/convert_files.html">convert_files_inplace()</a></code>).</p>
+<p>Let’s start by converting a single file to see how it works:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Convert a single file to a new output file</span></span>
+<span><span class="fu"><a href="../reference/convert_files.html">convert_files</a></span><span class="op">(</span><span class="va">penguins_script</span>, <span class="st">"converted_penguins.R"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - ends_with("_mm") replaced on line 7 in converted_penguins.R</span></span>
+<span><span class="co">#&gt; - Please check the changed output files.</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Look at the converted file</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"converted_penguins.R"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; library(ggplot2)</span></span>
+<span><span class="co">#&gt; library(dplyr)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # exploring scatterplots</span></span>
+<span><span class="co">#&gt; penguins |&gt;</span></span>
+<span><span class="co">#&gt;   select(body_mass, starts_with("flipper_"), starts_with("bill_")) |&gt;</span></span>
+<span><span class="co">#&gt;   ggplot(aes(x = flipper_len, y = body_mass)) +</span></span>
+<span><span class="co">#&gt;   geom_point(aes(color = species, shape = species), size = 2) +</span></span>
+<span><span class="co">#&gt;   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span></span></code></pre></div>
+<p>Notice how the function has:</p>
+<ol style="list-style-type: decimal">
+<li>Removed the <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> line</li>
+<li>Replaced the long variable names with their shorter equivalents</li>
+<li>Modified <code>ends_with("_mm")</code> to use
+<code>starts_with()</code> patterns instead</li>
+</ol>
+<p>Both the <code>input</code> and <code>output</code> parameters of
+<code><a href="../reference/convert_files.html">convert_files()</a></code> can take vectors of file paths, allowing
+you to convert multiple files at once.</p>
+<p>If you want to overwrite the original files rather than creating new
+ones, you can use <code><a href="../reference/convert_files.html">convert_files_inplace()</a></code>, which works
+exactly the same as <code><a href="../reference/convert_files.html">convert_files()</a></code>, except that it doesn’t
+take an <code>output</code> argument. (It is simply a convenience
+wrapper around <code>convert_files(input, input, extensions)</code>)</p>
+</div>
+<div class="section level2">
+<h2 id="return-values-and-messages">Return values and messages<a class="anchor" aria-label="anchor" href="#return-values-and-messages"></a>
+</h2>
+<p>All the <code>convert_*()</code> functions invisibly return a list
+with two components:</p>
+<ul>
+<li>
+<code>changed</code>: Files that were modified</li>
+<li>
+<code>not_changed</code>: Files that were not modified (either they
+don’t have the specified extensions or they don’t load the
+<strong>palmerpenguins</strong> package)</li>
+</ul>
+<p>If the <code>output</code> paths are different than the
+<code>input</code> paths, the values in the <code>changed</code> and
+<code>not_changed</code> vectors will be subsets of <code>output</code>,
+and they will be named with the corresponding <code>input</code> paths.
+If files are overwritten, then the values in <code>changed</code> and
+<code>not_changed</code> will be subsets of <code>input</code> and the
+vectors will not be named.</p>
+<p>This list is returned invisibly for two reasons:</p>
+<ol style="list-style-type: decimal">
+<li>If many files are converted, and/or absolute file paths are used,
+this list can occupy a lot of console space</li>
+<li>With the list occupying a lot of console space, messages generated
+by the functions might be missed</li>
+</ol>
+<p>The <code>convert_*()</code> functions generate messages in the
+following circumstances:</p>
+<ul>
+<li>If any files are changed, a message recommending you check the
+changed output files</li>
+<li>If any R Markdown or Quarto documents are changed, a message
+prompting you to re-knit or re-render them</li>
+<li>If any <code>ends_with("_mm")</code> substitutions are made, a
+message with the output file paths and line numbers of those
+changes</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="converting-an-entire-directory">Converting an entire directory<a class="anchor" aria-label="anchor" href="#converting-an-entire-directory"></a>
+</h2>
+<p>To convert all converible files in a directory (and its
+subdirectories), use <code><a href="../reference/convert_files.html">convert_dir()</a></code>. We’ll use the
+<code>"my_examples"</code> directory that we created above with the call
+to <code>example_dir("my_examples")</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convert_files.html">convert_dir</a></span><span class="op">(</span><span class="st">"my_examples"</span>, <span class="st">"my_converted_examples"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - ends_with("_mm") replaced on line 7 in my_converted_examples/penguins.R</span></span>
+<span><span class="co">#&gt; - Please check the changed output files.</span></span>
+<span><span class="co">#&gt; - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">#&gt; $changed</span></span>
+<span><span class="co">#&gt;             my_examples/nested/penguins.qmd </span></span>
+<span><span class="co">#&gt; "my_converted_examples/nested/penguins.qmd" </span></span>
+<span><span class="co">#&gt;                      my_examples/penguins.R </span></span>
+<span><span class="co">#&gt;          "my_converted_examples/penguins.R" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $not_changed</span></span>
+<span><span class="co">#&gt;                    my_examples/no_penguins.Rmd </span></span>
+<span><span class="co">#&gt;        "my_converted_examples/no_penguins.Rmd" </span></span>
+<span><span class="co">#&gt;             my_examples/nested/not_a_script.md </span></span>
+<span><span class="co">#&gt; "my_converted_examples/nested/not_a_script.md"</span></span></code></pre></div>
+<p>To convert all files in a directory in place (overwriting the
+originals), use <code><a href="../reference/convert_files.html">convert_dir_inplace()</a></code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Make a fresh copy to work with</span></span>
+<span><span class="fu"><a href="../reference/example_files.html">example_dir</a></span><span class="op">(</span><span class="st">"in_place_dir"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convert_files.html">convert_dir_inplace</a></span><span class="op">(</span><span class="st">"in_place_dir"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - ends_with("_mm") replaced on line 7 in in_place_dir/penguins.R</span></span>
+<span><span class="co">#&gt; - Please check the changed output files.</span></span>
+<span><span class="co">#&gt; - Remember to re-knit or re-render and changed Rmarkdown or Quarto documents.</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">#&gt; $changed</span></span>
+<span><span class="co">#&gt; [1] "in_place_dir/nested/penguins.qmd" "in_place_dir/penguins.R"         </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $not_changed</span></span>
+<span><span class="co">#&gt; [1] "in_place_dir/no_penguins.Rmd"        "in_place_dir/nested/not_a_script.md"</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="helper-functions">Helper functions<a class="anchor" aria-label="anchor" href="#helper-functions"></a>
+</h2>
+<div class="section level3">
+<h3 id="finding-files-with-specific-extensions">Finding files with specific extensions<a class="anchor" aria-label="anchor" href="#finding-files-with-specific-extensions"></a>
+</h3>
+<p>When working with large directories, the
+<code><a href="../reference/files_to_convert.html">files_to_convert()</a></code> function helps you find files with
+specific extensions that might be candidates for conversion:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List all files with convertible extensions in a directory</span></span>
+<span><span class="va">potential_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/files_to_convert.html">files_to_convert</a></span><span class="op">(</span><span class="st">"my_examples"</span><span class="op">)</span></span>
+<span><span class="va">potential_files</span></span>
+<span><span class="co">#&gt; [1] "nested/penguins.qmd" "no_penguins.Rmd"     "penguins.R"</span></span></code></pre></div>
+<p>It’s important to note that <code><a href="../reference/files_to_convert.html">files_to_convert()</a></code> only
+filters files by their extensions and does <strong>not</strong> look for
+<code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> in their content.</p>
+<p>By default, this function looks for files with extensions “R”, “r”,
+“qmd”, “rmd”, or “Rmd”. You can specify different extensions if needed,
+or return absolute file paths (see <code><a href="../reference/files_to_convert.html">files_to_convert()</a></code> for
+further details):</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Only look for R scripts</span></span>
+<span><span class="fu"><a href="../reference/files_to_convert.html">files_to_convert</a></span><span class="op">(</span><span class="st">"my_examples"</span>, extensions <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "penguins.R"</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># All extensions</span></span>
+<span><span class="fu"><a href="../reference/files_to_convert.html">files_to_convert</a></span><span class="op">(</span><span class="st">"my_examples"</span>, extensions <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "nested/not_a_script.md" "nested/penguins.qmd"    "no_penguins.Rmd"       </span></span>
+<span><span class="co">#&gt; [4] "penguins.R"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="generating-output-paths">Generating output paths<a class="anchor" aria-label="anchor" href="#generating-output-paths"></a>
+</h3>
+<p>When converting files to new locations, the
+<code><a href="../reference/output_paths.html">output_paths()</a></code> function helps generate appropriate output
+paths, based on the input paths. By default, this adds a
+<code>_new</code> suffix to the file name, but other suffixes, or
+prefixes, can be specified. Other output directories can also be
+given:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">input_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/files_to_convert.html">files_to_convert</a></span><span class="op">(</span><span class="st">"my_examples"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default</span></span>
+<span><span class="va">output_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/output_paths.html">output_paths</a></span><span class="op">(</span><span class="va">input_files</span><span class="op">)</span></span>
+<span><span class="va">output_files</span></span>
+<span><span class="co">#&gt;       nested/penguins.qmd           no_penguins.Rmd                penguins.R </span></span>
+<span><span class="co">#&gt; "nested/penguins_new.qmd"     "no_penguins_new.Rmd"          "penguins_new.R"</span></span>
+<span></span>
+<span><span class="co"># Generate output paths with prefix instead, in new directory</span></span>
+<span><span class="fu"><a href="../reference/output_paths.html">output_paths</a></span><span class="op">(</span><span class="va">input_files</span>, prefix <span class="op">=</span> <span class="st">"base_"</span>, suffix <span class="op">=</span> <span class="st">""</span>, dir <span class="op">=</span> <span class="st">"~/output"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 nested/penguins.qmd                     no_penguins.Rmd </span></span>
+<span><span class="co">#&gt; "~/output/nested/base_penguins.qmd"     "~/output/base_no_penguins.Rmd" </span></span>
+<span><span class="co">#&gt;                          penguins.R </span></span>
+<span><span class="co">#&gt;          "~/output/base_penguins.R"</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="considerations-regarding-the-ends_with_mm-substitution">Considerations regarding the <code>ends_with("_mm")</code>
+substitution<a class="anchor" aria-label="anchor" href="#considerations-regarding-the-ends_with_mm-substitution"></a>
+</h2>
+<p>The <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="external-link"><strong>palmerpenguins</strong>
+Get started vignette</a> has examples of using
+<code>ends_with("_mm")</code> within calls to
+<code>dplyr::select()</code>, to select the
+<code>flipper_length_mm</code>, <code>bill_length_mm</code> and
+<code>bill_depth_mm</code> columns.</p>
+<p>This pattern presents a design challenge for
+<strong>basepenguins</strong>. We need to select the
+<code>flipper_len</code>, <code>bill_len</code> and
+<code>bill_dep</code> columns.</p>
+<p>The most obvious substition for <code>ends_with("_mm")</code> is
+therefore <code>flipper_len, starts_with("bill_")</code>. However,
+suppose we have a previous call to <code>dplyr::select()</code>, and
+have converted the file with the above. Then following code will
+generate an error, because <code>flipper_len</code> is no longer
+available to be selected:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">bill_len</span>, <span class="va">bill_dep</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">flipper_len</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"bill_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Although the above example is contrived, we don’t want to break
+anyone’s code, so instead we replace <code>ends_with("_mm")</code>
+with:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">starts_with</span>(<span class="st">"flipper_"</span>), <span class="fu">starts_with</span>(<span class="st">"bill_"</span>)</span></code></pre></div>
+<p>However, we shouldn’t ever really need
+<code>starts_with("flipper_")</code> as there is only one column in
+<code>penguins</code> that meets that criteria, so we suggest manually
+checking this substitution and either replacing
+<code>start_with("flipper_")</code> with <code>flipper_len</code> if
+<code>flipper_len</code> is still a column in the data frame, or
+removing <code>starts_with("flipper_")</code> entirely if not.</p>
+<p>To facilitate this, the <code>convert_*()</code> functions all print
+a message indicating where these substitutions were made, to help you
+manually review and potentially refine these changes if desired.</p>
+<p>The use of the <code>ends_with("_mm")</code> pattern with the
+<code>penguins</code> dataset is also the reason why we only convert
+files if <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> is found in the file. It
+is possible to imagine different data frames for which this selector
+could be used, and we don’t want to inadvertently alter those. We
+provide an example file to demonstrate this:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">no_penguins_file</span> <span class="op">&lt;-</span> <span class="st">"my_examples/no_penguins.Rmd"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">no_penguins_file</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; title: No penguins</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A file to make sure we're not changing `ends_with("_mm")` if the script doesn't load the palmerpenguins package.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ```{r}</span></span>
+<span><span class="co">#&gt; dat &lt;- data.frame(length_mm = 1:3, depth_mm = 4:6)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; dat |&gt;</span></span>
+<span><span class="co">#&gt;   dplyr::select(ends_with("_mm"))</span></span>
+<span><span class="co">#&gt; ```</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Pass it to a convert function</span></span>
+<span><span class="fu"><a href="../reference/convert_files.html">convert_files</a></span><span class="op">(</span><span class="va">no_penguins_file</span>, <span class="st">"no_penguins_converted.Rmd"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># The content doesn't change</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"no_penguins_converted.Rmd"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; title: No penguins</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A file to make sure we're not changing `ends_with("_mm")` if the script doesn't load the palmerpenguins package.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ```{r}</span></span>
+<span><span class="co">#&gt; dat &lt;- data.frame(length_mm = 1:3, depth_mm = 4:6)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; dat |&gt;</span></span>
+<span><span class="co">#&gt;   dplyr::select(ends_with("_mm"))</span></span>
+<span><span class="co">#&gt; ```</span></span></code></pre>
+<p>Even though this file contains <code>ends_with("_mm")</code>, and is
+an R Markdown file, it doesn’t load the <strong>palmerpenguins</strong>
+package, so no substitutions are made. Notice also that there were no
+messages generated when <code>convert_files</code> was called,
+indicating that none of the input files changed.</p>
+</div>
+<div class="section level2">
+<h2 id="final-considerations">Final considerations<a class="anchor" aria-label="anchor" href="#final-considerations"></a>
+</h2>
+<div class="section level3">
+<h3 id="class">Class<a class="anchor" aria-label="anchor" href="#class"></a>
+</h3>
+<p>The versions of <code>penguins</code> and <code>penguins_raw</code>
+in R 4.5.0’s <strong>datasets</strong> package will always (just) have
+class <code>data.frame</code>. In contrast, the
+<strong>palmerpenguins</strong> versions will have classes
+<code>tbl_df</code>, <code>tbl</code> and <code>data.frame</code> if the
+<strong><a href="https://tibble.tidyverse.org" class="external-link">tibble</a></strong>
+package is installed on your computer (and just class
+<code>data.frame</code> if not).</p>
+</div>
+<div class="section level3">
+<h3 id="penguins_raw">
+<code>penguins_raw</code><a class="anchor" aria-label="anchor" href="#penguins_raw"></a>
+</h3>
 <p>The versions of <code>penguins_raw</code> in
 <strong>palmerpenguins</strong> and <strong>datasets</strong> are
-identical, expect that in the former it’ll have class
-<code>tbl_df</code> if the <a href="https://tibble.tidyverse.org" class="external-link">tibble</a> package is installed. No
-specific changes are made to <code>penguins_raw</code> in
-<strong>basepenguins</strong>, but by removing the call to
-<code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, the <strong>datasets</strong>
-version will be used in any scripts, which is always a
-<code>data.frame</code> (never a <code>tbl_df</code>).</p>
+identical, except potentially for their class, as described above. No
+specific changes are made to <code>penguins_raw</code> by the
+<code>convert_*()</code> functions in <strong>basepenguins</strong>, but
+by removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>, the
+<strong>datasets</strong> version will be used in any scripts, which is
+always a <code>data.frame</code> (never a <code>tbl_df</code>).</p>
+</div>
+<div class="section level3">
+<h3 id="the-palmerpenguins-package">The <strong>palmerpenguins</strong> package<a class="anchor" aria-label="anchor" href="#the-palmerpenguins-package"></a>
+</h3>
 <p>Note that the <strong>palmerpenguins</strong> package provides
 features that are not in R, such as vignettes and articles on the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link">package
 website</a>. The package also contains the data in two csv files and
 provides a <a href="https://allisonhorst.github.io/palmerpenguins/reference/path_to_file.html" class="external-link">function</a>
 to access them. And, of course, Allison Horst’s wonderful <a href="https://allisonhorst.github.io/palmerpenguins/articles/art.html" class="external-link">penguins
-artwork</a>!</p>
-  </main>
+artwork</a>! The <strong>palmerpenguins</strong> package will remain on
+CRAN and keep its package website.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</h2>
+<p>The <strong>basepenguins</strong> package provides a straightforward
+way to update your R scripts and R Markdown/Quarto documents to use the
+built-in Palmer Penguins datasets in R 4.5.0. The conversion
+process:</p>
+<ol style="list-style-type: decimal">
+<li>Removes calls to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>
+</li>
+<li>Updates variable names to the shorter versions used in the built-in
+datasets</li>
+<li>Replaces <code>ends_with("_mm")</code> selectors with equivalent
+<code>starts_with()</code> patterns</li>
+</ol>
+<p>The package offers flexibility in how you apply these
+conversions:</p>
+<ul>
+<li>Convert individual files or entire directories</li>
+<li>Create new converted files or modify existing ones in place</li>
+<li>Choose which file types to convert</li>
+</ul>
+<p>These tools make it easy to update your code to work with R 4.5.0’s
+<code>penguins</code> and <code>penguins_raw</code> datasets.</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

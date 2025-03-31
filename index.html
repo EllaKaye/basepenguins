@@ -66,20 +66,30 @@
 <p>Convert scripts that use the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link"><strong>palmerpenguins</strong></a> library to use the versions of the <code>penguins</code> and <code>penguins_raw</code> datasets that are now in R-devel, so coming in R 4.5.</p>
 <p>The Palmer Penguins data has become <a href="https://apreshill.github.io/palmerpenguins-useR-2022/" class="external-link">very popular</a> in the R community, especially in educational contexts, and as an <a href="https://journal.r-project.org/articles/RJ-2022-020/" class="external-link">alternative to the <code>iris</code> dataset</a>. Including the datasets in R makes them more widely available, and easier to get started with, especially for new R users, and for use in teaching.</p>
 <p>The version of <code>penguins</code> in R’s <strong>datasets</strong> package has some shorter variable names than the <strong>palmerpenguins</strong> equivalent. The differences are:</p>
-<ul>
-<li>
-<code>bill_dep</code> instead of <code>bill_depth_mm</code>
-</li>
-<li>
-<code>bill_len</code> instead of <code>bill_length_mm</code>
-</li>
-<li>
-<code>flipper_len</code> instead of <code>flipper_length_mm</code>
-</li>
-<li>
-<code>body_mass</code> instead of <code>body_mass_g</code>
-</li>
-</ul>
+<table class="table">
+<thead><tr class="header">
+<th>palmerpenguins</th>
+<th>R’s datasets package</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>bill_length_mm</td>
+<td>bill_len</td>
+</tr>
+<tr class="even">
+<td>bill_depth_mm</td>
+<td>bill_dep</td>
+</tr>
+<tr class="odd">
+<td>flipper_length_mm</td>
+<td>flipper_len</td>
+</tr>
+<tr class="even">
+<td>body_mass_g</td>
+<td>body_mass</td>
+</tr>
+</tbody>
+</table>
 <p>These changes were made for more compact code and data display. (e.g. printing <code>penguins</code> now shows all columns in under 80 characters).</p>
 <p>It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and the script still running. The <strong>basepenguins</strong> package takes care of converting files to remove the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> and makes the necessary conversions to variable names, ensuring that the resulting scripts still run.</p>
 <div class="section level2">

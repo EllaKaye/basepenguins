@@ -157,10 +157,7 @@ substitution was made.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # exploring scatterplots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> penguins |&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   select(body_mass, starts_with("flipper_"), starts_with("bill_")) |&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   glimpse()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # Scatterplot example: penguin flipper length versus body mass</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ggplot(data = penguins, aes(x = flipper_len, y = body_mass)) +</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ggplot(aes(x = flipper_len, y = body_mass)) +</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   geom_point(aes(color = species, shape = species), size = 2) +</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span>
 <span class="r-in"><span></span></span>

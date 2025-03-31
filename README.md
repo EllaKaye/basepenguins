@@ -56,9 +56,9 @@ pak::pak("EllaKaye/basepenguins")
 ## Converting a file
 
 If a file is ‘convertible’, i.e. it contains `library(palmerpenguins)`,
-`library('palmerpenguins')` or \`library(“palmerpenguins”), and has one
-of a specified set of extensions (by default .R, .r, .qmd, .rmd, .Rmd),
-then converting it will do the following:
+`library('palmerpenguins')` or `library("palmerpenguins")`, and has one
+of a specified set of extensions (by default “R”, “r”, “qmd”, “rmd”,
+“Rmd”), then converting it will do the following:
 
 - Replace `library(palmerpenguins)` (or same with `palmerpenguins` in
   quotes) with `""`
@@ -71,7 +71,7 @@ then converting it will do the following:
   `starts_with("flipper_"), starts_with(bill_)`
 
 Here, we simply show the ‘before-and-after’ when converting a single
-file. For a more extensive guide to using the pacakge, see the [Get
+file. For a more extensive guide to using the package, see the [Get
 Started](https://ellakaye.github.io/basepenguins/articles/basepenguins.html)
 vignette, `vignette("basepenguins")`.
 
@@ -125,9 +125,11 @@ cat(readLines("penguins_converted.R"), sep = "\n")
 
 There are four functions in **basepenguins** to convert mulitple files.
 In each case, the default `extensions` (i.e. file types to convert) are
-“R”, “r”, “qmd”, “rmd”, “Rmd”. If input contains non-convertible files
+“R”, “r”, “qmd”, “rmd”, “Rmd”. If `input` contains non-convertible files
 (i.e. without the specified extensions or without a call to
-`library(palmerpenguins)), they will be copied unmodified to their new output location (in`convert_files()`and`convert_dir()`or left untouched by`convert_files_inplace()`and`convert_dir_inplace()\`).
+`library(palmerpenguins)`), they will be copied unmodified to their new
+`output` location (in `convert_files()` and `convert_dir()` or left
+untouched by `convert_files_inplace()` and `convert_dir_inplace()`).
 
 |  |  |
 |----|----|

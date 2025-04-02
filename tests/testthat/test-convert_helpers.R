@@ -235,3 +235,78 @@ test_that("penguins_convert handles edge cases correctly", {
   expect_true(file.exists(empty_output))
   expect_equal(readLines(empty_output, warn = FALSE), character(0))
 })
+
+test_that("penguins_convert handles file writing correctly based on changes", {
+  # Create a temporary file with no penguins references
+  no_changes_file <- withr::local_tempfile(fileext = ".R")
+  writeLines("x <- 1\ny <- 2", no_changes_file)
+
+  # Case 1: No changes needed, output same as input
+  # This should not modify the file at all
+  original_content <- readLines(no_changes_file)
+
+  result <- penguins_convert(no_changes_file, no_changes_file)
+
+  # File should not be modified
+  expect_false(result) # No changes were made
+  expect_equal(readLines(no_changes_file), original_content)
+
+  # Case 2: No changes needed but different output location
+  # This should copy the file without modification
+  different_output <- withr::local_tempfile(fileext = ".R")
+  result <- penguins_convert(no_changes_file, different_output)
+
+  expect_false(result) # No changes were made
+  expect_equal(readLines(different_output), original_content)
+
+  # Case 3: Changes needed (file with penguin references)
+  penguin_file <- withr::local_tempfile(fileext = ".R")
+  writeLines(
+    c("library(palmerpenguins)", "x <- penguins$bill_length_mm"),
+    penguin_file
+  )
+
+  # Output to same location (in-place modification)
+  result <- penguins_convert(penguin_file, penguin_file)
+
+  expect_true(result) # Changes were made
+  modified_content <- readLines(penguin_file)
+  expect_false(any(grepl("palmerpenguins", modified_content)))
+  expect_false(any(grepl("bill_length_mm", modified_content)))
+  expect_true(any(grepl("bill_len", modified_content)))
+
+  # Case 4: Changes needed with different output location
+  penguin_file2 <- withr::local_tempfile(fileext = ".R")
+  writeLines(
+    c("library(palmerpenguins)", "x <- penguins$bill_length_mm"),
+    penguin_file2
+  )
+  different_output2 <- withr::local_tempfile(fileext = ".R")
+
+  result <- penguins_convert(penguin_file2, different_output2)
+
+  expect_true(result) # Changes were made
+  expect_false(any(grepl("palmerpenguins", readLines(different_output2))))
+  expect_true(any(grepl("bill_len", readLines(different_output2))))
+
+  # Case 5: File with no EOL at end - test that we don't add one
+  # when no changes are needed
+  no_eol_file <- withr::local_tempfile(fileext = ".R")
+  con <- file(no_eol_file, "wb")
+  writeChar("x <- 1\ny <- 2", con, eos = NULL)
+  close(con)
+
+  # Get original file content as raw bytes to check exact line endings
+  original_raw <- readBin(no_eol_file, "raw", file.info(no_eol_file)$size)
+
+  different_output3 <- withr::local_tempfile(fileext = ".R")
+  result <- penguins_convert(no_eol_file, different_output3)
+
+  # Check that output file has same raw content (no EOL added)
+  output_raw <- readBin(
+    different_output3,
+    "raw",
+    file.info(different_output3)$size
+  )
+  expect_equal(output_raw, original_raw)
+})

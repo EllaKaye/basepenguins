@@ -109,11 +109,21 @@ penguins_substitute <- function(file_content, output_non_norm) {
 penguins_convert <- function(input, output) {
   paths <- validate_input_output(input, output)
 
-  file_content <- readLines(paths$input)
+  file_content <- readLines(paths$input, warn = FALSE)
 
   result <- penguins_substitute(file_content, paths$output_non_norm)
 
-  writeLines(result$content, paths$output)
+  # Only write if changes were made or if output is different from input
+  # This avoids missing EOL getting added to end of otherwise not_changed files
+  # Don't want a diff in this case
+  if (result$matches || !identical(paths$input, paths$output)) {
+    if (result$matches) {
+      writeLines(result$content, paths$output)
+    } else {
+      # No modifications, but need to copy to output location
+      file.copy(paths$input, paths$output, overwrite = TRUE)
+    }
+  }
 
   # Return logical indicating whether file was changed
   invisible(result$matches)

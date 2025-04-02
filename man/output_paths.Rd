@@ -9,7 +9,8 @@ output_paths(paths, prefix = "", suffix = "_new", dir = NULL)
 \arguments{
 \item{paths}{A character vector of file paths to modify}
 
-\item{prefix}{A character string to add at the beginning of each filename. Default is the empty sting \code{""}.}
+\item{prefix}{A character string to add at the beginning of each filename.
+Default is the empty sting \code{""}.}
 
 \item{suffix}{A character string to add at the end of each filename, before the extension.
 Default is \code{"_new"}.}

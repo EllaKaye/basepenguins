@@ -909,7 +909,7 @@ test_that("convert_files_inplace directly calls convert_files with input=output"
 })
 
 
-# # testing convert_dir_inplace() ------------------------------------------
+# testing convert_dir_inplace() ------------------------------------------
 
 test_that("convert_dir_inplace directly calls convert_dir with input=output", {
   # Create a temporary directory structure for testing

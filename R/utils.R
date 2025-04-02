@@ -203,7 +203,8 @@ output_path <- function(path, prefix = "", suffix = "_new") {
 #' `files_to_convert()` is useful for generating the input `paths`.
 #'
 #' @param paths A character vector of file paths to modify
-#' @param prefix A character string to add at the beginning of each filename. Default is the empty sting `""`.
+#' @param prefix A character string to add at the beginning of each filename.
+#'   Default is the empty sting `""`.
 #' @param suffix A character string to add at the end of each filename, before the extension.
 #'   Default is `"_new"`.
 #' @param dir An optional character string specifying the output directory.

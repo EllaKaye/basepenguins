@@ -100,7 +100,7 @@ This is especially useful for testing the conversion functions that modify files
 without affecting the original example files distributed with the package:
 
 ```{r}
-# Copy all example files to a new subdirectory of the working directory 
+# Copy all example files to a new subdirectory of the working directory
 example_dir("examples")
 
 # List the files in the copied directory
@@ -241,8 +241,8 @@ However, suppose we have a previous call to `dplyr::select()`, and have converte
 Then following code will generate an error, because `flipper_len` is no longer available to be selected:
 
 ```{r eval = FALSE}
-penguins |> 
-  select(bill_len, bill_dep) |> 
+penguins |>
+  select(bill_len, bill_dep) |>
   select(flipper_len, starts_with("bill_"))
 ```
 

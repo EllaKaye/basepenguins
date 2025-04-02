@@ -1,18 +1,19 @@
 Package: basepenguins
-Title: Convert Files That Use 'palmerpenguins' To Use 'datasets' `penguins`
+Title: Convert Files That Use 'palmerpenguins' To Work With 'datasets'
 Version: 0.0.0.9000
 Authors@R: c(
     person("Ella", "Kaye", , "ella.kaye@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7300-3718")),
     person("Heather", "Turner", role = c("aut"),
            comment = c(ORCID = "0000-0002-1256-3375")))
-Description: R 4.5.0 introduces the `penguins` and `penguins_raw` data frames, 
-    popularised in the 'palmerpenguins' package, to the 'datasets' package.
+Description: From R 4.5.0, the 'datasets' package includes the `penguins` and 
+    `penguins_raw`, data sets popularised in the 'palmerpenguins' package.
     'basepenguins' takes files that use the 'palmerpenguins' package and 
-    converts them to use R's now built-in versions instead. It does this by 
-    removing calls to `library(palmerpenguins)` and making the necessary changes 
-    to column names. Additionally, it provides helper functions to define new 
-    files paths for saving the output.
+    converts them to work with the versions from 'datasets' (R >= 4.5.0). 
+    It does this by removing calls to `library(palmerpenguins)` and making the 
+    necessary changes to column names. Additionally, it provides helper 
+    functions to define new files paths for saving the output, and a directory
+    of example files to experiment with.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

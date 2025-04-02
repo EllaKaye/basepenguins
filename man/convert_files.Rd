@@ -23,12 +23,7 @@ For \code{convert_dir()} and \code{convert_dir_inplace()}:
 A string with a path to a directory of files to convert.}
 
 \item{output}{For \code{convert_files()}:
-A character vector of output file paths, or NULL to modify files in place.
-If provided, must be the same length as \code{input}.
-Can be absolute or relative paths.
-For \code{convert_dir()}:
-A string with the output directory,
-or \code{NULL} to modify the files in the directory in place.}
+A character vector of output file paths, or \verb{NULL`` to modify files in place. If provided, must be the same length as }input\verb{. Can be absolute or relative paths. For }convert_dir()\verb{: A string with the output directory, or }NULL` to modify the files in the directory in place.}
 
 \item{extensions}{A character vector of file extensions to process,
 defaults to R scripts and R Markdown and Quarto documents.}
@@ -53,7 +48,7 @@ subsets of the \code{input} paths, and the vectors will not be named.
 These functions convert files that use the
 \href{https://CRAN.R-project.org/package=palmerpenguins}{palmerpenguins} package
 to use the versions of \code{penguins} and \code{penguins_raw} included in the datasets
-package in R 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
+package in R >= 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
 necessary changes to some variable names (see Details section below).
 }
 \details{
@@ -67,7 +62,7 @@ Files are converted by:
 \item \code{flipper_length_mm} -> \code{flipper_len}
 \item \code{body_mass_g} -> \code{body_mass}
 }
-\item Replacing \code{ends_with("_mm")} with \verb{starts_with("flipper_"), starts_with(bill_)}
+\item Replacing \code{ends_with("_mm")} with \verb{starts_with("flipper_"), starts_with"("bill_")}
 }
 
 Non-convertible files (those without the specified extensions) are copied to
@@ -76,7 +71,7 @@ the output location if \code{output} is provided, but are not modified.
 If the \code{output} files or directory do not (yet) exist, they will be created
 (recursively if necessary).
 
-Replacing \code{ends_with("_mm")} with \verb{starts_with("flipper_"), starts_with(bill_)}
+Replacing \code{ends_with("_mm")} with \verb{starts_with("flipper_"), starts_with("bill_")}
 ensures that modified R code will always run. \code{starts_with("flipper_")} isn't
 intuitively necessary, as there is only one variable starting with "flipper_",
 in \code{penguins}, but this code will not error inside \verb{dplyr::(select)}, even if

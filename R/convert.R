@@ -4,7 +4,7 @@
 #' These functions convert files that use the
 #' [palmerpenguins](https://CRAN.R-project.org/package=palmerpenguins) package
 #' to use the versions of `penguins` and `penguins_raw` included in the datasets
-#' package in R 4.5.0. They removes calls to `library(palmerpenguins)` and make
+#' package in R >= 4.5.0. They removes calls to `library(palmerpenguins)` and make
 #' necessary changes to some variable names (see Details section below).
 #'
 #' @param input For `convert_files()` and `convert_files_inplace()`:
@@ -13,7 +13,7 @@
 #'   For `convert_dir()` and `convert_dir_inplace()`:
 #'   A string with a path to a directory of files to convert.
 #' @param output For `convert_files()`:
-#'   A character vector of output file paths, or NULL to modify files in place.
+#'   A character vector of output file paths, or `NULL`` to modify files in place.
 #'   If provided, must be the same length as `input`.
 #'   Can be absolute or relative paths.
 #'   For `convert_dir()`:
@@ -44,7 +44,7 @@
 #'   - `bill_depth_mm` -> `bill_dep`
 #'   - `flipper_length_mm` -> `flipper_len`
 #'   - `body_mass_g` -> `body_mass`
-#' - Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
+#' - Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with"("bill_")`
 #'
 #' Non-convertible files (those without the specified extensions) are copied to
 #' the output location if `output` is provided, but are not modified.
@@ -52,7 +52,7 @@
 #' If the `output` files or directory do not (yet) exist, they will be created
 #' (recursively if necessary).
 #'
-#' Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with(bill_)`
+#' Replacing `ends_with("_mm")` with `starts_with("flipper_"), starts_with("bill_")`
 #' ensures that modified R code will always run. `starts_with("flipper_")` isn't
 #' intuitively necessary, as there is only one variable starting with "flipper_",
 #' in `penguins`, but this code will not error inside `dplyr::(select)`, even if

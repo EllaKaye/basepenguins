@@ -133,10 +133,10 @@ filter_by_extensions <- function(extensions) {
 #' `output_paths()` to help generate output paths for new files.
 #'
 #' @param dir A character string specifying the directory path to search
-#' @param full.names Logical. If TRUE, returns full file paths rather than relative paths.
-#'   Default is FALSE.
+#' @param full.names Logical. If `TRUE`, returns full file paths rather than relative paths.
+#'   Default is `FALSE`.
 #' @param extensions A character vector of file extensions to filter by.
-#'   Default is c("R", "r", "qmd", "rmd", "Rmd"). If NULL or empty, returns all files.
+#'   Default is `c("R", "r", "qmd", "rmd", "Rmd")`. If `NULL` or empty, returns all files.
 #'
 #' @return A character vector of file paths that match the specified extensions.
 #'
@@ -203,36 +203,31 @@ output_path <- function(path, prefix = "", suffix = "_new") {
 #' `files_to_convert()` is useful for generating the input `paths`.
 #'
 #' @param paths A character vector of file paths to modify
-#' @param prefix A character string to add at the beginning of each filename. Default is "".
+#' @param prefix A character string to add at the beginning of each filename. Default is the empty sting `""`.
 #' @param suffix A character string to add at the end of each filename, before the extension.
-#'   Default is "_new".
+#'   Default is `"_new"`.
 #' @param dir An optional character string specifying the output directory.
 #'   If provided, the modified filenames will be placed in this directory.
 #'   This is useful if `paths` are relative and a different output directory is required.
-#'   Default is NULL.
+#'   Default is `NULL`.
 #'
 #' @return A character vector of modified file paths with the specified prefixes and suffixes.
 #'   The original paths are preserved as names of the returned vector.
 #'
 #' @examples
 #' # Get all convertible files from examples directory
-#' input_files_full <- files_to_convert(example_dir(), full.names = TRUE)
+#' input_files <- files_to_convert(example_dir())
 #'
 #' # Generate output paths with "_converted" suffix
-#' output_paths(input_files_full, suffix = "_converted")
-#'
-#' # Generate output paths in a specific directory, with relative paths as input
-#' input_files <- files_to_convert(example_dir())
-#' output_paths(input_files, dir = "new_dir") # relative output paths
-#' output_paths(input_files, dir = tempdir()) # absolute output paths
+#' output_paths(input_files, suffix = "_converted")
 #'
 #' # Add both prefix and suffix and place in a new directory
 #' output_paths(
-#'   c("analysis.R", "report.qmd"),
-#'   prefix = "processed_",
-#'   suffix = "_v2",
-#'   dir = tempdir()
-#' ) # Results in paths like "tempdir/processed_analysis_v2.R"
+#'   input_files,
+#'   prefix = "base_",
+#'   suffix = "_converted",
+#'   dir = "~/new_dir"
+#' )
 #'
 #' @seealso [convert_files()], [files_to_convert()]
 #'

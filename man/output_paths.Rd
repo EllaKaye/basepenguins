@@ -9,15 +9,15 @@ output_paths(paths, prefix = "", suffix = "_new", dir = NULL)
 \arguments{
 \item{paths}{A character vector of file paths to modify}
 
-\item{prefix}{A character string to add at the beginning of each filename. Default is "".}
+\item{prefix}{A character string to add at the beginning of each filename. Default is the empty sting \code{""}.}
 
 \item{suffix}{A character string to add at the end of each filename, before the extension.
-Default is "_new".}
+Default is \code{"_new"}.}
 
 \item{dir}{An optional character string specifying the output directory.
 If provided, the modified filenames will be placed in this directory.
 This is useful if \code{paths} are relative and a different output directory is required.
-Default is NULL.}
+Default is \code{NULL}.}
 }
 \value{
 A character vector of modified file paths with the specified prefixes and suffixes.
@@ -31,23 +31,18 @@ output paths for the \code{convert_files()} and \code{convert_dir()} functions.
 }
 \examples{
 # Get all convertible files from examples directory
-input_files_full <- files_to_convert(example_dir(), full.names = TRUE)
+input_files <- files_to_convert(example_dir())
 
 # Generate output paths with "_converted" suffix
-output_paths(input_files_full, suffix = "_converted")
-
-# Generate output paths in a specific directory, with relative paths as input
-input_files <- files_to_convert(example_dir())
-output_paths(input_files, dir = "new_dir") # relative output paths
-output_paths(input_files, dir = tempdir()) # absolute output paths
+output_paths(input_files, suffix = "_converted")
 
 # Add both prefix and suffix and place in a new directory
 output_paths(
-  c("analysis.R", "report.qmd"),
-  prefix = "processed_",
-  suffix = "_v2",
-  dir = tempdir()
-) # Results in paths like "tempdir/processed_analysis_v2.R"
+  input_files,
+  prefix = "base_",
+  suffix = "_converted",
+  dir = "~/new_dir"
+)
 
 }
 \seealso{

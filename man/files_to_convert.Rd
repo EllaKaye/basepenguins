@@ -13,11 +13,11 @@ files_to_convert(
 \arguments{
 \item{dir}{A character string specifying the directory path to search}
 
-\item{full.names}{Logical. If TRUE, returns full file paths rather than relative paths.
-Default is FALSE.}
+\item{full.names}{Logical. If \code{TRUE}, returns full file paths rather than relative paths.
+Default is \code{FALSE}.}
 
 \item{extensions}{A character vector of file extensions to filter by.
-Default is c("R", "r", "qmd", "rmd", "Rmd"). If NULL or empty, returns all files.}
+Default is \code{c("R", "r", "qmd", "rmd", "Rmd")}. If \code{NULL} or empty, returns all files.}
 }
 \value{
 A character vector of file paths that match the specified extensions.

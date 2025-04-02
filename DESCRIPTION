@@ -2,7 +2,8 @@ Package: basepenguins
 Title: Convert Files That Use 'palmerpenguins' To Work With 'datasets'
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Ella", "Kaye", , "ella.kaye@gmail.com", role = c("aut", "cre"),
+    person("Ella", "Kaye", , "ella.kaye@gmail.com", 
+           role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-7300-3718")),
     person("Heather", "Turner", role = c("aut"),
            comment = c(ORCID = "0000-0002-1256-3375")))

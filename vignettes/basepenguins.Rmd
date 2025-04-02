@@ -22,9 +22,9 @@ knitr::opts_knit$set(root.dir = temp_dir)
 
 ## Introduction
 
-The **basepenguins** package provides tools to convert R scripts and R Markdown/Quarto documents (or other specified file types) that use the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/) library to use the versions of the `penguins` and `penguins_raw` datasets now included in R 4.5.0's **datasets** package.
+The **basepenguins** package provides tools to convert R scripts and R Markdown/Quarto documents (or other specified file types) that use the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/) library to use the versions of `penguins` and `penguins_raw` included in the **datasets** package from R version 4.5.0.
 
-With R 4.5.0, the popular Palmer Penguins datasets are now directly available without loading an external package. This makes them more accessible, especially for new R users and for teaching purposes. However, there are some important differences between the variable names in the **palmerpenguins** package and those in R's built-in **datasets** package:
+With R >= 4.5.0, the popular Palmer Penguins datasets are now directly available without loading an external package. This makes them more accessible, especially for new R users and for teaching purposes. However, there are some important differences between the variable names in the **palmerpenguins** package and those in R's built-in **datasets** package:
 
 | palmerpenguins  | R's datasets package |
 |-----------------|----------------------|
@@ -33,7 +33,7 @@ With R 4.5.0, the popular Palmer Penguins datasets are now directly available wi
 | flipper_length_mm | flipper_len        |
 | body_mass_g     | body_mass            |
 
-These shorter variable names in the base R version were chosen for more compact code and data display. The **basepenguins** package helps you automatically convert files that use the longer **palmerpenguins** variable names to use the new, shorter variable names in R 4.5.0.
+These shorter variable names in the base R version were chosen for more compact code and data display. The **basepenguins** package helps you automatically convert files that use the longer **palmerpenguins** variable names to use the new, shorter variable names in R >= 4.5.0.
 
 ```{r setup}
 library(basepenguins)
@@ -43,10 +43,14 @@ library(basepenguins)
 
 The **basepenguins** package provides several functions to convert files:
 
-1. `convert_files()`: Convert specified files to new output locations
-2. `convert_files_inplace()`: Modify files in-place
-3. `convert_dir()`: Convert files in a specified directory to a new output directory
-4. `convert_dir_inplace()`: Convert files in a directory in-place
+- `convert_files()`: Convert specified files to new output locations
+- `convert_files_inplace()`: Modify files in-place
+- `convert_dir()`: Convert files in a specified directory to a new output directory
+- `convert_dir_inplace()`: Convert files in a directory in-place
+
+If using `convert_files_inplace()` or `convert_dir_inplace()`, 
+we recommend doing so in conjunction with a version-control system such as git, 
+so that any changes can be easily checked.
 
 Additionally, there are helper functions:
 
@@ -97,10 +101,10 @@ without affecting the original example files distributed with the package:
 
 ```{r}
 # Copy all example files to a new subdirectory of the working directory 
-example_dir("my_examples")
+example_dir("examples")
 
 # List the files in the copied directory
-list.files("my_examples", recursive = TRUE)
+list.files("examples", recursive = TRUE)
 ```
 
 Note that for the purposes of this vignette (and to adhere to CRAN policies), 
@@ -163,11 +167,11 @@ The `convert_*()` functions generate messages in the following circumstances:
 
 ## Converting an entire directory
 
-To convert all converible files in a directory (and its subdirectories), use `convert_dir()`.
-We'll use the `"my_examples"` directory that we created above with the call to `example_dir("my_examples")`.
+To convert all convertible files in a directory (and its subdirectories), use `convert_dir()`.
+We'll use the `"examples"` directory that we created above with the call to `example_dir("examples")`.
 
 ```{r}
-result <- convert_dir("my_examples", "my_converted_examples")
+result <- convert_dir("examples", "my_converted_examples")
 result
 ```
 
@@ -189,7 +193,7 @@ When working with large directories, the `files_to_convert()` function helps you
 
 ```{r}
 # List all files with convertible extensions in a directory
-potential_files <- files_to_convert("my_examples")
+potential_files <- files_to_convert("examples")
 potential_files
 ```
 
@@ -199,12 +203,12 @@ By default, this function looks for files with extensions "R", "r", "qmd", "rmd"
 
 ```{r}
 # Only look for R scripts
-files_to_convert("my_examples", extensions = "R")
+files_to_convert("examples", extensions = "R")
 ```
 
 ```{r}
 # All extensions
-files_to_convert("my_examples", extensions = NULL)
+files_to_convert("examples", extensions = NULL)
 ```
 
 ### Generating output paths
@@ -213,7 +217,7 @@ When converting files to new locations, the `output_paths()` function helps gene
 By default, this adds a `_new` suffix to the file name, but other suffixes, or prefixes, can be specified. Other output directories can also be given:
 
 ```{r}
-input_files <- files_to_convert("my_examples")
+input_files <- files_to_convert("examples")
 
 # Default
 output_files <- output_paths(input_files)
@@ -262,7 +266,7 @@ and we don't want to inadvertently alter those. We provide an example file to de
 
 
 ```{r}
-no_penguins_file <- "my_examples/no_penguins.Rmd"
+no_penguins_file <- "examples/no_penguins.Rmd"
 cat(readLines(no_penguins_file), sep = "\n")
 ```
 
@@ -281,7 +285,7 @@ indicating that none of the input files changed.
 ## Final considerations
 ### Class
 
-The versions of `penguins` and `penguins_raw` in R 4.5.0's **datasets** package will always (just) have class `data.frame`.
+The versions of `penguins` and `penguins_raw` in R >= 4.5.0's **datasets** package will always (just) have class `data.frame`.
 In contrast, the **palmerpenguins** versions will have classes `tbl_df`, `tbl` and `data.frame` if the **[tibble](https://tibble.tidyverse.org)** package is installed on your computer (and just class `data.frame` if not).
 
 ### `penguins_raw`
@@ -301,7 +305,7 @@ The **palmerpenguins** package will remain on CRAN and keep its package website.
 
 ## Summary
 
-The **basepenguins** package provides a straightforward way to update your R scripts and R Markdown/Quarto documents to use the built-in Palmer Penguins datasets in R 4.5.0. The conversion process:
+The **basepenguins** package provides a straightforward way to update your R scripts and R Markdown/Quarto documents to use the built-in Palmer Penguins datasets in R >= 4.5.0. The conversion process:
 
 1. Removes calls to `library(palmerpenguins)`
 2. Updates variable names to the shorter versions used in the built-in datasets
@@ -313,5 +317,5 @@ The package offers flexibility in how you apply these conversions:
 - Create new converted files or modify existing ones in place
 - Choose which file types to convert
 
-These tools make it easy to update your code to work with R 4.5.0's `penguins` and `penguins_raw` datasets.
+These tools make it easy to update your code to work with R >= 4.5.0's `penguins` and `penguins_raw` datasets.
 

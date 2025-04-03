@@ -116,14 +116,12 @@ penguins_convert <- function(input, output) {
   # Only write if changes were made or if output is different from input
   # This avoids missing EOL getting added to end of otherwise not_changed files
   # Don't want a diff in this case
-  if (result$matches || !identical(paths$input, paths$output)) {
-    if (result$matches) {
-      writeLines(result$content, paths$output)
-    } else {
-      # No modifications, but need to copy to output location
-      file.copy(paths$input, paths$output, overwrite = TRUE)
-    }
-  }
+  if (result$matches) {
+    writeLines(result$content, paths$output)
+  } else if (paths$input != paths$output) {
+    # No modifications, but need to copy to output location
+    file.copy(paths$input, paths$output, overwrite = TRUE)
+  } # If no matches, and input = output, don't need to do anything
 
   # Return logical indicating whether file was changed
   invisible(result$matches)

@@ -13,6 +13,9 @@
   - ubuntu-latest (devel)
   - ubuntu-latest (release)
   - ubuntu-latest (oldrel-1)
+* win-builder: 
+  - using R version 4.5.0 RC (2025-04-03 r88103 ucrt) 
+  - using platform: x86_64-w64-mingw32
 
 ## Additional comments
 

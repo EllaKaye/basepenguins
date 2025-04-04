@@ -1,6 +1,6 @@
 Package: basepenguins
 Title: Convert Files that Use 'palmerpenguins' to Work with 'datasets'
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Ella", "Kaye", , "ella.kaye@gmail.com", 
            role = c("aut", "cre", "cph"),

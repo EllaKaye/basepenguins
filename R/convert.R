@@ -4,7 +4,7 @@
 #' These functions convert files that use the
 #' [palmerpenguins](https://CRAN.R-project.org/package=palmerpenguins) package
 #' to use the versions of `penguins` and `penguins_raw` included in the datasets
-#' package in R >= 4.5.0. They removes calls to `library(palmerpenguins)` and make
+#' package in R ≥ 4.5.0. They removes calls to `library(palmerpenguins)` and make
 #' necessary changes to some variable names (see Details section below).
 #'
 #' @param input For `convert_files()` and `convert_files_inplace()`:
@@ -38,7 +38,8 @@
 #'
 #' @details
 #' Files are converted by:
-#' - Replacing `library(palmerpenguins)` with `""`
+#' - Replacing `library(palmerpenguins)` with the empty string `""`
+#' - Replacing `data("penguins", package = "palmerpenguins")` with `data("penguins", package = "datasets")`
 #' - Replacing variable names:
 #'   - `bill_length_mm` -> `bill_len`
 #'   - `bill_depth_mm` -> `bill_dep`
@@ -95,11 +96,6 @@
 #' # Overwrite the files in "examples"
 #' result <- convert_dir_inplace("examples")
 #' result # see `changed` and `not_changed` files
-#'
-#' \dontrun{
-#' # Overwrite all convertible files in the working directory
-#' convert_dir_inplace(".")
-#' }
 #'
 #' \dontshow{setwd(.old_wd)}
 #'

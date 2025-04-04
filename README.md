@@ -14,7 +14,7 @@ coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://
 Convert scripts that use the
 [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/index.html)
 library to use the versions of the `penguins` and `penguins_raw`
-datasets that are available in R \>= 4.5.0.
+datasets that are available in R ≥ 4.5.0.
 
 The Palmer Penguins data has become [very
 popular](https://apreshill.github.io/palmerpenguins-useR-2022/) in the R
@@ -24,53 +24,42 @@ dataset](https://journal.r-project.org/articles/RJ-2022-020/). Including
 the datasets in R makes them more widely available, and easier to get
 started with, especially for new R users, and for use in teaching.
 
-The version of `penguins` in **datasets** (R \>= 4.5.0) has some shorter
-variable names than the **palmerpenguins** equivalent. The differences
-are:
-
-| palmerpenguins    | R’s datasets package |
-|-------------------|----------------------|
-| bill_length_mm    | bill_len             |
-| bill_depth_mm     | bill_dep             |
-| flipper_length_mm | flipper_len          |
-| body_mass_g       | body_mass            |
-
-These changes were made for more compact code and data display.
-(e.g. printing `penguins` now shows all columns in under 80 characters).
-
-It does mean, however, that for those wanting to use R’s version of
-`penguins`, it isn’t simply a case of removing the call to
-`library(palmerpenguins)` and the script still running. The
-**basepenguins** package takes care of converting files to remove the
-call to `library(palmerpenguins)` and makes the necessary conversions to
-variable names, ensuring that the resulting scripts still run.
-
-Note that **basepenguins** itself does not require R \>= 4.5.0, since it
-doesn’t run any scripts that use the **datasets** versions on `penguins`
-and `penguins_raw`. In practice, though, you are unlikely to want or
-need to use **basepenguins** without R \>= 4.5.0 installed. (We do take
-a dependency on R \>= 4.2.0 in order to make use of the native pipe
-`|>`.)
+The version of `penguins` in **datasets** (R ≥ 4.5.0) has some shorter
+variable names than the **palmerpenguins** equivalent (e.g. `bill_len`
+instead of `bill_length_mm`). It does mean, however, that for those
+wanting to use R’s version of `penguins`, it isn’t simply a case of
+removing the call to `library(palmerpenguins)` or
+`data("penguins", package = "palmerpenguins")` and the script still
+running. The **basepenguins** package takes care of converting files to
+remove the use of **palmerpenguins** and makes the necessary conversions
+to variable names, ensuring that the resulting scripts still run.
 
 ## Installation
 
-You can install the development version of basepenguins from
-[GitHub](https://github.com/) with:
+The stable version of **basepenguins** is available on CRAn:
 
 ``` r
-# install.packages("pak")
-pak::pak("EllaKaye/basepenguins")
+install.packages("basepenguins")
+```
+
+Or get the development version from R-universe:
+
+``` r
+install.packages("basepenguins", repos = "https://ellakaye.r-universe.dev")
 ```
 
 ## Converting a file
 
-If a file is ‘convertible’, i.e. it contains `library(palmerpenguins)`,
-`library('palmerpenguins')` or `library("palmerpenguins")`, and has one
-of a specified set of extensions (by default `"R"`, `"r"`, `"qmd"`,
-`"rmd"`, `"Rmd"`), then converting it will do the following:
+If a file is ‘convertible’, i.e. it contains `library(palmerpenguins)`
+or `data("penguins", package = "palmerpenguins")` (with any style of
+quotes), and has one of a specified set of extensions (by default `"R"`,
+`"r"`, `"qmd"`, `"rmd"`, `"Rmd"`), then converting it will do the
+following:
 
 - Replace `library(palmerpenguins)` (or same with `palmerpenguins` in
-  quotes) with `""`
+  quotes) with the empty string`""`
+- Replace `data("penguins", package = "palmerpenguins")` (with any style
+  of quotes) with `data("penguins", package = "datasets")`
 - Replace variable names:
   - `bill_length_mm` -\> `bill_len`
   - `bill_depth_mm` -\> `bill_dep`
@@ -140,10 +129,6 @@ a call to `library(palmerpenguins)`), they will be copied unmodified to
 their new `output` location (in `convert_files()` and `convert_dir()` or
 left untouched by `convert_files_inplace()` and
 `convert_dir_inplace()`).
-
-If using `convert_files_inplace()` or `convert_dir_inplace()`, we
-recommend doing so in conjunction with a version-control system such as
-git, so that any changes can be easily checked.
 
 |  |  |
 |----|----|

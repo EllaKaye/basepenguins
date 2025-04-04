@@ -48,13 +48,14 @@ subsets of the \code{input} paths, and the vectors will not be named.
 These functions convert files that use the
 \href{https://CRAN.R-project.org/package=palmerpenguins}{palmerpenguins} package
 to use the versions of \code{penguins} and \code{penguins_raw} included in the datasets
-package in R >= 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
+package in R ≥ 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
 necessary changes to some variable names (see Details section below).
 }
 \details{
 Files are converted by:
 \itemize{
-\item Replacing \code{library(palmerpenguins)} with \code{""}
+\item Replacing \code{library(palmerpenguins)} with the empty string \code{""}
+\item Replacing \code{data("penguins", package = "palmerpenguins")} with \code{data("penguins", package = "datasets")}
 \item Replacing variable names:
 \itemize{
 \item \code{bill_length_mm} -> \code{bill_len}
@@ -112,11 +113,6 @@ result # see `changed` and `not_changed` files
 # Overwrite the files in "examples"
 result <- convert_dir_inplace("examples")
 result # see `changed` and `not_changed` files
-
-\dontrun{
-# Overwrite all convertible files in the working directory
-convert_dir_inplace(".")
-}
 
 \dontshow{setwd(.old_wd)}
 

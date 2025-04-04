@@ -86,7 +86,9 @@ test_that("penguins_substitute makes all expected substitutions", {
     "penguins$bill_depth_mm",
     "penguins$flipper_length_mm",
     "penguins$body_mass_g",
-    'select(ends_with("_mm"))'
+    'select(ends_with("_mm"))',
+    'data("penguins", package = "palmerpenguins")',
+    "data(penguins, package = 'palmerpenguins')"
   )
 
   result <- penguins_substitute(file_content, "test_output.R")
@@ -103,6 +105,14 @@ test_that("penguins_substitute makes all expected substitutions", {
     result$content[8],
     'select(starts_with("flipper_"), starts_with("bill_"))'
   )
+  expect_equal(
+    result$content[9],
+    'data("penguins", package = "datasets")'
+  )
+  expect_equal(
+    result$content[10],
+    'data("penguins", package = "datasets")'
+  )
   expect_true(result$matches)
 })
 
@@ -110,13 +120,13 @@ test_that("penguins_substitute produces expected messages", {
   file_content <- readLines(test_path("fixtures", "example_dir", "penguins.R"))
   # one ends_with
   expect_message(
-    penguins_substitute(file_content[-15], "penguins_new.R"),
-    '- ends_with\\("_mm"\\) replaced on line 14 in penguins_new.R'
+    penguins_substitute(file_content[-17], "penguins_new.R"),
+    '- ends_with\\("_mm"\\) replaced on line 16 in penguins_new.R'
   )
   # multiple ends_with
   expect_message(
     penguins_substitute(file_content, "penguins_new.R"),
-    '- ends_with\\("_mm"\\) replaced on lines 14, 15 in penguins_new.R'
+    '- ends_with\\("_mm"\\) replaced on lines 16, 17 in penguins_new.R'
   )
 })
 
@@ -160,6 +170,18 @@ test_that("penguins_convert correctly converts fixture files with penguins refer
     # Check that conversions were made
     expect_false(any(grepl(
       "library\\(['\"]?palmerpenguins['\"]?\\)",
+      output_content
+    )))
+    expect_false(any(grepl(
+      'data("penguins", package = "palmerpenguins")',
+      output_content
+    )))
+    expect_false(any(grepl(
+      "data(penguins, package='palmerpenguins')",
+      output_content
+    )))
+    expect_false(any(grepl(
+      "data\\(['\"]?penguins['\"]?, package\\s?=\\s?['\"]palmerpenguins['\"]\\)",
       output_content
     )))
     expect_false(any(grepl("bill_length_mm", output_content)))

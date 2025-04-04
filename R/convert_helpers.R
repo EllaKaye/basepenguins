@@ -50,14 +50,18 @@ validate_input_output <- function(
 penguins_substitute <- function(file_content, output_non_norm) {
   # Define patterns to look for
   pp <- "library\\(['\"]?palmerpenguins['\"]?\\)" # may have "" or '' around it
+  dp <- "data\\(['\"]?penguins['\"]?, package\\s?=\\s?['\"]palmerpenguins['\"]\\)"
+  pattern <- paste(pp, dp, sep = "|")
 
-  # Check for the library call pattern
-  matches_pp <- any(grepl(pp, file_content))
+  # Check for use of palmerpenguins package
+  matches_pp <- any(grepl(pattern, file_content))
 
-  # If palmerpenguins is loaded in the file, perform substitutions
+  # If palmerpenguins package used, perform substitutions
   if (matches_pp) {
-    # Remove call(s) to palmerpenguins library
-    file_content <- gsub(pp, "", file_content)
+    # Remove references to palmerpenguins
+    file_content <- file_content |>
+      gsub(pp, "", x = _) |>
+      gsub(dp, 'data("penguins", package = "datasets")', x = _)
 
     # Replace variable names with shorter versions
     file_content <- file_content |>

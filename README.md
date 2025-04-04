@@ -14,7 +14,7 @@ coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://
 Convert scripts that use the
 [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/index.html)
 library to use the versions of the `penguins` and `penguins_raw`
-datasets that are available in R ≥ 4.5.0.
+datasets that are available in R >= 4.5.0.
 
 The Palmer Penguins data has become [very
 popular](https://apreshill.github.io/palmerpenguins-useR-2022/) in the R
@@ -24,7 +24,7 @@ dataset](https://journal.r-project.org/articles/RJ-2022-020/). Including
 the datasets in R makes them more widely available, and easier to get
 started with, especially for new R users, and for use in teaching.
 
-The version of `penguins` in **datasets** (R ≥ 4.5.0) has some shorter
+The version of `penguins` in **datasets** (R >= 4.5.0) has some shorter
 variable names than the **palmerpenguins** equivalent (e.g. `bill_len`
 instead of `bill_length_mm`). It does mean, however, that for those
 wanting to use R’s version of `penguins`, it isn’t simply a case of

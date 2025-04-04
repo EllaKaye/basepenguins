@@ -2,7 +2,18 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+* New submission
 
-* Although `penguins` is not available in **datasets** until R 4.5.0, **basepenguins** itself does not require R ≥ 4.5.0,
-since it doesn't run any scripts that use the **datasets** versions of `penguins` and `penguins_raw`.
+## Test environments
+
+* Local R installation: R 4.4.3
+* R-CMD-check GitHub Action: 
+  - macos-latest (release)
+  - window-latest (release)
+  - ubuntu-latest (devel)
+  - ubuntu-latest (release)
+  - ubuntu-latest (oldrel-1)
+
+## Additional comments
+
+* Although `penguins` is not available in **datasets** until R 4.5.0, **basepenguins** itself does not require R >= 4.5.0, since it doesn't run any scripts that use the **datasets** versions of `penguins` and `penguins_raw`.

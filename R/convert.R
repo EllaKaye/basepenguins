@@ -4,7 +4,7 @@
 #' These functions convert files that use the
 #' [palmerpenguins](https://CRAN.R-project.org/package=palmerpenguins) package
 #' to use the versions of `penguins` and `penguins_raw` included in the datasets
-#' package in R ≥ 4.5.0. They removes calls to `library(palmerpenguins)` and make
+#' package in R >= 4.5.0. They removes calls to `library(palmerpenguins)` and make
 #' necessary changes to some variable names (see Details section below).
 #'
 #' @param input For `convert_files()` and `convert_files_inplace()`:

@@ -24,7 +24,7 @@ knitr::opts_knit$set(root.dir = temp_dir)
 
 The **basepenguins** package provides tools to convert R scripts and R Markdown/Quarto documents (or other specified file types) that use the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/) library to use the versions of `penguins` and `penguins_raw` included in the **datasets** package from R version 4.5.0.
 
-With R ≥ 4.5.0, the popular Palmer Penguins datasets are now directly available without loading an external package. This makes them more accessible, especially for new R users and for teaching purposes. However, there are some important differences between the variable names in the **palmerpenguins** package and those in R's built-in **datasets** package:
+With R >= 4.5.0, the popular Palmer Penguins datasets are now directly available without loading an external package. This makes them more accessible, especially for new R users and for teaching purposes. However, there are some important differences between the variable names in the **palmerpenguins** package and those in R's built-in **datasets** package:
 
 | palmerpenguins  | R's datasets package |
 |-----------------|----------------------|
@@ -33,7 +33,7 @@ With R ≥ 4.5.0, the popular Palmer Penguins datasets are now directly availabl
 | flipper_length_mm | flipper_len        |
 | body_mass_g     | body_mass            |
 
-These shorter variable names in the base R version were chosen for more compact code and data display. The **basepenguins** package helps you automatically convert files that use the longer **palmerpenguins** variable names to use the new, shorter variable names in R ≥ 4.5.0.
+These shorter variable names in the base R version were chosen for more compact code and data display. The **basepenguins** package helps you automatically convert files that use the longer **palmerpenguins** variable names to use the new, shorter variable names in R >= 4.5.0.
 
 ```{r setup}
 library(basepenguins)
@@ -287,7 +287,7 @@ indicating that none of the input files changed.
 ## Final considerations
 ### Class
 
-The versions of `penguins` and `penguins_raw` in R ≥ 4.5.0's **datasets** package will always (just) have class `data.frame`.
+The versions of `penguins` and `penguins_raw` in R >= 4.5.0's **datasets** package will always (just) have class `data.frame`.
 In contrast, the **palmerpenguins** versions will have classes `tbl_df`, `tbl` and `data.frame` if the **[tibble](https://tibble.tidyverse.org)** package is installed on your computer (and just class `data.frame` if not).
 
 ### `penguins_raw`
@@ -307,7 +307,7 @@ The **palmerpenguins** package will remain on CRAN and keep its package website.
 
 ## Summary
 
-The **basepenguins** package provides a straightforward way to update your R scripts and R Markdown/Quarto documents to use the built-in Palmer Penguins datasets in R ≥ 4.5.0. The conversion process:
+The **basepenguins** package provides a straightforward way to update your R scripts and R Markdown/Quarto documents to use the built-in Palmer Penguins datasets in R >= 4.5.0. The conversion process:
 
 1. Removes calls to `library(palmerpenguins)`
 2. Updates variable names to the shorter versions used in the built-in datasets
@@ -319,5 +319,5 @@ The package offers flexibility in how you apply these conversions:
 - Create new converted files or modify existing ones in place
 - Choose which file types to convert
 
-These tools make it easy to update your code to work with R ≥ 4.5.0's `penguins` and `penguins_raw` datasets.
+These tools make it easy to update your code to work with R >= 4.5.0's `penguins` and `penguins_raw` datasets.
 

@@ -48,7 +48,7 @@ subsets of the \code{input} paths, and the vectors will not be named.
 These functions convert files that use the
 \href{https://CRAN.R-project.org/package=palmerpenguins}{palmerpenguins} package
 to use the versions of \code{penguins} and \code{penguins_raw} included in the datasets
-package in R ≥ 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
+package in R >= 4.5.0. They removes calls to \code{library(palmerpenguins)} and make
 necessary changes to some variable names (see Details section below).
 }
 \details{

@@ -9,10 +9,10 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-1256-3375")),
     person("Achim", "Zeileis", role = c("ctb"),
            comment = c(ORCID = "0000-0003-0918-3766")))
-Description: From R 4.5.0, the 'datasets' package includes the penguins and 
+Description: From 'R' 4.5.0, the 'datasets' package includes the penguins and 
     penguins_raw data sets popularised in the 'palmerpenguins' package.
     'basepenguins' takes files that use the 'palmerpenguins' package and 
-    converts them to work with the versions from 'datasets' (R ≥ 4.5.0). 
+    converts them to work with the versions from 'datasets' ('R' ≥ 4.5.0). 
     It does this by removing calls to library(palmerpenguins) and making the 
     necessary changes to column names. Additionally, it provides helper 
     functions to define new files paths for saving the output and a directory

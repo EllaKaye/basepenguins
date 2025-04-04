@@ -176,10 +176,11 @@ result <- convert_dir("examples", "my_converted_examples")
 result
 ```
 
-To convert all files in a directory in place (overwriting the originals), use `convert_dir_inplace()`:
+To convert all files in a directory in place, use `convert_dir_inplace()`.
+A useful call is `convert_dir_inplace(".")` to overwrite all convertible files in the working directory, 
+though we don't run that here, demonstrating on a fresh copy of the example directory instead.
 
 ```{r}
-# Make a fresh copy to work with
 example_dir("in_place_dir")
 
 result <- convert_dir_inplace("in_place_dir")

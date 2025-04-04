@@ -1,5 +1,5 @@
 Package: basepenguins
-Title: Convert Files That Use 'palmerpenguins' To Work With 'datasets'
+Title: Convert Files that Use 'palmerpenguins' to Work with 'datasets'
 Version: 0.0.0.9000
 Authors@R: c(
     person("Ella", "Kaye", , "ella.kaye@gmail.com", 

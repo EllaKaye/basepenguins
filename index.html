@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Convert Files That Use palmerpenguins To Work With datasets • basepenguins</title>
+<title>Convert Files that Use palmerpenguins to Work with datasets • basepenguins</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Figtree-0.4.9/font.css" rel="stylesheet">
@@ -14,9 +14,9 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="Convert Files That Use palmerpenguins To Work With datasets">
-<meta name="description" content="From R 4.5.0, the datasets package includes the penguins and penguins_raw data sets popularised in the palmerpenguins package. basepenguins takes files that use the palmerpenguins package and converts them to work with the versions from datasets (R ≥ 4.5.0). It does this by removing calls to library(palmerpenguins) and making the necessary changes to column names. Additionally, it provides helper functions to define new files paths for saving the output and a directory of example files to experiment with.">
-<meta property="og:description" content="From R 4.5.0, the datasets package includes the penguins and penguins_raw data sets popularised in the palmerpenguins package. basepenguins takes files that use the palmerpenguins package and converts them to work with the versions from datasets (R ≥ 4.5.0). It does this by removing calls to library(palmerpenguins) and making the necessary changes to column names. Additionally, it provides helper functions to define new files paths for saving the output and a directory of example files to experiment with.">
+<meta property="og:title" content="Convert Files that Use palmerpenguins to Work with datasets">
+<meta name="description" content="From R 4.5.0, the datasets package includes the penguins and penguins_raw data sets popularised in the palmerpenguins package. basepenguins takes files that use the palmerpenguins package and converts them to work with the versions from datasets (R &gt;= 4.5.0). It does this by removing calls to library(palmerpenguins) and making the necessary changes to column names. Additionally, it provides helper functions to define new files paths for saving the output and a directory of example files to experiment with.">
+<meta property="og:description" content="From R 4.5.0, the datasets package includes the penguins and penguins_raw data sets popularised in the palmerpenguins package. basepenguins takes files that use the palmerpenguins package and converts them to work with the versions from datasets (R &gt;= 4.5.0). It does this by removing calls to library(palmerpenguins) and making the necessary changes to column names. Additionally, it provides helper functions to define new files paths for saving the output and a directory of example files to experiment with.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="index.html">basepenguins</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,9 +65,9 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>Convert scripts that use the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link"><strong>palmerpenguins</strong></a> library to use the versions of the <code>penguins</code> and <code>penguins_raw</code> datasets that are available in R ≥ 4.5.0.</p>
+<p>Convert scripts that use the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link"><strong>palmerpenguins</strong></a> library to use the versions of the <code>penguins</code> and <code>penguins_raw</code> datasets that are available in R &gt;= 4.5.0.</p>
 <p>The Palmer Penguins data has become <a href="https://apreshill.github.io/palmerpenguins-useR-2022/" class="external-link">very popular</a> in the R community, especially in educational contexts, and as an <a href="https://journal.r-project.org/articles/RJ-2022-020/" class="external-link">alternative to the <code>iris</code> dataset</a>. Including the datasets in R makes them more widely available, and easier to get started with, especially for new R users, and for use in teaching.</p>
-<p>The version of <code>penguins</code> in <strong>datasets</strong> (R ≥ 4.5.0) has some shorter variable names than the <strong>palmerpenguins</strong> equivalent (e.g. <code>bill_len</code> instead of <code>bill_length_mm</code>). It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> or <code>data("penguins", package = "palmerpenguins")</code> and the script still running. The <strong>basepenguins</strong> package takes care of converting files to remove the use of <strong>palmerpenguins</strong> and makes the necessary conversions to variable names, ensuring that the resulting scripts still run.</p>
+<p>The version of <code>penguins</code> in <strong>datasets</strong> (R &gt;= 4.5.0) has some shorter variable names than the <strong>palmerpenguins</strong> equivalent (e.g. <code>bill_len</code> instead of <code>bill_length_mm</code>). It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> or <code>data("penguins", package = "palmerpenguins")</code> and the script still running. The <strong>basepenguins</strong> package takes care of converting files to remove the use of <strong>palmerpenguins</strong> and makes the necessary conversions to variable names, ensuring that the resulting scripts still run.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>

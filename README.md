@@ -8,35 +8,39 @@
 [![R-CMD-check](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://app.codecov.io/gh/EllaKaye/basepenguins)
-
+[![CRAN
+status](https://www.r-pkg.org/badges/version/basepenguins)](https://www.r-pkg.org/badges/version/basepenguins)
 <!-- badges: end -->
 
 Convert scripts that use the
 [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/index.html)
-library to use the versions of the `penguins` and `penguins_raw`
+package to use the versions of the `penguins` and `penguins_raw`
 datasets that are available in R ≥ 4.5.0.
 
-The Palmer Penguins data has become [very
+The Palmer Penguins datasets have become [very
 popular](https://apreshill.github.io/palmerpenguins-useR-2022/) in the R
 community, especially in educational contexts, and as an [alternative to
 the `iris`
-dataset](https://journal.r-project.org/articles/RJ-2022-020/). Including
-the datasets in R makes them more widely available, and easier to get
-started with, especially for new R users, and for use in teaching.
+dataset](https://journal.r-project.org/articles/RJ-2022-020/). Now that
+`penguins` and `penguins_raw` are in **datasets** (R ≥ 4.5.0), they are
+more widely available and easier to get started with, especially for new
+R users and for use in teaching.
 
 The version of `penguins` in **datasets** (R ≥ 4.5.0) has some shorter
 variable names than the **palmerpenguins** equivalent (e.g. `bill_len`
-instead of `bill_length_mm`). It does mean, however, that for those
-wanting to use R’s version of `penguins`, it isn’t simply a case of
-removing the call to `library(palmerpenguins)` or
-`data("penguins", package = "palmerpenguins")` and the script still
-running. The **basepenguins** package takes care of converting files to
-remove the use of **palmerpenguins** and makes the necessary conversions
-to variable names, ensuring that the resulting scripts still run.
+instead of `bill_length_mm`), for more compact code and data display. It
+does mean, however, that for those wanting to use R’s version of
+`penguins`, it isn’t simply a case of removing the call to
+`library(palmerpenguins)` or replacing `palmerpenguins` with `datasets`
+in `data("penguins", package = "palmerpenguins")` and the script still
+running. The **basepenguins** package takes care of converting files by
+removing the call to **palmerpenguins** and making the necessary
+conversions to variable names, ensuring that the resulting scripts still
+run, using the **datasets** versions of `penguins` and `penguins_raw`.
 
 ## Installation
 
-The stable version of **basepenguins** is available on CRAn:
+**basepenguins** is available on CRAN:
 
 ``` r
 install.packages("basepenguins")
@@ -83,8 +87,8 @@ Started](https://allisonhorst.github.io/palmerpenguins/articles/intro.html)
 vignette):
 
 ``` r
-penguin_file <- example_files("penguins.R")
-cat(readLines(penguin_file), sep = "\n")
+penguins_file <- example_files("penguins.R")
+cat(readLines(penguins_file), sep = "\n")
 #> library(palmerpenguins)
 #> library(ggplot2)
 #> library(dplyr)
@@ -100,7 +104,7 @@ cat(readLines(penguin_file), sep = "\n")
 Then, convert the file (saving it to a new file) and see the new script:
 
 ``` r
-convert_files(penguin_file, "penguins_converted.R")
+convert_files(penguins_file, "penguins_converted.R")
 #> - ends_with("_mm") replaced on line 7 in penguins_converted.R
 #> - Please check the changed output files.
 ```
@@ -125,10 +129,9 @@ There are four functions in **basepenguins** to convert mulitple files.
 In each case, the default `extensions` (i.e. file types to convert) are
 `"R"`, `"r"`, `"qmd"`, `"rmd"`, `"Rmd"`. If `input` contains
 non-convertible files (i.e. without the specified extensions or without
-a call to `library(palmerpenguins)`), they will be copied unmodified to
-their new `output` location (in `convert_files()` and `convert_dir()` or
-left untouched by `convert_files_inplace()` and
-`convert_dir_inplace()`).
+reference to `palmerpenguins`), they will be copied unmodified to their
+new `output` location in `convert_files()` and `convert_dir()`, or left
+untouched by `convert_files_inplace()` and `convert_dir_inplace()`.
 
 |  |  |
 |----|----|

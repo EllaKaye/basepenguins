@@ -22,18 +22,21 @@ knitr::opts_knit$set(root.dir = temp_dir)
 
 ## Introduction
 
-The **basepenguins** package provides tools to convert R scripts and R Markdown/Quarto documents (or other specified file types) that use the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/) library to use the versions of `penguins` and `penguins_raw` included in the **datasets** package from R version 4.5.0.
+The **basepenguins** package provides tools to convert R scripts and R Markdown/Quarto documents (or other specified file types) that use the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/) package to use the versions of `penguins` and `penguins_raw` included in the **datasets** (R ≥ 4.5.0).
 
-With R ≥ 4.5.0, the popular Palmer Penguins datasets are now directly available without loading an external package. This makes them more accessible, especially for new R users and for teaching purposes. However, there are some important differences between the variable names in the **palmerpenguins** package and those in R's built-in **datasets** package:
+With R ≥ 4.5.0, the popular Palmer Penguins datasets are now directly available without loading the **palmerpenguins** package. This makes them more accessible, especially for new R users and for teaching purposes. However, there are some differences between the variable names in the **palmerpenguins** package and those in R's **datasets** package:
 
-| palmerpenguins  | R's datasets package |
-|-----------------|----------------------|
-| bill_length_mm  | bill_len             |
-| bill_depth_mm   | bill_dep             |
-| flipper_length_mm | flipper_len        |
-| body_mass_g     | body_mass            |
+| palmerpenguins    | datasets     |
+|-------------------|--------------|
+| bill_length_mm    | bill_len     |
+| bill_depth_mm     | bill_dep     |
+| flipper_length_mm | flipper_len  |
+| body_mass_g       | body_mass    |
 
-These shorter variable names in the base R version were chosen for more compact code and data display. The **basepenguins** package helps you automatically convert files that use the longer **palmerpenguins** variable names to use the new, shorter variable names in R ≥ 4.5.0.
+These shorter variable names in the base R version were chosen for more compact code and data display. It does mean, however, that for those wanting to use R’s version of `penguins`, it isn’t simply a case of removing the call to `library(palmerpenguins)` or replacing `palmerpenguins` with `datasets` in `data("penguins", package = "palmerpenguins")` and the script still running.
+
+The **basepenguins** package takes care of converting files by removing the call to **palmerpenguins** and making the necessary conversions to variable names, ensuring that the resulting scripts still run, using the **datasets** (R ≥ 4.5.0) versions of `penguins` and `penguins_raw`.
+
 
 ```{r setup}
 library(basepenguins)
@@ -60,21 +63,21 @@ Additionally, there are helper functions:
 
 ## What changes when converting files?
 
-When a file is 'convertible' (contains a call to `library(palmerpenguins)` and has one of the specified extensions), the conversion makes these changes:
+When a file is 'convertible', i.e. contains a call to `library(palmerpenguins)` or `data("penguins", package = "palmerpenguins")` and has one of the specified extensions (by default `"R"`, `"r"`, `"qmd"`, `"rmd"`, `"Rmd"`), the conversion makes these changes:
 
-- Removes any `library(palmerpenguins)`, `library('palmerpenguins') or `library("palmerpenguins") call
+- Replaces `library(palmerpenguins)` (or same with `palmerpenguins` in quotes) with the empty string`""`
 - Replaces `data("penguins", package = "palmerpenguins")` (with any style of quotes) with `data("penguins", package = "datasets")` 
-- Replaces the long variable names with their shorter equivalents:
+- Replaces variable names:
   - `bill_length_mm` → `bill_len`
   - `bill_depth_mm` → `bill_dep`
   - `flipper_length_mm` → `flipper_len`
   - `body_mass_g` → `body_mass`
-- Replaces `ends_with("_mm")` (a pattern used in `dplyr::select()`) with `starts_with("flipper_"), starts_with("bill_")`
+- Replaces `ends_with("_mm")` with `starts_with("flipper_"), starts_with("bill_")`
 
 ## Example directory and files
 
 The package includes an example directory with four example files to demonstrate how the conversion works. 
-These are accessible through two key functions: `example_files()` and `example_dir()`.
+These are accessible through `example_files()` and `example_dir()`.
 
 ```{r}
 # List all example files
@@ -84,7 +87,7 @@ example_files()
 These example files include:
 
 - `penguins.R`: An R script using the **palmerpenguins** package
-- `no_penguins.Rmd`: An Rmarkdown file that includes `ends_with("_mm")` but *not* in the context of the palmerpenguins package
+- `no_penguins.Rmd`: An Rmarkdown file that includes `ends_with("_mm")` but *not* in the context of the **palmerpenguins** package
 - `nested/penguins.qmd`: A Quarto document using the **palmerpenguins** package
 - `nested/not_a_script.md`: Contains `library(palmerpenguins)`, but is not a script type that is converted by default
 
@@ -114,7 +117,7 @@ are written there, using relative paths.
 
 ## Converting files
 
-The package offers two main approaches to converting files: creating new converted versions (`convert_files()`) or modifying files in place (`convert_files_inplace()`).
+The package offers two main approaches to converting files: creating new converted versions with `convert_files()` or modifying files in place with`convert_files_inplace()`.
 
 Let's start by converting a single file to see how it works:
 
@@ -130,23 +133,22 @@ cat(readLines("converted_penguins.R"), sep = "\n")
 
 Notice how the function has:
 
-1. Removed the `library(palmerpenguins)` line
-2. Replaced the long variable names with their shorter equivalents
-3. Modified `ends_with("_mm")` to use `starts_with()` patterns instead
+- Removed the `library(palmerpenguins)` line
+- Replaced the variable names used in **palmerpenguins** with their **datasets** equivalents
+- Modified `ends_with("_mm")` to use `starts_with()` patterns instead
 
-Both the `input` and `output` parameters of `convert_files()` can take vectors of file paths, 
+Both the `input` and `output` parameters of `convert_files()` take a vector of file paths, 
 allowing you to convert multiple files at once. 
 
 If you want to overwrite the original files rather than creating new ones, you can use `convert_files_inplace()`, 
-which works exactly the same as `convert_files()`, except that it doesn't take an `output` argument.
-(It is simply a convenience wrapper around `convert_files(input, input, extensions)`)
+which works exactly the same as `convert_files()`, except that it doesn't take an `output` argument - it is simply a convenience wrapper around `convert_files(input, input, extensions)`.
 
 ## Return values and messages
 
 All the `convert_*()` functions invisibly return a list with two components:
 
 - `changed`: Files that were modified
-- `not_changed`: Files that were not modified (either they don't have the specified extensions or they don't load the **palmerpenguins** package)
+- `not_changed`: Files that were not modified (either they don't have the specified extensions or they don't use the **palmerpenguins** package)
 
 If the `output` paths are different than the `input` paths, 
 the values in the `changed` and `not_changed` vectors will be subsets of `output`,
@@ -199,9 +201,9 @@ potential_files <- files_to_convert("examples")
 potential_files
 ```
 
-It's important to note that `files_to_convert()` only filters files by their extensions and does **not** look for `library(palmerpenguins)` in their content. 
+It's important to note that `files_to_convert()` only filters files by their extensions and does **not** look for `palmerpenguins` in their content. 
 
-By default, this function looks for files with extensions "R", "r", "qmd", "rmd", or "Rmd". You can specify different extensions if needed, or return absolute file paths (see `files_to_convert()` for further details):
+By default, this function looks for files with extensions `"R"`, `"r"`, `"qmd"`, `"rmd"`, or `"Rmd"`. You can specify different extensions if needed, or return absolute file paths (see `files_to_convert()` for further details):
 
 ```{r}
 # Only look for R scripts
@@ -224,7 +226,9 @@ input_files <- files_to_convert("examples")
 # Default
 output_files <- output_paths(input_files)
 output_files
+```
 
+```{r}
 # Generate output paths with prefix instead, in new directory
 output_paths(input_files, prefix = "base_", suffix = "", dir = "~/output")
 ```
@@ -232,7 +236,7 @@ output_paths(input_files, prefix = "base_", suffix = "", dir = "~/output")
 ## Considerations regarding the `ends_with("_mm")` substitution
 
 The [**palmerpenguins** Get started vignette](https://allisonhorst.github.io/palmerpenguins/articles/intro.html) 
-has examples of using `ends_with("_mm")` within calls to `dplyr::select()`, to select the
+has examples of using `ends_with("_mm")` within calls to `dplyr::select()`, as a convenient way to select the
 `flipper_length_mm`, `bill_length_mm` and `bill_depth_mm` columns. 
 
 This pattern presents a design challenge for **basepenguins**. 
@@ -255,6 +259,7 @@ so instead we replace `ends_with("_mm")` with:
 starts_with("flipper_"), starts_with("bill_")
 ```
 
+This won't error, even if there are no variable names starting with `"flipper_" or `"bill_"`. 
 However, we shouldn't ever really need `starts_with("flipper_")` as there is only one column in `penguins` that meets that criteria,
 so we suggest manually checking this substitution and either replacing `start_with("flipper_")` with `flipper_len` 
 if `flipper_len` is still a column in the data frame, or removing `starts_with("flipper_")` entirely if not.
@@ -304,20 +309,4 @@ such as vignettes and articles on the [package website](https://allisonhorst.git
 The package also contains the data in two csv files and provides a [function](https://allisonhorst.github.io/palmerpenguins/reference/path_to_file.html) to access them. 
 And, of course, Allison Horst's wonderful [penguins artwork](https://allisonhorst.github.io/palmerpenguins/articles/art.html)!
 The **palmerpenguins** package will remain on CRAN and keep its package website.
-
-## Summary
-
-The **basepenguins** package provides a straightforward way to update your R scripts and R Markdown/Quarto documents to use the built-in Palmer Penguins datasets in R ≥ 4.5.0. The conversion process:
-
-1. Removes calls to `library(palmerpenguins)`
-2. Updates variable names to the shorter versions used in the built-in datasets
-3. Replaces `ends_with("_mm")` selectors with equivalent `starts_with()` patterns
-
-The package offers flexibility in how you apply these conversions:
-
-- Convert individual files or entire directories
-- Create new converted files or modify existing ones in place
-- Choose which file types to convert
-
-These tools make it easy to update your code to work with R ≥ 4.5.0's `penguins` and `penguins_raw` datasets.
 

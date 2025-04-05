@@ -36,7 +36,7 @@ in `data("penguins", package = "palmerpenguins")` and the script still
 running. The **basepenguins** package takes care of converting files by
 removing the call to **palmerpenguins** and making the necessary
 conversions to variable names, ensuring that the resulting scripts still
-run, using the **datasets** versions of `penguins` and `penguins_raw`.
+run using the **datasets** versions of `penguins` and `penguins_raw`.
 
 ## Installation
 

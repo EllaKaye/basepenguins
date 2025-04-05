@@ -27,7 +27,7 @@ The Palmer Penguins datasets have become [very popular](https://apreshill.github
 
 The version of `penguins` in **datasets** (R ≥ 4.5.0) has some shorter variable names than the **palmerpenguins** equivalent (e.g. `bill_len` instead of `bill_length_mm`), for more compact code and data display. 
 It does mean, however, that for those wanting to use R's version of `penguins`, it isn't simply a case of removing the call to `library(palmerpenguins)` 
-or replacing `palmerpenguins` with `datasets` in `data("penguins", package = "palmerpenguins")` and the script still running. The **basepenguins** package takes care of converting files by removing the call to **palmerpenguins** and making the necessary conversions to variable names, ensuring that the resulting scripts still run, using the **datasets** versions of `penguins` and `penguins_raw`.
+or replacing `palmerpenguins` with `datasets` in `data("penguins", package = "palmerpenguins")` and the script still running. The **basepenguins** package takes care of converting files by removing the call to **palmerpenguins** and making the necessary conversions to variable names, ensuring that the resulting scripts still run using the **datasets** versions of `penguins` and `penguins_raw`.
 
 ## Installation
 

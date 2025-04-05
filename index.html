@@ -64,14 +64,13 @@
 </h1></div>
 <!-- badges: start -->
 
-<!-- badges: end -->
-<p>Convert scripts that use the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link"><strong>palmerpenguins</strong></a> library to use the versions of the <code>penguins</code> and <code>penguins_raw</code> datasets that are available in R ≥ 4.5.0.</p>
-<p>The Palmer Penguins data has become <a href="https://apreshill.github.io/palmerpenguins-useR-2022/" class="external-link">very popular</a> in the R community, especially in educational contexts, and as an <a href="https://journal.r-project.org/articles/RJ-2022-020/" class="external-link">alternative to the <code>iris</code> dataset</a>. Including the datasets in R makes them more widely available, and easier to get started with, especially for new R users, and for use in teaching.</p>
-<p>The version of <code>penguins</code> in <strong>datasets</strong> (R ≥ 4.5.0) has some shorter variable names than the <strong>palmerpenguins</strong> equivalent (e.g. <code>bill_len</code> instead of <code>bill_length_mm</code>). It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> or <code>data("penguins", package = "palmerpenguins")</code> and the script still running. The <strong>basepenguins</strong> package takes care of converting files to remove the use of <strong>palmerpenguins</strong> and makes the necessary conversions to variable names, ensuring that the resulting scripts still run.</p>
+<p>Convert scripts that use the <a href="https://allisonhorst.github.io/palmerpenguins/index.html" class="external-link"><strong>palmerpenguins</strong></a> package to use the versions of the <code>penguins</code> and <code>penguins_raw</code> datasets that are available in R ≥ 4.5.0.</p>
+<p>The Palmer Penguins datasets have become <a href="https://apreshill.github.io/palmerpenguins-useR-2022/" class="external-link">very popular</a> in the R community, especially in educational contexts, and as an <a href="https://journal.r-project.org/articles/RJ-2022-020/" class="external-link">alternative to the <code>iris</code> dataset</a>. Now that <code>penguins</code> and <code>penguins_raw</code> are in <strong>datasets</strong> (R ≥ 4.5.0), they are more widely available and easier to get started with, especially for new R users and for use in teaching.</p>
+<p>The version of <code>penguins</code> in <strong>datasets</strong> (R ≥ 4.5.0) has some shorter variable names than the <strong>palmerpenguins</strong> equivalent (e.g. <code>bill_len</code> instead of <code>bill_length_mm</code>), for more compact code and data display. It does mean, however, that for those wanting to use R’s version of <code>penguins</code>, it isn’t simply a case of removing the call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code> or replacing <code>palmerpenguins</code> with <code>datasets</code> in <code>data("penguins", package = "palmerpenguins")</code> and the script still running. The <strong>basepenguins</strong> package takes care of converting files by removing the call to <strong>palmerpenguins</strong> and making the necessary conversions to variable names, ensuring that the resulting scripts still run, using the <strong>datasets</strong> versions of <code>penguins</code> and <code>penguins_raw</code>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The stable version of <strong>basepenguins</strong> is available on CRAn:</p>
+<p><strong>basepenguins</strong> is available on CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"basepenguins"</span><span class="op">)</span></span></code></pre></div>
 <p>Or get the development version from R-universe:</p>
@@ -111,8 +110,8 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EllaKaye/basepenguins" class="external-link">basepenguins</a></span><span class="op">)</span></span></code></pre></div>
 <p>Get and see an example file provided by the package (adapted from a section of the <strong>palmerpenguins</strong> <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="external-link">Get Started</a> vignette):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">penguin_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/example_files.html">example_files</a></span><span class="op">(</span><span class="st">"penguins.R"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">penguin_file</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">penguins_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/example_files.html">example_files</a></span><span class="op">(</span><span class="st">"penguins.R"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">penguins_file</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; library(palmerpenguins)</span></span>
 <span><span class="co">#&gt; library(ggplot2)</span></span>
 <span><span class="co">#&gt; library(dplyr)</span></span>
@@ -125,7 +124,7 @@
 <span><span class="co">#&gt;   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))</span></span></code></pre></div>
 <p>Then, convert the file (saving it to a new file) and see the new script:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/convert_files.html">convert_files</a></span><span class="op">(</span><span class="va">penguin_file</span>, <span class="st">"penguins_converted.R"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/convert_files.html">convert_files</a></span><span class="op">(</span><span class="va">penguins_file</span>, <span class="st">"penguins_converted.R"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; - ends_with("_mm") replaced on line 7 in penguins_converted.R</span></span>
 <span><span class="co">#&gt; - Please check the changed output files.</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -144,7 +143,7 @@
 <div class="section level2">
 <h2 id="converting-multiple-files-or-a-directory">Converting multiple files or a directory<a class="anchor" aria-label="anchor" href="#converting-multiple-files-or-a-directory"></a>
 </h2>
-<p>There are four functions in <strong>basepenguins</strong> to convert mulitple files. In each case, the default <code>extensions</code> (i.e. file types to convert) are <code>"R"</code>, <code>"r"</code>, <code>"qmd"</code>, <code>"rmd"</code>, <code>"Rmd"</code>. If <code>input</code> contains non-convertible files (i.e. without the specified extensions or without a call to <code><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">library(palmerpenguins)</a></code>), they will be copied unmodified to their new <code>output</code> location (in <code><a href="reference/convert_files.html">convert_files()</a></code> and <code><a href="reference/convert_files.html">convert_dir()</a></code> or left untouched by <code><a href="reference/convert_files.html">convert_files_inplace()</a></code> and <code><a href="reference/convert_files.html">convert_dir_inplace()</a></code>).</p>
+<p>There are four functions in <strong>basepenguins</strong> to convert mulitple files. In each case, the default <code>extensions</code> (i.e. file types to convert) are <code>"R"</code>, <code>"r"</code>, <code>"qmd"</code>, <code>"rmd"</code>, <code>"Rmd"</code>. If <code>input</code> contains non-convertible files (i.e. without the specified extensions or without reference to <code>palmerpenguins</code>), they will be copied unmodified to their new <code>output</code> location in <code><a href="reference/convert_files.html">convert_files()</a></code> and <code><a href="reference/convert_files.html">convert_dir()</a></code>, or left untouched by <code><a href="reference/convert_files.html">convert_files_inplace()</a></code> and <code><a href="reference/convert_files.html">convert_dir_inplace()</a></code>.</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -211,6 +210,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/EllaKaye/basepenguins/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/EllaKaye/basepenguins" class="external-link"><img src="https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://www.r-pkg.org/badges/version/basepenguins" class="external-link"><img src="https://www.r-pkg.org/badges/version/basepenguins" alt="CRAN status"></a></li>
 </ul>
 </div>
 

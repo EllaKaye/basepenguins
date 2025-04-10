@@ -139,3 +139,12 @@ untouched by `convert_files_inplace()` and `convert_dir_inplace()`.
 | `convert_files_inplace(input, extensions)` | convert a vector of files by overwriting them |
 | `convert_dir(input, output, extensions)` | convert all files in `input` directory into a new `output` directory (preserving nesting structure) |
 | `convert_dir_inplace(input, extensions)` | convert all files in a directory by overwriting them |
+
+## Thank you!
+
+Many thanks to [Allison Horst](https://allisonhorst.github.io) for the
+fantastic **basepenguins** hex, featuring the Adélie, Gentoo and
+Chinstrap familiar from her [**palmergenuins**
+artwork](https://allisonhorst.github.io/palmerpenguins/articles/art.html)
+and [Kristen Gorman’s](https://gormankb.github.io) base camp from her
+trips to the Palmer Archipelago to collect the data.

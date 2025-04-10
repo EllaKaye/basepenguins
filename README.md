@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# basepenguins
+# basepenguins <a href="https://ellakaye.github.io/basepenguins/"><img src="man/figures/logo.png" align="right" height="138" alt="basepenguins website" /></a>
 
 <!-- badges: start -->
 

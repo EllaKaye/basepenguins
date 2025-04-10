@@ -9,7 +9,7 @@
 [![Codecov test
 coverage](https://codecov.io/gh/EllaKaye/basepenguins/graph/badge.svg)](https://app.codecov.io/gh/EllaKaye/basepenguins)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/basepenguins)](https://www.r-pkg.org/badges/version/basepenguins)
+status](https://www.r-pkg.org/badges/version/basepenguins)](https://CRAN.R-project.org/package=basepenguins)
 <!-- badges: end -->
 
 Convert scripts that use the
